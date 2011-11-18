@@ -1,1 +1,0 @@
-255#"\Program Files\Mysaifu JVM\jre\bin\jvm.exe" -Xmx12288K -setcwd "\Storage Card\sasplanetj"  -Xconsole -cp "\Storage Card\sasplanetj\bin;\Program Files\Mysaifu JVM\jre\lib\javaxcomm.jar" sasplanetj.App COM4:
