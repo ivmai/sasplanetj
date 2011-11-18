@@ -1,0 +1,26 @@
+# Files and folders to be ignored (including subfolders).
+
+# Binary files
+*.class
+*.jar
+/bin/
+/cache
+/sasplanetj/bin/
+/sasplanetj/cache
+
+# Distributive files
+*.tar.gz
+*.zip
+
+# Geo track files
+*.plt
+*.wpt
+
+# 3rd-party VMs
+/creme*props.txt
+/mysiafuprops.txt
+/phoneme/
+
+# Snapshots and misc test logs
+/captures/
+/zip*test/
