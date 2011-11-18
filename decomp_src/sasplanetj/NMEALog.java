@@ -18,7 +18,8 @@ public class NMEALog extends TextArea
 
  public NMEALog()
  {
-  App.serialReader.addNMEAListener(this);
+  if (App.serialReader != null)
+   App.serialReader.addNMEAListener(this);
  }
 
  public void gpsEventNMEA(String msg)
@@ -28,6 +29,7 @@ public class NMEALog extends TextArea
 
  public void removeListener()
  {
-  App.serialReader.removeNMEAListener(this);
+  if (App.serialReader != null)
+   App.serialReader.removeNMEAListener(this);
  }
 }

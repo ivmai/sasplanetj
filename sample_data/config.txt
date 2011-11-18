@@ -1,0 +1,48 @@
+# SAS.Planet.J (sasplanetj) configuration file
+
+lat=50.407786083333335
+longitude=30.6625626
+zoom=4
+curMap=0
+
+# Connect to GPS at start-up
+connectGPS=true
+
+# Draw map grid
+drawGrid=true
+
+# Draw coordinates
+drawLatLng=false
+
+# Turn on track logging
+trackLog=false
+
+# Draw track tail
+drawTail=true
+
+# How many points to draw in track tail
+trackTailSize=200
+
+# Amount of tails to cache in RAM
+imageCacheSize=32
+
+# How many points to skip on map drawing
+drawMapSkip=0
+
+# How many points to skip on track recording
+trackLogSkip=0
+
+# Draw Wikimapia layer
+drawWikimapia=false
+
+# How many parsed Wikimapia KMLs to cache in RAM
+wikikmlCacheSize=64
+
+# How many ZIP files to keep open for quick access
+zipCacheSize=2
+
+# Use SoftReference-based cache
+useSoftRefs=true
+
+# Comma-separated list of available zoom levels
+zoomsAvail=3,4,5,6,7,8,10,12,14,16,17,18

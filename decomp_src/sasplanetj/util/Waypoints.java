@@ -61,7 +61,7 @@ public class Waypoints
   }
   catch (Exception e)
   {
-   System.out.println("Waypoints: error reading " + filename);
+   System.err.println("Waypoints: error reading " + filename);
   }
  }
 
@@ -71,7 +71,8 @@ public class Waypoints
   for (Iterator it = points.iterator(); it.hasNext(); dbf.drawOval(r.x, r.y, r.width, r.height))
   {
    Waypoint wp = (Waypoint)it.next();
-   XYint inmatrix = TilesUtil.coordinateToDisplay(wp.latlng.lat, wp.latlng.lng, Config.zoom);
+   XYint inmatrix = TilesUtil.coordinateToDisplay(wp.latlng.lat,
+                     wp.latlng.lng, Config.zoom, Config.isMapYandex);
    inmatrix.subtract(matrix[0]);
    inmatrix.add(matrix[1]);
    r = new Rectangle(inmatrix.x - 3, inmatrix.y - 3, 7, 7);
@@ -89,7 +90,7 @@ public class Waypoints
    return;
   try
   {
-   FileWriter out = new FileWriter(filename, false);
+   Writer out = new BufferedWriter(new FileWriter(filename, false));
    out.write("OziExplorer CE Waypoint File Version 1.2\r\n");
    out.write("WGS 84\r\n");
    out.write("Reserved 2\r\n");
@@ -107,7 +108,7 @@ public class Waypoints
   catch (IOException e)
   {
    new ShowMessage("Failed to write to file " + filename);
-   e.printStackTrace();
+   System.err.println(e);
   }
  }
 

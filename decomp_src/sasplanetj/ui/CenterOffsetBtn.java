@@ -16,12 +16,12 @@ public class CenterOffsetBtn extends Button
 {
 
  private static final Dimension size = new Dimension(25, 25);
- public Image img;
+ private final Image img = loadImageFromFile("offset.png");
 
  public CenterOffsetBtn()
  {
-  img = null;
-  img = loadImageFromFile("offset.png");
+  if (img == null)
+   return;
   size.setSize(img.getWidth(null), img.getHeight(null));
   setAllSizes();
   addMouseListener(new MouseAdapter() {
@@ -45,16 +45,17 @@ public class CenterOffsetBtn extends Button
   try
   {
    java.net.URL url = sasplanetj.ui.CenterOffsetBtn.class.getResource(fname);
-   Image img = getToolkit().getImage(url);
-   MediaTracker tracker = new MediaTracker(this);
-   tracker.addImage(img, 0);
-   tracker.waitForAll();
-   return img;
+   if (url != null)
+   {
+    Image img = getToolkit().getImage(url);
+    MediaTracker tracker = new MediaTracker(this);
+    tracker.addImage(img, 0);
+    tracker.waitForAll();
+    return img;
+   }
   }
-  catch (Exception e)
-  {
-   System.out.println("Can not open image: " + fname);
-  }
+  catch (Exception e) {}
+  System.err.println("Cannot open image: " + fname);
   return null;
  }
 
@@ -65,7 +66,12 @@ public class CenterOffsetBtn extends Button
 
  public void paint(Graphics g)
  {
-  g.drawImage(img, 0, 0, this);
+  if (img != null)
+   g.drawImage(img, 0, 0, this);
  }
 
+ public boolean isImageLoaded()
+ {
+  return img != null;
+ }
 }

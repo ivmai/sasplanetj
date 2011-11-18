@@ -61,6 +61,8 @@ public class NMEA
    int coma4 = msg.indexOf(',', coma3 + 1);
    int coma5 = msg.indexOf(',', coma4 + 1);
    int coma6 = msg.indexOf(',', coma5 + 1);
+   if ((coma2 | coma3 | coma4 | coma5 | coma6) < 0)
+    return false;
    String latStr = msg.substring(coma3 + 1, coma4);
    String lngStr = msg.substring(coma5 + 1, coma6);
    if (latStr.length() == 0 || lngStr.length() == 0)

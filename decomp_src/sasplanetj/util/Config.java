@@ -18,13 +18,15 @@ public class Config
  public static class MapInfo
  {
 
-  public String name;
-  public String dir;
-  public String extension;
+  public final String name;
+  public final char key;
+  public final String dir;
+  public final String extension;
 
-  public MapInfo(String name, String dir, String extension)
+  public MapInfo(String name, char key, String dir, String extension)
   {
    this.name = name;
+   this.key = key;
    this.dir = dir;
    this.extension = extension;
   }
@@ -36,13 +38,15 @@ public class Config
  public static final String cachePath;
  public static boolean connectGPS;
  public static int zoom;
- public static ArrayList zoomsAvail = new ArrayList(19);
+ public static ArrayList zoomsAvail = new ArrayList(TilesUtil.ZOOM_MAX);
  public static boolean drawGrid;
  public static boolean drawLatLng;
  public static boolean drawTail;
  public static boolean trackLog;
  public static boolean drawWikimapia;
  public static int trackTailSize;
+ public static boolean useSoftRefs;
+ public static int zipCacheSize;
  public static int imageCacheSize;
  public static int wikikmlCacheSize;
  public static int drawMapSkip;
@@ -50,9 +54,17 @@ public class Config
  public static int curMapIndex;
  public static String curMapDir;
  public static String curMapExt;
- public static boolean curMapYandex = true;
+ public static boolean isMapYandex;
  public static final MapInfo maps[] = {
-  new MapInfo("Google satellite", "SAT", "jpg"), new MapInfo("Google map", "MAP", "png"), new MapInfo("Google landscape", "LAND", "jpg"), new MapInfo("Yandex satellite", "yasat", "jpg"), new MapInfo("Yandex map", "yamap", "jpg"), new MapInfo("Digital Globe", "DGsat", "jpg"), new MapInfo("Virtual Earth satellite", "vesat", "jpg"), new MapInfo("Gurtam", "Gumap", "PNG"), new MapInfo("WikiMap", "WikiMapia", "png")
+  new MapInfo("Google satellite", 'G', "SAT", "jpg"),
+  new MapInfo("Google map", 'M', "MAP", "png"),
+  new MapInfo("Google landscape", 'L', "land", "jpg"),
+  new MapInfo("Yandex satellite", 'Y', "yasat", "jpg"),
+  new MapInfo("Yandex map", 'Q', "yamapng", "png"),
+  new MapInfo("OpenStreetMap", 'O', "osmmap", "png"),
+  new MapInfo("Virtual Earth satellite", 'V', "vesat", "jpg"),
+  new MapInfo("Gurtam", 'U', "gumap", "png"),
+  new MapInfo("WikiMap", 'W', "WikiMap", "png")
  };
  public static final Properties ini = new Properties();
 
@@ -63,9 +75,14 @@ public class Config
  public static void switchMapTo(int mapIndex)
  {
   curMapIndex = mapIndex;
-  curMapYandex = maps[curMapIndex].name.startsWith("Yandex");
+  isMapYandex = maps[curMapIndex].name.startsWith("Yandex");
   curMapDir = maps[curMapIndex].dir;
   curMapExt = maps[curMapIndex].extension;
+ }
+
+ public static int curMapMinZoom()
+ {
+  return maps[curMapIndex].name.startsWith("Gurtam") ? 4 : 1;
  }
 
  public static void load()
@@ -77,7 +94,7 @@ public class Config
   }
   catch (Exception e)
   {
-   e.printStackTrace();
+   System.err.println("Error loading config: " + e.getMessage());
   }
   connectGPS = Boolean.valueOf(ini.getProperty("connectGPS", "true")).booleanValue();
   Main.latlng.lat = Double.valueOf(ini.getProperty("lat", "50.407781")).doubleValue();
@@ -90,12 +107,18 @@ public class Config
   drawTail = Boolean.valueOf(ini.getProperty("drawTail", "true")).booleanValue();
   trackLog = Boolean.valueOf(ini.getProperty("trackLog", "false")).booleanValue();
   drawWikimapia = Boolean.valueOf(ini.getProperty("drawWikimapia", "false")).booleanValue();
-  trackTailSize = Integer.valueOf(ini.getProperty("trackTailSize", "50")).intValue();
+  trackTailSize =
+   Integer.valueOf(ini.getProperty("trackTailSize", "200")).intValue();
+  useSoftRefs =
+   Boolean.valueOf(ini.getProperty("useSoftRefs", "false")).booleanValue();
+  zipCacheSize =
+   Integer.valueOf(ini.getProperty("zipCacheSize", "2")).intValue();
   imageCacheSize = Integer.valueOf(ini.getProperty("imageCacheSize", "32")).intValue();
-  wikikmlCacheSize = Integer.valueOf(ini.getProperty("wikikmlCacheSize", "32")).intValue();
+  wikikmlCacheSize = Integer.valueOf(ini.getProperty("wikikmlCacheSize", "64")).intValue();
   drawMapSkip = Integer.valueOf(ini.getProperty("drawMapSkip", "0")).intValue();
   trackLogSkip = Integer.valueOf(ini.getProperty("trackLogSkip", "0")).intValue();
-  String zoomsStr = ini.getProperty("zoomsAvail", "1,2,3,4,5,6,7,8,10,12,14,17");
+  String zoomsStr =
+   ini.getProperty("zoomsAvail", "3,4,5,6,7,8,10,12,14,16,17,18");
   String zoomsAvailArray[] = StringUtil.split(zoomsStr, ",");
   for (int i = 0; i < zoomsAvailArray.length; i++)
    zoomsAvail.add(Integer.valueOf(zoomsAvailArray[i]));
@@ -106,56 +129,89 @@ public class Config
  {
   try
   {
-   FileWriter out = new FileWriter(configFilename, false);
-   out.write("lat=" + String.valueOf(Main.latlng.lat) + "\r\n");
-   out.write("longitude=" + String.valueOf(Main.latlng.lng) + "\r\n");
-   out.write("zoom=" + String.valueOf(zoom) + "\r\n");
-   out.write("curMap=" + String.valueOf(curMapIndex) + "\r\n");
-   out.write("\r\n# \u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0430\u0442\u044C\u0441\u044F \u043A GPS\r\n");
-   out.write("connectGPS=" + String.valueOf(connectGPS) + "\r\n");
-   out.write("\r\n# \u0420\u0438\u0441\u043E\u0432\u0430\u0442\u044C \u0441\u0435\u0442\u043A\u0443\r\n");
-   out.write("drawGrid=" + String.valueOf(drawGrid) + "\r\n");
-   out.write("\r\n# \u0420\u0438\u0441\u043E\u0432\u0430\u0442\u044C \u043A\u043E\u043E\u0440\u0434\u0438\u043D\u0430\u0442\u044B\r\n");
-   out.write("drawLatLng=" + String.valueOf(drawLatLng) + "\r\n");
-   out.write("\r\n# \u041F\u0438\u0441\u0430\u0442\u044C \u0442\u0440\u0435\u043A\r\n");
-   out.write("trackLog=" + String.valueOf(trackLog) + "\r\n");
-   out.write("\r\n# \u0420\u0438\u0441\u043E\u0432\u0430\u0442\u044C \u0445\u0432\u043E\u0441\u0442\r\n");
-   out.write("drawTail=" + String.valueOf(drawTail) + "\r\n");
-   out.write("\r\n# \u0421\u043A\u043E\u043B\u044C\u043A\u043E \u0442\u043E\u0447\u0435\u043A \u043E\u0442\u043E\u0431\u0440\u0430\u0436\u0430\u0442\u044C \u0432 \u0445\u0432\u043E\u0441\u0442\u0435 \u0442\u0440\u0435\u043A\u0430\r\n");
-   out.write("trackTailSize=" + String.valueOf(trackTailSize) + "\r\n");
-   out.write("\r\n# \u0421\u043A\u043E\u043B\u044C\u043A\u043E \u0442\u0430\u0439\u043B\u043E\u0432 \u0431\u0443\u0434\u0435\u0442 \u043A\u0435\u0448\u0438\u0440\u043E\u0432\u0430\u0442\u044C\u0441\u044F \u0432 \u043F\u0430\u043C\u044F\u0442\u0438\r\n");
-   out.write("imageCacheSize=" + String.valueOf(imageCacheSize) + "\r\n");
-   out.write("\r\n# \u041F\u0440\u043E\u043F\u0443\u0441\u043A\u0430\u0442\u044C \u0442\u043E\u0447\u0435\u043A \u043F\u0440\u0438 \u043E\u0442\u0440\u0438\u0441\u043E\u0432\u043A\u0435 \u043A\u0430\u0440\u0442\u044B\r\n");
-   out.write("drawMapSkip=" + String.valueOf(drawMapSkip) + "\r\n");
-   out.write("\r\n# \u041F\u0440\u043E\u043F\u0443\u0441\u043A\u0430\u0442\u044C \u0442\u043E\u0447\u0435\u043A \u043F\u0440\u0438 \u0432\u0435\u0434\u0435\u043D\u0438\u0438 \u0437\u0430\u043F\u0438\u0441\u0438 \u0442\u0440\u0435\u043A\u0430\r\n");
-   out.write("trackLogSkip=" + String.valueOf(trackLogSkip) + "\r\n");
-   out.write("\r\n# \u0420\u0438\u0441\u043E\u0432\u0430\u0442\u044C Wikimapia \u043F\u043E\u0432\u0435\u0440\u0445\r\n");
-   out.write("drawWikimapia=" + String.valueOf(drawWikimapia) + "\r\n");
-   out.write("\r\n# \u0421\u043A\u043E\u043B\u044C\u043A\u043E \u0440\u0430\u0441\u043F\u0430\u0440\u0441\u0435\u043D\u044B\u0445 wikimapia kml \u0445\u0440\u0430\u043D\u0438\u0442\u044C \u0432 \u043F\u0430\u043C\u044F\u0442\u0438\r\n");
-   out.write("wikikmlCacheSize=" + String.valueOf(wikikmlCacheSize) + "\r\n");
-   out.write("\r\n# \u0414\u043E\u0441\u0442\u0443\u043F\u043D\u044B\u0435 \u0443\u0440\u043E\u0432\u043D\u0438 \u0437\u0443\u043C\u0430\r\n");
-   out.write("zoomsAvail=");
-   boolean first = true;
+   PrintWriter out = new PrintWriter(new FileWriter(configFilename));
+   out.println("# SAS.Planet.J (sasplanetj) configuration file");
+   out.println();
+   out.println("lat=" + Main.latlng.lat);
+   out.println("longitude=" + Main.latlng.lng);
+   out.println("zoom=" + zoom);
+   out.println("curMap=" + curMapIndex);
+   out.println();
+   out.println("# Connect to GPS at start-up");
+   out.println("connectGPS=" + connectGPS);
+   out.println();
+   out.println("# Draw map grid");
+   out.println("drawGrid=" + drawGrid);
+   out.println();
+   out.println("# Draw coordinates");
+   out.println("drawLatLng=" + drawLatLng);
+   out.println();
+   out.println("# Turn on track logging");
+   out.println("trackLog=" + trackLog);
+   out.println();
+   out.println("# Draw track tail");
+   out.println("drawTail=" + drawTail);
+   out.println();
+   out.println("# How many points to draw in track tail");
+   out.println("trackTailSize=" + trackTailSize);
+   out.println();
+   out.println("# Amount of tails to cache in RAM");
+   out.println("imageCacheSize=" + imageCacheSize);
+   out.println();
+   out.println("# How many points to skip on map drawing");
+   out.println("drawMapSkip=" + drawMapSkip);
+   out.println();
+   out.println("# How many points to skip on track recording");
+   out.println("trackLogSkip=" + trackLogSkip);
+   out.println();
+   out.println("# Draw Wikimapia layer");
+   out.println("drawWikimapia=" + drawWikimapia);
+   out.println();
+   out.println("# How many parsed Wikimapia KMLs to cache in RAM");
+   out.println("wikikmlCacheSize=" + wikikmlCacheSize);
+   out.println();
+   out.println("# How many ZIP files to keep open for quick access");
+   out.println("zipCacheSize=" + zipCacheSize);
+   out.println();
+   out.println("# Use SoftReference-based cache");
+   out.println("useSoftRefs=" + useSoftRefs);
+   out.println();
+   StringBuffer sb = new StringBuffer();
    for (Iterator iterator = zoomsAvail.iterator(); iterator.hasNext();)
-   {
-    Integer z = (Integer)iterator.next();
-    out.write((first ? "" : ",") + z.toString());
-    first = false;
-   }
-
-   out.write("\r\n");
-   out.flush();
+    sb.append("," + ((Integer)iterator.next()).toString());
+   out.println("# Comma-separated list of available zoom levels");
+   out.println("zoomsAvail=" + (sb.length() > 0 ?
+    sb.toString().substring(1) : ""));
+   out.close();
   }
   catch (IOException e)
   {
-   e.printStackTrace();
+   System.err.println("Error saving config.txt: " + e.getMessage());
   }
+ }
+
+ private static String getProgBaseFolder()
+ {
+  String classPath = System.getProperty("java.class.path");
+  int pathSepIndex = classPath.indexOf(File.pathSeparatorChar);
+  if (pathSepIndex >= 0)
+   classPath = classPath.substring(0, pathSepIndex);
+  String baseDir = classPath;
+  File f = new File(baseDir);
+  String name = f.getName();
+  if ((name.equals("bin") || name.equals("BIN") ||
+      name.endsWith(".jar") || name.endsWith(".JAR") ||
+      name.endsWith(".zip") || name.endsWith(".ZIP")) &&
+      (baseDir = f.getParent()) == null)
+   baseDir = ".";
+  return baseDir;
  }
 
  static 
  {
-  curDir = System.getProperty("user.dir");
-  configFilename = StringUtil.normPath(curDir + "/config.txt");
-  cachePath = StringUtil.normPath(curDir + "/cache");
+  /* curDir = System.getProperty("user.dir"); */
+  curDir = getProgBaseFolder();
+  configFilename = StringUtil.normPath(curDir + File.separator + "config.txt");
+  cachePath = StringUtil.normPath(curDir + File.separator + "cache");
  }
 }

@@ -6,6 +6,7 @@
 package sasplanetj;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.text.NumberFormat;
 import sasplanetj.gps.LatLng;
 
@@ -34,18 +35,27 @@ public class GoTo extends Dialog
   add(lng);
   add(new Button("OK"));
   add(new Button("Cancel"));
+  addWindowListener(
+   new WindowAdapter()
+   {
+    public void windowClosing(WindowEvent e)
+    {
+     dispose();
+    }
+   });
  }
 
  public boolean action(Event e, Object o)
  {
-  if ((e.target instanceof Button) && ((String)o).equals("OK"))
-  {
-   LatLng latlng = new LatLng();
-   latlng.lat = Double.valueOf(lat.getText()).doubleValue();
-   latlng.lng = Double.valueOf(lng.getText()).doubleValue();
-   App.Goto(latlng);
-  }
+  if ((e.target instanceof Button) && ((String)o).equals("OK") ||
+      e.target instanceof TextField)
+   App.Goto(new LatLng(decodeAsDouble(lat), decodeAsDouble(lng)));
   dispose();
   return true;
+ }
+
+ private static double decodeAsDouble(TextField f)
+ {
+  return Double.valueOf(f.getText().replace(',', '.')).doubleValue();
  }
 }

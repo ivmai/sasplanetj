@@ -6,6 +6,7 @@
 package sasplanetj.ui;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import sasplanetj.App;
@@ -37,22 +38,32 @@ public class NewWaypointDialog extends Dialog
   lng.setText(LatLng.latlngFormat7.format(latlng.lng));
   add(lng);
   add(new Label("Waypoint name:"));
-  name.setText("wp" + (Waypoints.points != null ? Waypoints.points.size() + 1 : "1"));
+  name.setText("wp" + (Waypoints.points != null ? "" + (Waypoints.points.size() + 1) : "1"));
   add(name);
   add(new Button("OK"));
   add(new Button("Cancel"));
+  addWindowListener(
+   new WindowAdapter()
+   {
+    public void windowClosing(WindowEvent e)
+    {
+     dispose();
+    }
+   });
  }
 
  public boolean action(Event e, Object o)
  {
-  if ((e.target instanceof Button) && ((String)o).equals("OK"))
-  {
-   LatLng latlng = new LatLng();
-   latlng.lat = Double.valueOf(lat.getText()).doubleValue();
-   latlng.lng = Double.valueOf(lng.getText()).doubleValue();
-   App.CreateWaypoint(latlng, name.getText());
-  }
+  if ((e.target instanceof Button) && ((String)o).equals("OK") ||
+      e.target instanceof TextField)
+   App.CreateWaypoint(new LatLng(decodeAsDouble(lat), decodeAsDouble(lng)),
+    name.getText());
   dispose();
   return true;
+ }
+
+ private static double decodeAsDouble(TextField f)
+ {
+  return Double.valueOf(f.getText().replace(',', '.')).doubleValue();
  }
 }

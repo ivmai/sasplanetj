@@ -5,7 +5,6 @@
 
 package sasplanetj.util;
 
-import java.awt.CheckboxMenuItem;
 import java.io.*;
 import java.text.NumberFormat;
 import sasplanetj.App;
@@ -18,15 +17,19 @@ public class TrackLogger
  implements GPSListener
 {
 
- public static final TrackLogger self = new TrackLogger();
- public static final String logFilename = "track.plt";
- public static final File f = new File("track.plt");
- public static FileWriter out;
- public static int breakTrack = 1;
- private static int skipCounter = 0;
+ private final File file = new File(Config.curDir, "track.plt");
+
+ private FileWriter out;
+ private int breakTrack = 1;
+ private int skipCounter;
 
  public TrackLogger()
  {
+ }
+
+ public boolean deleteFile()
+ {
+  return file.delete();
  }
 
  public void gpsEvent(LatLng latlng)
@@ -47,20 +50,20 @@ public class TrackLogger
   }
   catch (IOException e)
   {
-   System.out.println("TrackLogger: error writing to track.plt");
+   System.err.println("TrackLogger: error writing to " + file.getPath());
   }
  }
 
- public static void loggerStart()
+ public void loggerStart()
  {
   if (!Config.connectGPS)
    return;
   if (out == null)
    try
    {
-    if (!f.exists())
+    if (!file.exists())
     {
-     out = new FileWriter("track.plt", true);
+     out = new FileWriter(file);
      out.write("OziExplorer Track Point File Version 2.0\r\n");
      out.write("WGS 84\r\n");
      out.write("Altitude is in Feet\r\n");
@@ -70,35 +73,36 @@ public class TrackLogger
      out.flush();
     } else
     {
-     out = new FileWriter("track.plt", true);
+     out = new FileWriter(file, true);
     }
     breakTrack = 1;
-    App.serialReader.addGPSListener(self);
-    App.cmiTrackLog.setState(Config.trackLog);
+    if (App.serialReader != null)
+     App.serialReader.addGPSListener(this);
+    App.cmiTrackLogSetState();
    }
    catch (IOException e)
    {
-    System.out.println("TrackLogger: error opening track.plt");
+    System.err.println("TrackLogger: error opening " + file.getPath());
    }
  }
 
- public static void loggerStop()
+ public void loggerStop()
  {
   if (out != null)
   {
-   App.serialReader.removeGPSListener(self);
+   if (App.serialReader != null)
+    App.serialReader.removeGPSListener(this);
    try
    {
-    out.flush();
     out.close();
    }
    catch (IOException e)
    {
-    System.out.println("TrackLogger: error flushing track.plt");
+    System.err.println("TrackLogger: error flushing " + file.getPath());
    }
    out = null;
   }
-  App.cmiTrackLog.setState(Config.trackLog);
+  App.cmiTrackLogSetState();
  }
 
 }

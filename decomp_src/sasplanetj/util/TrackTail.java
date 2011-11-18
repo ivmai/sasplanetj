@@ -50,7 +50,8 @@ public class TrackTail extends LinkedList
   for (Iterator it = iterator(); it.hasNext();)
   {
    XY latlng = (XY)it.next();
-   XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.x, latlng.y, Config.zoom);
+   XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.x, latlng.y,
+                     Config.zoom, Config.isMapYandex);
    inmatrix.subtract(matrix[0]);
    inmatrix.add(matrix[1]);
    x[i] = inmatrix.x;

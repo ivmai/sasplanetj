@@ -6,7 +6,6 @@
 package sasplanetj.util;
 
 import java.io.*;
-import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -15,6 +14,8 @@ import java.util.zip.ZipFile;
 
 public class Zip
 {
+
+ public static Cache zipsCache;
 
  public Zip()
  {
@@ -26,27 +27,45 @@ public class Zip
   ZipEntry ze;
   try
   {
-   zf = new ZipFile(zipname);
+   zf = (ZipFile)zipsCache.get(zipname);
+   if (zf == null)
+   {
+    Wikimapia.StopWatch watch = new Wikimapia.StopWatch();
+    watch.start();
+    Runtime runtime = Runtime.getRuntime();
+    long memSizeInUse = runtime.totalMemory() - runtime.freeMemory();
+    zf = new ZipFile(zipname);
+    long entriesCnt = zf.size();
+    memSizeInUse =
+     runtime.totalMemory() - runtime.freeMemory() - memSizeInUse;
+    System.out.println("Zip: opened (" + (new File(zipname).length() >> 10) +
+     " KiB, " + entriesCnt + " files) in " + watch.currentMillis() + "ms" +
+     (memSizeInUse >= 0x400 ? " (" + (memSizeInUse >> 10) +
+     " KiB of RAM used)" : ""));
+    zipsCache.put(zipname, zf, Config.useSoftRefs);
+   }
    ze = zf.getEntry(fileinzip);
    if (ze == null)
    {
-    System.out.println("File not found in ZIP " + fileinzip);
+    /* System.out.println("Zip entry not found in " + zipname + ": " +
+     fileinzip); */
     return null;
    }
    DataInputStream zis = new DataInputStream(zf.getInputStream(ze));
    byte res[] = new byte[(int)ze.getSize()];
    zis.readFully(res);
+   zis.close();
    return res;
   }
   catch (IOException e)
   {
-   System.out.println("Zip: IOException while accessing " + zipname + ": " + fileinzip);
-   e.printStackTrace();
+   System.err.println("Zip: exception while accessing " + zipname + ": " +
+    fileinzip + ": " + e);
    return null;
   }
  }
 
- public static void main(String args[])
+ /* public static void main(String args[])
   throws Exception
  {
   test();
@@ -69,5 +88,5 @@ public class Zip
   System.out.println("First symbols=" + s.substring(1, 50));
   end = new Date();
   System.out.println("Decoded  in " + (end.getTime() - start.getTime()) + "ms");
- }
+ } */
 }

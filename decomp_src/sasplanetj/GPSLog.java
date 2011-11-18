@@ -19,7 +19,8 @@ public class GPSLog extends TextArea
 
  public GPSLog()
  {
-  App.serialReader.addGPSListener(this);
+  if (App.serialReader != null)
+   App.serialReader.addGPSListener(this);
  }
 
  public void gpsEvent(LatLng gi)
@@ -29,6 +30,7 @@ public class GPSLog extends TextArea
 
  public void removeListener()
  {
-  App.serialReader.removeGPSListener(this);
+  if (App.serialReader != null)
+   App.serialReader.removeGPSListener(this);
  }
 }

@@ -8,6 +8,7 @@ package sasplanetj;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.PrintStream;
+import java.lang.reflect.Method;
 import java.util.*;
 import sasplanetj.gps.GPSListener;
 import sasplanetj.gps.LatLng;
@@ -26,6 +27,7 @@ import sasplanetj.util.Tracks;
 import sasplanetj.util.Waypoints;
 import sasplanetj.util.Wikimapia;
 import sasplanetj.util.XYint;
+import sasplanetj.util.Zip;
 
 // Referenced classes of package sasplanetj:
 //   App
@@ -34,6 +36,8 @@ public class Main extends Panel
  implements GPSListener, MouseListener, MouseMotionListener, KeyListener, ActionListener
 {
 
+ private static final boolean debugMouseEvents = false;
+ 
  public static LatLng latlng = new LatLng();
  private static LatLng clickLatlng;
  public static TrackTail trackTail;
@@ -44,12 +48,31 @@ public class Main extends Panel
  public static final ArrayList popupWiki = new ArrayList();
  Graphics dbf;
  Image offscreen;
- private static int skipCounter = 0;
- private static final XYint mouseDragPrevXY = new XYint();
+ private int skipCounter;
+ private final XYint mouseDragPrevXY = new XYint();
+ private boolean isMousePressed;
+ private static boolean ignoreDblClick;
+ private static final Method mouseGetButtonMethod;
+ private boolean repaintOnLowResources;
+
+ static
+ {
+  Method m = null;
+  try
+  {
+   m = MouseEvent.class.getMethod("getButton", new Class[0]);
+  }
+  catch (Exception e)
+  {
+   System.out.println("No MouseEvent.getButton()");
+  }
+  mouseGetButtonMethod = m;
+ }
 
  public Main()
  {
-  popup.addActionListener(this);
+  if (!App.useAwtWorkaround())
+   popup.addActionListener(this);
   add(popup);
   offsetBtn.setVisible(false);
   trackTail = new TrackTail(Config.trackTailSize);
@@ -79,7 +102,12 @@ public class Main extends Panel
     if (Main.offsetBtn.isVisible())
     {
      remove(Main.offsetBtn);
-     add(Main.offsetBtn, new XYConstraints(getSize().width - Main.offsetBtn.getSize().width - 5, getSize().height - Main.offsetBtn.getSize().height - 5, Main.offsetBtn.getSize().width, Main.offsetBtn.getSize().height));
+     Dimension offsetBtnSize = offsetBtn.getSize();
+     add(Main.offsetBtn,
+      new XYConstraints(getSize().width - offsetBtnSize.width - 5,
+      getSize().height - offsetBtnSize.height - 5, offsetBtnSize.width,
+      offsetBtnSize.height));
+     validate();
     }
    }
 
@@ -97,6 +125,8 @@ public class Main extends Panel
    return;
   } else
   {
+   if (offscreen != null)
+    offscreen.flush();
    offscreen = createImage(getSize().width, getSize().height);
    dbf = offscreen.getGraphics();
    return;
@@ -117,18 +147,73 @@ public class Main extends Panel
  {
   if (offscreen == null)
   {
-   System.out.println("offscreen==null");
+   System.err.println("offscreen==null");
    return;
   }
+  try
+  {
+   paintInner(g);
+  }
+  catch (Error e)
+  {
+   System.err.println("paint error: " + e);
+   if (repaintOnLowResources || !isLowResourceExc(e))
+   {
+    Config.save();
+    Runtime.getRuntime().halt(1);
+   }
+   repaintOnLowResources = true;
+   clearCache();
+   getToolkit().beep();
+   paint(g);
+   System.out.println("Repainted after cache clearing");
+   printHeapStat();
+   repaintOnLowResources = false;
+  }
+ }
+
+ private static boolean isLowResourceExc(Error e)
+ {
+  String errMsg;
+  return e instanceof OutOfMemoryError ||
+          (e.getClass().getName().endsWith(".SWTError") &&
+          (errMsg = e.getMessage()) != null && errMsg.startsWith("No more"));
+ }
+
+ private static void clearCache()
+ {
+  Zip.zipsCache.clearAll();
+  TilesUtil.tilesCache.clearAll();
+  TilesUtil.zipExistanceCache.clearAll();
+  Wikimapia.kmlCache.clearAll();
+  System.gc();
+  Runtime.getRuntime().runFinalization();
+  System.gc();
+ }
+
+ private void paintInner(Graphics g)
+ {
   XYint center = new XYint(offscreen.getWidth(null) / 2, offscreen.getHeight(null) / 2);
-  XYint displayXY = TilesUtil.coordinateToDisplay(latlng.lat, latlng.lng, Config.zoom);
+  XYint displayXY = TilesUtil.coordinateToDisplay(latlng.lat, latlng.lng,
+                     Config.zoom, Config.isMapYandex);
   if (Config.drawTail && latlng.lat != 0.0D && latlng.lng != 0.0D)
    trackTail.addPoint(new XY(latlng.lat, latlng.lng));
   displayXY.subtract(viewOffset);
+  XYint centerTileTopLeft =
+   new XYint(center.x - (displayXY.x & ((1 << TilesUtil.LOG2_TILESIZE) - 1)),
+   center.y - (displayXY.y & ((1 << TilesUtil.LOG2_TILESIZE) - 1)));
   XYint tileXY = TilesUtil.getTileByDisplayCoord(displayXY);
-  XYint intile = new XYint(displayXY.x % 256, displayXY.y % 256);
-  XYint centerTileTopLeft = new XYint(center.x - intile.x, center.y - intile.y);
-  XYint matrix[] = TilesUtil.drawTilesArea(offscreen.getWidth(null), offscreen.getHeight(null), centerTileTopLeft, tileXY, dbf);
+  XYint tileWikiXY = tileXY;
+  if (Config.isMapYandex)
+  {
+   XYint displayWikiXY = TilesUtil.coordinateToDisplay(latlng.lat, latlng.lng,
+                          Config.zoom, false);
+   displayWikiXY.subtract(viewOffset);
+   tileWikiXY = TilesUtil.getTileByDisplayCoord(displayWikiXY);
+  }
+  XYint matrix[] = TilesUtil.drawTilesArea(offscreen.getWidth(null),
+                    offscreen.getHeight(null), centerTileTopLeft, tileXY,
+                    tileWikiXY, dbf);
   if (Config.drawLatLng)
   {
    dbf.setColor(ColorsAndFonts.clLatLng);
@@ -169,67 +254,128 @@ public class Main extends Panel
 
  public void registerListener()
  {
-  App.serialReader.addGPSListener(this);
+  if (App.serialReader != null)
+   App.serialReader.addGPSListener(this);
  }
 
  public void removeListener()
  {
-  App.serialReader.removeGPSListener(this);
+  if (App.serialReader != null)
+   App.serialReader.removeGPSListener(this);
  }
 
  public void mouseClicked(MouseEvent mouseevent)
  {
+  if (debugMouseEvents)
+   System.out.println("mouseClicked: " + mouseevent);
  }
 
  private boolean doPopup(MouseEvent e)
-  throws HeadlessException
  {
   boolean isPopup;
   if (System.getProperty("java.vm.name").startsWith("CrE-ME"))
    isPopup = true;
   else
-   isPopup = e.isPopupTrigger() || e.getButton() == 2 || e.getButton() == 3;
-  if (isPopup)
   {
-   popup.removeAll();
-   XYint displayXY = TilesUtil.coordinateToDisplay(latlng.lat, latlng.lng, Config.zoom);
-   displayXY.subtract(viewOffset);
-   XYint clickOffset = new XYint(e.getPoint().x - getSize().width / 2, e.getPoint().y - getSize().height / 2);
-   displayXY.add(clickOffset);
-   clickLatlng = TilesUtil.displayToCoordinate(displayXY, Config.zoom);
-   MenuItem mi = new MenuItem(clickLatlng.toShortString());
-   popup.add(mi);
-   mi = new MenuItem("Go here");
-   mi.setActionCommand("GO_HERE");
-   popup.add(mi);
-   mi = new MenuItem("Create waypoint");
-   mi.setActionCommand("CREATE_WAYPOINT");
-   popup.add(mi);
-   if (Config.drawWikimapia)
+   if (e.isPopupTrigger() || e.getModifiers() == InputEvent.META_MASK)
    {
-    popupWiki.clear();
-    int i = 0;
-    for (Iterator iterator = Wikimapia.drawnKmls.iterator(); iterator.hasNext();)
-    {
-     sasplanetj.util.Wikimapia.KML kml = (sasplanetj.util.Wikimapia.KML)iterator.next();
-     if (kml.drawnPoly.contains(e.getPoint()))
-     {
-      mi = new MenuItem(kml.strip());
-      mi.setActionCommand("POPUP_WIKI" + i);
-      popupWiki.add(mi);
-      i++;
-     }
-    }
-
-    if (popupWiki.size() > 0)
-     popup.addSeparator();
-    for (i = 0; i < popupWiki.size(); i++)
-     popup.add((MenuItem)popupWiki.get(i));
-
+    isPopup = true;
+    ignoreDblClick = true;
    }
-   popup.show(this, e.getX(), e.getY());
+   else
+   {
+    isPopup = false;
+    if (mouseGetButtonMethod != null)
+    {
+     try
+     {
+      int button =
+       ((Integer)mouseGetButtonMethod.invoke(e, new Object[0])).intValue();
+      if (button == 2 || button == 3)
+      {
+       isPopup = true;
+       ignoreDblClick = true;
+      }
+     }
+     catch (Exception ee) {}
+    }
+    if (!ignoreDblClick && e.getModifiers() == InputEvent.BUTTON1_MASK &&
+        e.getClickCount() == 2)
+     isPopup = true;
+   }
+  }
+  if (isPopup && !App.useAwtWorkaround())
+  {
+   try
+   {
+    doPopupInner(e);
+   }
+   catch (Error e2)
+   {
+    System.err.println("doPopup error: " + e2);
+    if (!repaintOnLowResources && isLowResourceExc(e2))
+     clearCache();
+    getToolkit().beep();
+   }
   }
   return isPopup;
+ }
+
+ private void doPopupInner(MouseEvent e)
+ {
+  popup.removeAll();
+  setClickLatlng(e);
+  MenuItem mi = new MenuItem(clickLatlng.toShortString());
+  popup.add(mi);
+  mi = new MenuItem("Go here");
+  mi.setActionCommand("GO_HERE");
+  popup.add(mi);
+  mi = new MenuItem("Create waypoint");
+  mi.setActionCommand("CREATE_WAYPOINT");
+  popup.add(mi);
+  int px = e.getX();
+  if (Config.drawWikimapia)
+  {
+   Point point = new Point(px + ((TilesUtil.lastWikiEndX - px - 1) &
+                  ~((1 << (Config.zoom + TilesUtil.LOG2_TILESIZE - 1)) - 1)),
+                  e.getY());
+   popupWiki.clear();
+   Hashtable wikiStrSet = new Hashtable();
+   int i = 0;
+   for (Iterator iterator = Wikimapia.drawnKmlsIterator(); iterator.hasNext();)
+   {
+    Wikimapia.KML kml = (Wikimapia.KML)iterator.next();
+    if (kml.drawnPoly.contains(point))
+    {
+     String name = kml.strip();
+     if (wikiStrSet.put(name, "") == null)
+     {
+      mi = new MenuItem(name);
+      mi.setActionCommand("POPUP_WIKI" + i);
+      popupWiki.add(mi);
+     }
+     i++;
+    }
+   }
+   if (popupWiki.size() > 0)
+    popup.addSeparator();
+   for (i = 0; i < popupWiki.size(); i++)
+    popup.add((MenuItem)popupWiki.get(i));
+
+  }
+  popup.show(this, px + 5, e.getY());
+ }
+
+ private void setClickLatlng(MouseEvent e)
+ {
+  XYint displayXY = TilesUtil.coordinateToDisplay(latlng.lat, latlng.lng,
+                     Config.zoom, Config.isMapYandex);
+  displayXY.subtract(viewOffset);
+  XYint clickOffset = new XYint(e.getPoint().x - getSize().width / 2,
+                       e.getPoint().y - getSize().height / 2);
+  displayXY.add(clickOffset);
+  clickLatlng = TilesUtil.displayToCoordinate(displayXY, Config.zoom,
+                 Config.isMapYandex);
  }
 
  public void mouseEntered(MouseEvent mouseevent)
@@ -242,15 +388,32 @@ public class Main extends Panel
 
  public void mousePressed(MouseEvent e)
  {
-  doPopup(e);
+  if (debugMouseEvents)
+   System.out.println("mousePressed: " + e);
+  isMousePressed = false;
+  if (!doPopup(e) && (e.getModifiers() & (InputEvent.BUTTON1_MASK |
+      (1 << 10)/*InputEvent.BUTTON1_DOWN_MASK*/)) != 0)
+   isMousePressed = true;
   mouseDragPrevXY.setLocation(e.getX(), e.getY());
  }
 
  public void mouseReleased(MouseEvent mouseevent)
  {
+  if (debugMouseEvents)
+   System.out.println("mouseReleased: " + mouseevent);
+  isMousePressed = false;
  }
 
  public void mouseDragged(MouseEvent e)
+ {
+  if (debugMouseEvents)
+   System.out.println("mouseDragged: " + e);
+  if (!isMousePressed && mouseGetButtonMethod == null)
+   return;
+  handleDrag(e);
+ }
+
+ private void handleDrag(MouseEvent e)
  {
   XYint deltadrag = new XYint(e.getX() - mouseDragPrevXY.x, e.getY() - mouseDragPrevXY.y);
   viewOffset.add(deltadrag);
@@ -258,8 +421,14 @@ public class Main extends Panel
   mouseDragPrevXY.setLocation(e.getX(), e.getY());
  }
 
- public void mouseMoved(MouseEvent mouseevent)
+ public void mouseMoved(MouseEvent e)
  {
+  if (isMousePressed)
+  {
+   if (debugMouseEvents)
+    System.out.println("mouseMoved (pressed state): " + e);
+   handleDrag(e);
+  }
  }
 
  public void keyPressed(KeyEvent keyevent)
@@ -268,45 +437,95 @@ public class Main extends Panel
 
  public void keyReleased(KeyEvent e)
  {
-  switch (e.getKeyCode())
+  int keyCode = e.getKeyCode();
+  if ((e.getModifiers() & KeyEvent.SHIFT_MASK) != 0)
   {
-  case 113: // 'q'
+   switch (keyCode)
+   {
+   case KeyEvent.VK_UP:
+    keyCode = KeyEvent.VK_PAGE_UP;
+    break;
+   case KeyEvent.VK_DOWN:
+    keyCode = KeyEvent.VK_PAGE_DOWN;
+    break;
+   case KeyEvent.VK_RIGHT:
+    keyCode = KeyEvent.VK_1;
+    break;
+   case KeyEvent.VK_LEFT:
+    keyCode = KeyEvent.VK_2;
+    break;
+   }
+  }
+  switch (keyCode)
+  {
+  case KeyEvent.VK_F2:
+  case KeyEvent.VK_PAGE_DOWN:
    App.zoomOut();
    break;
 
-  case 112: // 'p'
+  case KeyEvent.VK_F1:
+  case KeyEvent.VK_PAGE_UP:
    App.zoomIn();
    break;
 
-  case 38: // '&'
+  case KeyEvent.VK_UP:
    viewOffset.y += viewOffsetStep;
    viewOffsetChanged();
    break;
 
-  case 39: // '\''
+  case KeyEvent.VK_RIGHT:
    viewOffset.x -= viewOffsetStep;
    viewOffsetChanged();
    break;
 
-  case 40: // '('
+  case KeyEvent.VK_DOWN:
    viewOffset.y -= viewOffsetStep;
    viewOffsetChanged();
    break;
 
-  case 37: // '%'
+  case KeyEvent.VK_LEFT:
    viewOffset.x += viewOffsetStep;
    viewOffsetChanged();
    break;
 
-  case 10: // '\n'
+  case KeyEvent.VK_ENTER:
    viewOffset0();
+   System.gc();
+   printHeapStat();
    break;
+
+  case KeyEvent.VK_1:
+   switchMapToAndRepaint(Config.curMapIndex + 1);
+   break;
+  
+  case KeyEvent.VK_2:
+   switchMapToAndRepaint(Config.curMapIndex - 1);
+   break;
+  
   }
+ }
+
+ private static void printHeapStat()
+ {
+  long totalMemSize = Runtime.getRuntime().totalMemory();
+  System.out.println("Memory heap used/total: " +
+   (int)((totalMemSize - Runtime.getRuntime().freeMemory()) >> 10) + "/" +
+   (int)(totalMemSize >> 10) + " KiB");
+ }
+
+ private void switchMapToAndRepaint(int mapIndex)
+ {
+  App.cmiCurMapSetState(false);
+  Config.switchMapTo(mapIndex < 0 ? Config.maps.length - 1 :
+   mapIndex < Config.maps.length ? mapIndex : 0);
+  App.cmiCurMapSetState(true);
+  repaint();
  }
 
  public void viewOffsetChanged()
  {
-  if (viewOffset.x != 0 || viewOffset.y != 0)
+  viewOffset.x = TilesUtil.adjustViewOfsX(viewOffset.x, Config.zoom);
+  if (offsetBtn.isImageLoaded())
   {
    boolean found = false;
    for (int i = 0; i < getComponentCount(); i++)
@@ -316,27 +535,24 @@ public class Main extends Panel
     found = true;
     break;
    }
-
-   if (!found)
+   if (viewOffset.x != 0 || viewOffset.y != 0)
    {
-    add(offsetBtn, new XYConstraints(getSize().width - offsetBtn.getSize().width - 5, getSize().height - offsetBtn.getSize().height - 5, offsetBtn.getSize().width, offsetBtn.getSize().height));
-    offsetBtn.setVisible(true);
-   }
-  } else
-  {
-   boolean found = false;
-   for (int i = 0; i < getComponentCount(); i++)
+    if (!found)
+    {
+     Dimension offsetBtnSize = offsetBtn.getSize();
+     add(offsetBtn, new XYConstraints(
+      getSize().width - offsetBtnSize.width - 5,
+      getSize().height - offsetBtnSize.height - 5,
+      offsetBtnSize.width, offsetBtnSize.height));
+     offsetBtn.setVisible(true);
+    }
+   } else
    {
-    if (getComponent(i) != offsetBtn)
-     continue;
-    found = true;
-    break;
-   }
-
-   if (found)
-   {
-    remove(offsetBtn);
-    offsetBtn.setVisible(false);
+    if (found)
+    {
+     remove(offsetBtn);
+     offsetBtn.setVisible(false);
+    }
    }
   }
   validate();
@@ -352,7 +568,17 @@ public class Main extends Panel
 
  public void keyTyped(KeyEvent e)
  {
-  System.out.println("keyTyped=" + e);
+  char ch = e.getKeyChar();
+  if (ch != '\n' && ch != '1' && ch != '2')
+   System.out.println("keyTyped=" + e);
+ }
+
+ private void processGoHere()
+ {
+  clickLatlng.copyTo(latlng);
+  trackTail.clear();
+  viewOffset0();
+  repaint();
  }
 
  public void actionPerformed(ActionEvent e)
@@ -365,10 +591,7 @@ public class Main extends Panel
   } else
   if (command.equals("GO_HERE"))
   {
-   clickLatlng.copyTo(latlng);
-   trackTail.clear();
-   App.main.viewOffset0();
-   App.main.repaint();
+   processGoHere();
   } else
   if (command.equals("CREATE_WAYPOINT"))
    (new NewWaypointDialog(App.getSelf(), clickLatlng)).setVisible(true);

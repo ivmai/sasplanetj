@@ -29,12 +29,13 @@ public class Tracks
  public static void load(String filename)
  {
   System.out.println("Tracks: loading " + filename);
-  Date start = new Date();
   if (tracks == null)
    tracks = new ArrayList();
   try
   {
    BufferedReader br = new BufferedReader(new FileReader(filename));
+   Wikimapia.StopWatch watch = new Wikimapia.StopWatch();
+   watch.start();
    int lineCount = 0;
    ArrayList track = null;
    String s;
@@ -71,14 +72,15 @@ public class Tracks
     tracks = null;
    } else
    {
-    System.out.println("Tracks: now we have " + tracks.size() + " tracks loaded in " + ((new Date()).getTime() - start.getTime()) + "ms");
+    System.out.println("Tracks: now we have " + tracks.size() +
+     " tracks loaded in " + watch.currentMillis() + "ms");
    }
    App.main.repaint();
   }
   catch (Exception e)
   {
    e.printStackTrace();
-   System.out.println("Tracks: error reading " + filename);
+   System.err.println("Tracks: error reading " + filename);
   }
  }
 
@@ -112,7 +114,8 @@ public class Tracks
    for (int i = 0; i < track.length; i++)
    {
     XY latlng = track[i];
-    XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.x, latlng.y, Config.zoom);
+    XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.x, latlng.y,
+                      Config.zoom, Config.isMapYandex);
     inmatrix.subtract(matrix[0]);
     inmatrix.add(matrix[1]);
     x[i] = inmatrix.x;
