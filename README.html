@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html;charset=windows-1251" http-equiv="Content-Type"><title>SAS.Планета J</title>
+
+<meta content="Fern" name="author">
+</head><body>
+<h1>SAS.Планета J</h1>
+v0.0.1<br>
+<a href="http://fern.kiev.ua/sasplanetj">http://fern.kiev.ua/sasplanetj</a><br>
+<a href="http://sasgis.ru/forum/viewforum.php?f=14">Форум</a><br>
+<br>
+<br>
+<h3>Установка</h3>
+<ul>
+<li><a href="http://www2s.biglobe.ne.jp/%7Edat/java/project/jvm/download_en.html">Отсюда</a> качаем Mysaifu JVM и Java Communications API для него, на сегодня
+версии 0.4.5 и 0.0.3.</li>
+<li><a href="http://sourceforge.jp/projects/mysaifujvm/releases/37970">jvm.0.4.5-bin.zip</a>
+распаковываем и копируем CAB на КПК, там его запускаем и устанавливаем,
+можно на карточку.</li>
+<li><a href="http://sourceforge.jp/projects/mysaifujvm/releases/34835">javaxcomm-0.0.3-bin.zip</a>
+распаковываем в устаночную директорию, обычно это "\Карта
+памяти\Program Files\Mysaifu JVM"</li>
+</ul>
+
+<ul>
+<li>Распаковываем sasplanetj.zip и переписыаем sasplanetj на
+КПК, например в&nbsp; "\Карта памяти\sasplanetj"</li>
+<li>Создаём там же папку "cache", переписываем
+туда&nbsp;нужный кеш с компьюра. Как лучше всего это сделать -
+смотрите ниже на сайте.</li>
+</ul>
+
+<ul>
+<li>Теперь из "Программ" запускаем Mysaifu и указваем параметры
+для запуска sasplanetj</li>
+</ul>
+<div style="margin-left: 40px;">
+<ul>
+<li>В&nbsp;CLASSPATH на надо указать путь к папке "\Карта
+памяти\sasplanetj\bin"
+и к "\Карта памяти\Program Files\Mysaifu JVM\jre\lib\javaxcomm.jar"
+<br>
+т.е. CLASSPATH=\Карта памяти\sasplanetj\bin;\Карта памяти\Program
+Files\Mysaifu JVM\jre\lib\javaxcomm.jar</li>
+<li>Current directory: текущая директория, где лежит кеш,
+конфиги, программа и т.д. "\Карта памяти\sasplanetj"</li>
+<li>Type: Class</li>
+<li>Name: sasplanetj.App (какой класс запускать)</li>
+<li>Command line arguments: <br>
+</li>
+</ul>
+</div>
+<ul style="margin-left: 40px;">
+<ul>
+<li>без параметров запустится симуляция из nmealog.txt (в
+котором&nbsp;должны быть&nbsp;NMEA сентенции)</li>
+</ul>
+<ul>
+<li>list - выведет список доступных портов</li>
+</ul>
+<ul>
+<li>&lt;port&gt; [&lt;baudrate&gt;] - порт на
+котором находится GPS приёмник, например "COM4:", скорость
+(необязательно)</li>
+</ul>
+</ul>
+<div style="margin-left: 40px;">
+<ul>
+<li>В&nbsp;опциях можно указать больше памяти доступной для
+Java, по-умолчанию всего 2Мб.</li>
+<li>Ставим галочку "Show console", чтобы видеть консоль с
+отладочной информацией</li>
+</ul>
+<br>
+<br>
+Нажимаем "Execute"<br>
+</div>
+<br>
+</body></html>

@@ -3,6 +3,7 @@
 # Binary files
 *.class
 *.jar
+/.build
 /bin/
 /cache
 /sasplanetj/bin/
@@ -24,3 +25,14 @@
 # Snapshots and misc test logs
 /captures/
 /zip*test/
+
+# Native binary files
+*.exe
+*.o
+*.obj
+*.so
+
+# Auto-generated files and 3rd-party library sources
+/jcgo_Out/
+/jclPPro10/
+/swt*_src/
