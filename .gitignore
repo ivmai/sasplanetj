@@ -9,6 +9,9 @@
 /sasplanetj/bin/
 /sasplanetj/cache
 
+# Auto-generated files
+/config.txt
+
 # Distributive files
 *.tar.gz
 *.zip
