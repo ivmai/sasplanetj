@@ -4,8 +4,6 @@ import java.io.*;
 import java.util.Date;
 import java.util.zip.*;
 
-//import sasplanetj.Native;
-
 public class Zip {
 
 	public static byte[] getZipFile(String  zipname, String fileinzip){
