@@ -33,6 +33,8 @@ public class Config{
 	public static int trackTailSize;
 	public static int imageCacheSize;
 	public static int wikikmlCacheSize;
+	public static int zipCacheSize;
+	public static boolean useSoftRefs;
 
 	public static int drawMapSkip;
 	public static int trackLogSkip;
@@ -97,6 +99,8 @@ public class Config{
 	    trackLogSkip = Integer.valueOf(ini.getProperty("trackLogSkip", "0")).intValue();
 	    drawWikimapia = Boolean.valueOf(ini.getProperty("drawWikimapia", "false")).booleanValue();
 	    wikikmlCacheSize = Integer.valueOf(ini.getProperty("wikikmlCacheSize", "64")).intValue();
+	    zipCacheSize = Integer.valueOf(ini.getProperty("zipCacheSize", "2")).intValue();
+	    useSoftRefs = Boolean.valueOf(ini.getProperty("useSoftRefs", "true")).booleanValue();
 	    usermapdir = ini.getProperty("usermapdir", "usermapdir");
 	    maps[maps.length-1].dir = usermapdir;
 
@@ -112,6 +116,7 @@ public class Config{
 	public static void save(){
 		try {
 			FileWriter out = new FileWriter(configFilename, false);
+   			out.write("# SAS.Planet.J (sasplanetj) configuration file\r\n\r\n");
 			out.write("lat="+String.valueOf(Main.latlng.lat)+"\r\n");
 			out.write("longitude="+String.valueOf(Main.latlng.lng)+"\r\n");
 			out.write("zoom="+String.valueOf(zoom)+"\r\n");
@@ -138,6 +143,11 @@ public class Config{
 			out.write("drawWikimapia="+String.valueOf(drawWikimapia)+"\r\n");
 			out.write("\r\n# How many parsed Wikimapia KMLs to cache in RAM\r\n");
 			out.write("wikikmlCacheSize="+String.valueOf(wikikmlCacheSize)+"\r\n");
+
+			out.write("\r\n# How many ZIP files to keep open for quick access\r\n");
+			out.write("zipCacheSize=" + zipCacheSize + "\r\n");
+			out.write("\r\n# Use SoftReference-based cache\r\n");
+			out.write("useSoftRefs=" + useSoftRefs + "\r\n");
 
 			out.write("\r\n# User-defined map folder (e.g. for 'GenShtab')\r\n");
 			out.write("usermapdir="+usermapdir+"\r\n");
