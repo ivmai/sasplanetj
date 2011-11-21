@@ -31,9 +31,6 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 
     public static TrackTail trackTail; 
 	
-    //Image crosshair = App.loadImage("crosshair.png");
-    //XYint crosshairWH = new XYint(16, 16); 
-	
     public static final XYint viewOffset = new XYint(0, 0);
     public static int viewOffsetStep = 50; //change view offset when pressing keys
     public static final CenterOffsetBtn offsetBtn = new CenterOffsetBtn();
@@ -54,8 +51,6 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 		
 		offsetBtn.setVisible(false);
 		trackTail = new TrackTail(Config.trackTailSize);
-		
-		//if (crosshair!=null) crosshairWH.setLocation(crosshair.getWidth(null), crosshair.getHeight(null));
 		
 		setLayout(new XYLayout());
 		
