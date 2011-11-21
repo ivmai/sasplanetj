@@ -82,28 +82,27 @@ public class Config{
 			e.printStackTrace();
 		}
 
-	    connectGPS = Boolean.valueOf(ini.getProperty("connectGPS", "true")).booleanValue();
-	    Main.latlng.lat = Double.valueOf(ini.getProperty("lat", "50.407781")).doubleValue();
-	    Main.latlng.lng = Double.valueOf(ini.getProperty("longitude", "30.662485")).doubleValue();
+	    Main.latlng.lat = Double.valueOf(ini.getProperty("lat", "55.795781")).doubleValue();
+	    Main.latlng.lng = Double.valueOf(ini.getProperty("longitude", "30.662563")).doubleValue();
 	    curMapIndex = Integer.valueOf(ini.getProperty("curMap", "0")).intValue();
-	    zoom = Integer.valueOf(ini.getProperty("zoom", "17")).intValue();
+	    zoom = Integer.valueOf(ini.getProperty("zoom", "4")).intValue();
+	    connectGPS = Boolean.valueOf(ini.getProperty("connectGPS", "true")).booleanValue();
 	    drawGrid = Boolean.valueOf(ini.getProperty("drawGrid", "true")).booleanValue();
 	    drawLatLng = Boolean.valueOf(ini.getProperty("drawLatLng", "true")).booleanValue();
-	    drawTail = Boolean.valueOf(ini.getProperty("drawTail", "true")).booleanValue();
 	    trackLog = Boolean.valueOf(ini.getProperty("trackLog", "false")).booleanValue();
-	    drawWikimapia = Boolean.valueOf(ini.getProperty("drawWikimapia", "false")).booleanValue();
-	    trackTailSize = Integer.valueOf(ini.getProperty("trackTailSize", "50")).intValue();
+	    drawTail = Boolean.valueOf(ini.getProperty("drawTail", "true")).booleanValue();
+	    trackTailSize = Integer.valueOf(ini.getProperty("trackTailSize", "200")).intValue();
 	    imageCacheSize = Integer.valueOf(ini.getProperty("imageCacheSize", "32")).intValue();
-	    wikikmlCacheSize = Integer.valueOf(ini.getProperty("wikikmlCacheSize", "32")).intValue();
 	    drawMapSkip = Integer.valueOf(ini.getProperty("drawMapSkip", "0")).intValue();
 	    trackLogSkip = Integer.valueOf(ini.getProperty("trackLogSkip", "0")).intValue();
-
+	    drawWikimapia = Boolean.valueOf(ini.getProperty("drawWikimapia", "false")).booleanValue();
+	    wikikmlCacheSize = Integer.valueOf(ini.getProperty("wikikmlCacheSize", "64")).intValue();
 	    usermapdir = ini.getProperty("usermapdir", "usermapdir");
 	    maps[maps.length-1].dir = usermapdir;
 
 	    switchMapTo(curMapIndex);
 
-	    String zoomsStr = ini.getProperty("zoomsAvail", "1,2,3,4,5,6,7,8,10,12,14,17");
+	    String zoomsStr = ini.getProperty("zoomsAvail", "3,4,5,6,7,8,10,12,14,16,17,18");
     	String[] zoomsAvailArray = StringUtil.split(zoomsStr, ",");
     	for (int i = 0; i < zoomsAvailArray.length; i++) {
 		    zoomsAvail.add(Integer.valueOf(zoomsAvailArray[i]));
