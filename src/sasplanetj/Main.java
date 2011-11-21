@@ -66,10 +66,8 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 				System.out.println("Shown");
 		    }
 		    public void componentMoved(ComponentEvent e) {
-				//System.out.println("Moved");
 		    }
 		    public void componentResized(ComponentEvent e) {
-				//System.out.println("Resized");
 		    	initDbf();
 		    	if (offsetBtn.isVisible()){
 					remove(offsetBtn);
@@ -91,9 +89,7 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 				return;
 		}
 		offscreen = createImage(this.getSize().width, this.getSize().height);
-		//dbf = (Graphics2D) offscreen.getGraphics();
 		dbf = offscreen.getGraphics();
-		//dbf.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	}
 
 	public Dimension getPreferredSize() {
@@ -109,7 +105,6 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
     		System.out.println("offscreen==null");
     		return;
     	}
-		//Date start = new Date();
     	final XYint center = new XYint(offscreen.getWidth(null)/2, offscreen.getHeight(null)/2);
 
     	/*Tile calculation*/
@@ -119,7 +114,6 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
         }
         displayXY.subtract(viewOffset);
         final XYint tileXY = TilesUtil.getTileByDisplayCoord(displayXY);
-        //System.out.println("displayXY="+displayXY+", tileXY="+tileXY);
         final XYint intile = new XYint(displayXY.x%TilesUtil.TILESIZE, displayXY.y%TilesUtil.TILESIZE);
         final XYint centerTileTopLeft = new XYint(center.x-intile.x, center.y-intile.y);
 
@@ -127,19 +121,9 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 
         /*Draw coordinates============================================================================================*/
     	if (Config.drawLatLng){
-	    	//dbf.setFont(ColorsAndFonts.font14bold);
 	    	dbf.setColor(ColorsAndFonts.clLatLng);
 	    	dbf.drawString(latlng.toString(), 3, 15);
     	}
-
-    	/*
-    	if (Config.drawZoomLevel){
-	    	dbf.setFont(ColorsAndFonts.font14bold);
-	    	dbf.setColor(ColorsAndFonts.clZoomLevel);
-    		dbf.drawString(String.valueOf(Config.zoom), 3, offscreen.getHeight(null)-5);
-    	}
-    	*/
-
 
         /*Draw track============================================================================================*/
     	if (Config.drawTail){
@@ -156,9 +140,6 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 
         /*Draw double buffer image to our view=====================================================================*/
         g.drawImage(offscreen,0,0,this);
-
-
-		//System.out.println("drawn in " + (new Date().getTime() - start.getTime())+"ms");
     }
 
 
@@ -167,13 +148,10 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 
 
 	private void drawPosition(Graphics g, XYint position) {
-		//final Shape circle = new Ellipse2D.Double(viewOffset.x+position.x-3, viewOffset.y+position.y-3, 7, 7);
 		Rectangle r = new Rectangle(viewOffset.x+position.x-3, viewOffset.y+position.y-3, 7, 7);
         g.setColor(ColorsAndFonts.clPositionBrush);
-        //g.fill(circle); //1.3 compat
         g.fillOval(r.x, r.y, r.width, r.height);
         g.setColor(ColorsAndFonts.clPositionPen);
-        //g.draw(circle); //1.3 compat
         g.drawOval(r.x, r.y, r.width, r.height);
 	}
 
@@ -202,7 +180,6 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 	}
 
 	private boolean doPopup(MouseEvent e) throws HeadlessException {
-		//System.out.println(e);
 		boolean isPopup;
 		if (System.getProperty("java.vm.name").startsWith("CrE-ME")){
 			isPopup = true;
@@ -265,7 +242,6 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 
 	public void mousePressed(MouseEvent e) {
 		doPopup(e);
-		//System.out.println(e);
 		mouseDragPrevXY.setLocation(e.getX(), e.getY());
 	}
 
@@ -278,18 +254,15 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 		viewOffsetChanged();
 
 		mouseDragPrevXY.setLocation(e.getX(), e.getY());
-		//System.out.println(viewOffset);
 	}
 
 	public void mouseMoved(MouseEvent e) {
 	}
 
 	public void keyPressed(KeyEvent e) {
-		//System.out.println("keyPressed "+e);
 	}
 
 	public void keyReleased(KeyEvent e) {
-		//System.out.println("keyReleased keyCode="+e.getKeyCode()+" keyText="+KeyEvent.getKeyText(e.getKeyCode()));
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_F2:
 			App.zoomOut();
@@ -331,7 +304,6 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 				}
 			}
 			if (!found){
-				//add(offsetBtn, new XYConstraints(5, 5, 100, 100));
 				add(offsetBtn, new XYConstraints(getSize().width-offsetBtn.getSize().width-5, getSize().height-offsetBtn.getSize().height-5, offsetBtn.getSize().width, offsetBtn.getSize().height));
 				offsetBtn.setVisible(true);
 			}
@@ -367,7 +339,6 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 		String command = e.getActionCommand();
 		if (command.startsWith("POPUP_WIKI")) {
 			int i = Integer.valueOf(command.substring("POPUP_WIKI".length())).intValue();
-			//System.out.println(popupWiki.get(i).getLabel());
 			new ShowMessage(((MenuItem)popupWiki.get(i)).getLabel());
 		}else if (command.equals("GO_HERE")) {
 			clickLatlng.copyTo(latlng);

@@ -68,7 +68,6 @@ public class Waypoints {
 			while ((s = br.readLine()) != null) {
 				lineCount++;
 				if (lineCount<=4) continue;
-				//System.out.println(s);
 				String[] splits = StringUtil.split(s, ",");
 				if (splits.length<4){
 					System.out.println("Waypoints: wrong data on line "+lineCount+": "+s);
@@ -103,14 +102,11 @@ public class Waypoints {
 
         	Rectangle r = new Rectangle(inmatrix.x-3, inmatrix.y-3, 7, 7);
         	dbf.setColor(ColorsAndFonts.clWaypointBrush);
-        	//dbf.fill(circle);
         	dbf.fillOval(r.x, r.y, r.width, r.height);
 
-        	//dbf.setFont(ColorsAndFonts.fontWaypoint);
         	dbf.drawString(wp.name, inmatrix.x+5, inmatrix.y+5);
 
         	dbf.setColor(ColorsAndFonts.clWaypointPen);
-        	//dbf.draw(circle);
         	dbf.drawOval(r.x, r.y, r.width, r.height);
 		}
 	}
@@ -119,7 +115,6 @@ public class Waypoints {
 	public static void save(String filename){
 		if (points==null || points.size()==0) return;
 
-		//File f = new File(filename);
 		try {
 			FileWriter out = new FileWriter(filename, false);
 			out.write("OziExplorer CE Waypoint File Version 1.2\r\n");

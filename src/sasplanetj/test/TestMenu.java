@@ -34,8 +34,6 @@ public class TestMenu extends Frame {
 		TestMenu t = new TestMenu();
 		t.validate();
 		t.setVisible(true);
-		//t.cmi.setState(true);
-
 	}
 
 }

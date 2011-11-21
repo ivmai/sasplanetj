@@ -11,9 +11,7 @@ public class GoTo extends Dialog {
 
 	public GoTo(Frame owner){
 		super(owner);
-		//this.setSize(App.main.getSize());
 		setTitle("Go to...");
-		//setModalityType(ModalityType.APPLICATION_MODAL);
 		setModal(true);
 		this.setSize(220, 150);
 		this.setLocation(
@@ -29,16 +27,12 @@ public class GoTo extends Dialog {
 		add(new Label("Longitude:"));
 		add(lng);
 
-		//Panel p = new Panel();
-		//p.setLayout(new BoxLayout(p, BoxLayout.LINE_AXIS));
 		add(new Button("OK"));
 		add(new Button("Cancel"));
-		//add(p);
 	}
 
 	public boolean action(Event e, Object o) {
 		if (e.target instanceof Button) {
-			//System.out.println(((String) o));
 			if (((String) o).equals("OK")) {
 				LatLng latlng = new LatLng();
 				latlng.lat = Double.valueOf(lat.getText()).doubleValue();

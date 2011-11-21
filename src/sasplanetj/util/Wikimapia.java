@@ -40,7 +40,6 @@ public class Wikimapia {
 		ArrayList kmls = parse(kmlstr, zoom);
 
 		kmlCache.put(filename, kmls);
-		//System.out.println("Caching "+filename);
 
 		return kmls;
 	}
@@ -79,7 +78,6 @@ public class Wikimapia {
 	        	kml.x[i] = intile.x;
 	        	kml.y[i] = intile.y;
 			}
-			//kml.poly = new Polygon(x, y, x.length);
 			kmls.add(kml);
 		}
 		System.out.println("Wikimapia: Parsed "+kmls.size()+" items");
@@ -89,7 +87,6 @@ public class Wikimapia {
 
 	public static class KML{
 		public String description;
-		//Polygon poly;
 		/*Intile coordinates*/
 		public int x[];
 		public int y[];
@@ -104,7 +101,7 @@ public class Wikimapia {
 
 
 	public static String loadKML(String filename) {
-		/*Check if there are any zips instead of directories*/
+		// Check if there are any zips instead of directories
 		String[] zipnames = TilesUtil.checkZipFileExistance(filename);
 		if (zipnames != null) {
 			System.out.print("KML unzip: " + zipnames[0] + ": " + zipnames[1]);
@@ -132,22 +129,7 @@ public class Wikimapia {
 			System.out.println("Wikimapia: "+filename+" does not exist");
 			return null;
 		}
-		//System.out.println("Wikimapia: loading "+filename);
 		try {
-			/*
-			FileInputStream fis = new FileInputStream(filename);
-			InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
-			//FileReader fileread = new FileReader(filename);
-			BufferedReader bufread = new BufferedReader(isr);
-			String str = new String();
-			String res = new String();
-			while ((str = bufread.readLine()) != null) {
-				res += str;
-			}
-			bufread.close();
-			return res;
-			*/
-
 			int len = (int) (new File(filename).length());
 			FileInputStream fis = new FileInputStream(filename);
 			byte buf[] = new byte[len];
@@ -171,16 +153,11 @@ public class Wikimapia {
 		ArrayList kmlsForTile = Wikimapia.getTileKML(xy, Config.zoom);
 		if (kmlsForTile!=null){
 			dbf.setColor(ColorsAndFonts.clWikimapia);
-			//dbf.setFont(ColorsAndFonts.font10);
 			for (Iterator iterator = kmlsForTile.iterator(); iterator.hasNext();) {
 				KML kml = (KML) iterator.next();
-				//if (kml.x.length<=1) continue;
-	        	//inmatrix.subtract(matrix[0]); //find point in tile matrix
-	        	//inmatrix.add(matrix[1]); //point with matrix position drawing offset
 				kml.drawnPoly = new Polygon(kml.x, kml.y, kml.x.length);
 				kml.drawnPoly.translate(-matrix[0].x+matrix[1].x, -matrix[0].y+matrix[1].y);
 				dbf.drawPolygon(kml.drawnPoly);
-				//dbf.drawString(kml.description, kml.drawnPoly.getBounds().x, kml.drawnPoly.getBounds().y);
 			}
 		}
 		return kmlsForTile;

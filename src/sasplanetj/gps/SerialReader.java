@@ -73,13 +73,9 @@ public class SerialReader extends Thread{
 
 		try {
 			// GARMIN GPS25: enable all output messages
-			// outputStream.write( new
-			// String("$PGRMO,,3"+((char)13)+((char)10)).getBytes() );
 			outputStream.write(NMEA.addCheckSum("$PGRMO,,3").getBytes());
 
 			// trigger GPS to send current configuration
-			// outputStream.write( new
-			// String("$PGRMCE,"+((char)13)+((char)10)).getBytes() );
 			outputStream.write(NMEA.addCheckSum("$PGRMCE,").getBytes());
 			// default configuration string is:
 			// $PGRMC,A,218.8,100,6378137.000,298.257223563,0.0,0.0,0.0,A,3,1,1,4,30
@@ -87,8 +83,6 @@ public class SerialReader extends Thread{
 			// GARMIN GPS25: set to German earth datum (parameter 3=27)
 			outputStream.write(new String("$PGRMC,A,,27,,,,,,A,3,1,1,4,30"
 					+ ((char) 13) + ((char) 10)).getBytes());
-			// outputStream.write(
-			// NMEA.addCheckSum("$PGRMC,A,,100,,,,,,A,3,1,1,4,30").getBytes() );
 		} catch (IOException e) {
 			System.out.println("SerailReader: Warning: cannot configure GPS");
 		}
@@ -121,17 +115,12 @@ public class SerialReader extends Thread{
 		System.out.println("SerailReader: using port "+port+" at baudrate "+baudRate);
 		BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
 
-		//Date start=new Date(), end=null;
 		while (stopFlag==false){
 			try {
 				msg = in.readLine();
-				//System.out.println(msg);
 				if (msg!=null && NMEA.check(msg)) {
 					if (NMEA.parse(msg, latlng)) {
 						if (!prevlatlng.equalXY(latlng)){//prevent duplicate coordinates process
-							//end = new Date();
-							//System.out.println("new position in " + (end.getTime() - start.getTime()));
-							//start=new Date();
 							latlng.copyTo(prevlatlng);
 							processGPSListeners();
 						}
@@ -157,32 +146,20 @@ public class SerialReader extends Thread{
 		System.out.println("SerailReader: simulating from " + simulateFname);
 		File inFile = new File(simulateFname);
 		try {
-			//Date start=new Date(), end=null;
 			while (true){//infinite loop over log
 				FileInputStream fis = new FileInputStream(inFile);
 				BufferedReader br = new BufferedReader(new InputStreamReader(fis));
 				while ( (msg = br.readLine())!=null ) {
 					if (msg!=null && NMEA.check(msg)) {
-						/*
-						if (gpsParsedMessages%100000==1) start = new Date();
-						gpsParsedMessages++;
-						*/
 
 						if (NMEA.parse(msg, latlng)) {
 							if (!prevlatlng.equalXY(latlng)){//prevent duplicate coordinates process
 								latlng.copyTo(prevlatlng);
-								//System.out.println("Parsed "+latlng);
 								processGPSListeners();
 								sleep(200);
 							}
 						}
 
-						/*
-						if (gpsParsedMessages%100000==0){
-							end = new Date();
-							System.out.println("parsed in " + (end.getTime() - start.getTime()));
-						}
-						*/
 					}
 					processNMEAListeners(msg);
 					if (stopFlag){

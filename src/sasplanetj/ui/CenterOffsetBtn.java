@@ -17,11 +17,8 @@ public class CenterOffsetBtn extends Button {
 		img = loadImageFromFile("offset.png");
 		size.setSize(img.getWidth(null), img.getHeight(null));
 
-		//setLabel(">");
 		setAllSizes();
 
-
-		//Main.offsetBtn.setBackground(Color.green);
 		this.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e) {
 				App.main.viewOffset0();
@@ -32,9 +29,6 @@ public class CenterOffsetBtn extends Button {
 
     private void setAllSizes(){
     	setSize(size);
-    	//setPreferredSize(size); //1.3 compat
-    	//setMinimumSize(size);
-    	//setMaximumSize(size);
     }
 
 

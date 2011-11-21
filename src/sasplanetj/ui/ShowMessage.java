@@ -29,13 +29,6 @@ public class ShowMessage extends Dialog {
 	}
 
 	public boolean action(Event e, Object o) {
-		/*
-		if (e.target instanceof Button) {
-			//System.out.println(((String) o));
-			if (((String) o).equals("OK")) {
-			}
-		}
-		*/
 		dispose();
 		return true;
 	}

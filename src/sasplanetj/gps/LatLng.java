@@ -19,12 +19,6 @@ public class LatLng implements Cloneable, java.io.Serializable {
 		this.lng = longitude;
 	}
 
-	/*
-	public LatLng clone(){
-		return new LatLng(this.lat, this.lng);
-	}
-	*/
-
 	public void copyTo(LatLng other){
 		other.lat = this.lat;
 		other.lng = this.lng;

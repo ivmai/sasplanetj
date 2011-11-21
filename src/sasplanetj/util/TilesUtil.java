@@ -9,39 +9,6 @@ import sasplanetj.App;
 import sasplanetj.gps.LatLng;
 import sasplanetj.ui.ColorsAndFonts;
 
-/*
-http://forum.openstreetmap.org/viewtopic.php?id=244
-
-QPoint coordinateToDisplay(Coordinate& coordinate, int zoom)
-{
-    double numberOfTiles = pow(2, zoom);
-    // LonToX
-    double x = (coordinate.getLongitude()+180) * (numberOfTiles*tilesize)/360.;
-    // LatToY
-    double projection = log(tan(PI/4+deg_rad(coordinate.getLatitude())/2));
-    double y = (projection /PI);
-    y = 1-y;
-    y = y /2  * (numberOfTiles*tilesize);
-    QPoint point = QPoint(int(x), int(y));
-    return point;
-}
-
-Coordinate displayToCoordinate(const QPoint& point, int zoom)
-{
-    // longitude
-    double longitude = (point.x()*(360/(pow(2,zoom)*256)))-180;
-    // lat
-    double lat = point.y()*(2/(pow(2,zoom)*256));
-    lat = 1-lat;
-    lat = lat*PI;
-    lat = rad_deg(atan(sinh(lat)));
-
-    Coordinate coord = Coordinate(longitude, lat);
-    return coord;
-}
-
- */
-
 public class TilesUtil {
 
 	public static final int ZOOM_MIN = 1;
@@ -66,11 +33,10 @@ public class TilesUtil {
 		double c = PixelsAtZoom/(2*Math.PI);
 		double x = Math.floor(PixelsAtZoom/2+lng*(PixelsAtZoom/360));
 		double y = Math.floor(PixelsAtZoom/2-c*(atanh(z)-exct*atanh(exct*z)));
-	    //why??? but it works so
+	    // FIXME: why does it works so
 	    y = y/2;
 	    x = x/2;
 
-	    //System.out.println("ya="+new XYint((int)Math.floor(x), (int)Math.floor(y)));
 		return new XYint((int)Math.floor(x), (int)Math.floor(y));
 	}
 
@@ -87,11 +53,10 @@ public class TilesUtil {
 	    y = 1-y;
 	    y = y/2  * (numberOfTiles*TILESIZE);
 
-	    //why??? but it works so
+	    // FIXME: why does it works so
 	    y = y/2;
 	    x = x/2;
 
-	    //System.out.println(new XYint((int)Math.floor(x), (int)Math.floor(y)));
 	    return new XYint((int)Math.floor(x), (int)Math.floor(y));
 	}
 
@@ -131,7 +96,6 @@ public class TilesUtil {
 
 		Image img = loadImage(filename);
 		tilesCache.put(filename, img);
-		//System.out.println("Caching "+filename);
 		return img;
 	}
 
@@ -147,7 +111,6 @@ public class TilesUtil {
 				System.out.println(" FAILED \n");
 				return null;
 			}
-			//return Toolkit.getDefaultToolkit().createImage(binary);
 
 			//Ensure that image is created. Otherwise sometimes there is white areas painted instead of image.
 	    	Image img = Toolkit.getDefaultToolkit().createImage(binary);
@@ -192,7 +155,7 @@ public class TilesUtil {
 	}
 
 	public static Image loadImageFromFS(String filename) {
-		//System.out.println(filename);
+
     	Image img = Toolkit.getDefaultToolkit().getImage(filename);
     	MediaTracker mt = new MediaTracker(App.getSelf());
     	mt.addImage(img, 0);
@@ -230,7 +193,6 @@ public class TilesUtil {
 
 		XYint[] matrix = {new XYint((tileXY.x-tilesToLeft)*TILESIZE, (tileXY.y-tilesToTop)*TILESIZE), new XYint(matrixX, matrixY)};
 
-		//System.out.println("matrix"+totalMatrixW+"x"+totalMatrixH+", tilesToTop="+tilesToTop+", tilesToBottom="+tilesToBottom+", tilesToLeft="+tilesToLeft+", tilesToRight="+tilesToRight);
 		if (Config.drawWikimapia){
 			Wikimapia.drawnKmls.clear();
 		}
@@ -263,17 +225,10 @@ public class TilesUtil {
 			}
 		}
 
-
-
 		/**
 		 * 1) matrix display coordinates (map pixel)
 		 * 2) matrix screen offset coordinates
 		 */
 		return matrix;
 	}
-
-
-
-
-
 }

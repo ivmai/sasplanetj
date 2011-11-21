@@ -139,7 +139,6 @@ public class App extends Frame implements ActionListener, ItemListener{
 		menuBar.add(menu);
 
 		menu = new Menu("Opts");
-		//menu.addActionListener(this);
 			cmiDrawGrid = new CheckboxMenuItem("Draw grid");
 			cmiDrawGrid.setActionCommand(DRAWGRID_COMMAND);
 			cmiDrawGrid.addItemListener(this);
@@ -204,7 +203,6 @@ public class App extends Frame implements ActionListener, ItemListener{
 		Wikimapia.kmlCache = new Cache(Config.wikikmlCacheSize); //Cache<String, ArrayList<KML>>
 
 		if (!Config.connectGPS) Config.trackLog = false;
-		//cmiTrackLog.setState(Config.trackLog);
 
 		if (Config.connectGPS){
 			createSerialReader();
@@ -232,9 +230,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 
 
 	public void changeView(Component newView){
-		//System.out.println(NMEALog.class.getCanonicalName());
 		if (currentView!=null){
-			//System.out.println("Current view was: "+currentView.getClass().getSimpleName());
 			if (currentView.getClass()==NMEALog.class){
 				((NMEALog) currentView).removeListener();
 			}else if (currentView.getClass()==GPSLog.class){
@@ -258,7 +254,6 @@ public class App extends Frame implements ActionListener, ItemListener{
 
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
-		//System.out.println(command);
 		if (command == EXIT_COMMAND) {
 			quit();
 		}else if (command == NMEALOG_COMMAND) {
@@ -430,9 +425,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 
 	public static void zoom(int zoom) {
 		double deltaview = (double)Math.pow(2, zoom) / Math.pow(2, Config.zoom);
-		//System.out.println(deltaview);
 		Main.viewOffset.multiply(deltaview);
-		//viewOffsetChanged();
 		Config.zoom = zoom;
 		App.getSelf().zoomMenu();
 		main.repaint();
@@ -490,7 +483,6 @@ public class App extends Frame implements ActionListener, ItemListener{
 		Main.trackTail.clear();
 		latlng.copyTo(Main.latlng);
 		App.main.viewOffset0(); //it will repaint also
-		//App.main.repaint();
 	}
 
 	/**
@@ -498,7 +490,6 @@ public class App extends Frame implements ActionListener, ItemListener{
 	 * @param latlng
 	 */
 	public static void CreateWaypoint(LatLng latlng, String name){
-		//latlng.copyTo(Main.latlng);
 		Waypoints.points.add(new Waypoint(latlng, name));
 		App.main.repaint();
 	}
@@ -517,12 +508,8 @@ public class App extends Frame implements ActionListener, ItemListener{
 
 		App app = new App(args);
 
-		//app.fullscreen();
-
 		if (Config.isCE){
 			System.out.println("Screen size="+Toolkit.getDefaultToolkit().getScreenSize());
-			//app.setUndecorated(true); //1.3 compat
-			//app.setSize(new Dimension(200, 200));
 			app.setSize(Toolkit.getDefaultToolkit().getScreenSize());
 		}else{
 			app.setLocation(600,100);
@@ -530,13 +517,9 @@ public class App extends Frame implements ActionListener, ItemListener{
 		}
 
 		app.addComponents();
-		//app.validate();
 		app.setVisible(true);
 		app.afterSetVisible();
 		app.currentView.requestFocus();
-		//app.currentView.repaint();
-
-
 	}
 
 	public void fullscreen(){

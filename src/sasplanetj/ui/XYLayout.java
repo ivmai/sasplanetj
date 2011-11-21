@@ -1,13 +1,8 @@
-// Ukradeno u Borlanda
-
 
 package sasplanetj.ui;
 
-//import com.borland.dx.text.Alignment;
-
 import java.awt.*;
 import java.util.*;
-//import com.borland.jbcl.util.*;
 
 public class XYLayout implements LayoutManager2, java.io.Serializable
 {
@@ -36,11 +31,9 @@ public class XYLayout implements LayoutManager2, java.io.Serializable
   // LayoutManager interface
 
   public void addLayoutComponent(String name, Component component) {
-    //System.err.println("XYLayout.addLayoutComponent(" + name + "," + component + ")");
   }
 
   public void removeLayoutComponent(Component component) {
-    //System.err.println("XYLayout.removeLayoutComponent(" + component + ")");
     info.remove(component);
   }
 
@@ -55,7 +48,6 @@ public class XYLayout implements LayoutManager2, java.io.Serializable
   public void layoutContainer(Container target) {
     Insets insets = target.getInsets();
     int count = target.getComponentCount();
-    //System.err.println("XYLayout.layoutContainer(" + target + ") insets=" + insets + " count=" + count);
     for (int i = 0 ; i < count; i++) {
       Component component = target.getComponent(i);
       if (component.isVisible()) {
@@ -68,10 +60,8 @@ public class XYLayout implements LayoutManager2, java.io.Serializable
   // LayoutManager2 interface
 
   public void addLayoutComponent(Component component, Object constraints) {
-    //System.err.println("XYLayout.addLayoutComponent(" + component + "," + constraints + ")");
     if (constraints instanceof XYConstraints){
     	info.put(component, constraints);
-    	//System.err.println(info.size());
     }
   }
 
@@ -90,31 +80,18 @@ public class XYLayout implements LayoutManager2, java.io.Serializable
   public void invalidateLayout(Container target) {}
 
 
-
-
-
-
-
-
-
-
   	// internal
 	private Hashtable info = new Hashtable(); // leave this as non-transient
   	static final XYConstraints defaultConstraints = new XYConstraints();
 
 	private Rectangle getComponentBounds(Component component, boolean doPreferred) {
 		XYConstraints constraints = (XYConstraints)info.get(component);
-		//XYConstraints constraints = new XYConstraints(component.get, component.getBounds().y, component.getBounds().width, component.getBounds().height);
-		//System.err.println("XYLayout.getComponentBounds(" + component + "," + doPreferred + ") constraints=" + constraints + " width=" + width + " height=" + height);
-		//System.err.println(component);
 		if (constraints==null){
-			//System.err.println("Using default constrains "+component);
 			constraints = defaultConstraints;
 		}
 		Rectangle r = new Rectangle(constraints.x, constraints.y, constraints.width, constraints.height);
 
 		if (r.width <= 0 || r.height <= 0) {
-			//Dimension d = doPreferred ? component.getPreferredSize() : component.getMinimumSize();
 			Dimension d = component.getPreferredSize();
 			if (r.width <= 0) r.width = d.width;
 			if (r.height <= 0) r.height = d.height;
@@ -125,14 +102,12 @@ public class XYLayout implements LayoutManager2, java.io.Serializable
 	private Dimension getLayoutSize(Container target, boolean doPreferred) {
 		Dimension dim = new Dimension(0, 0);
 
-		//System.err.println("XYLayout.getLayoutSize(" + target + "," + doPreferred + ") width=" + width + " height=" + height);
 		if (width <= 0 || height <= 0) {
 		  int count = target.getComponentCount();
 		  for (int i = 0; i < count; i++) {
 		    Component component = target.getComponent(i);
 		    if (component.isVisible()) {
 		      Rectangle r = getComponentBounds(component, doPreferred);
-		      //System.err.println(" bounds for " + component + " is " + r);
 		      dim.width  = Math.max(dim.width , r.x + r.width);
 		      dim.height = Math.max(dim.height, r.y + r.height);
 		    }
@@ -145,7 +120,6 @@ public class XYLayout implements LayoutManager2, java.io.Serializable
 		Insets insets = target.getInsets();
 		dim.width += insets.left + insets.right;
 		dim.height += insets.top + insets.bottom;
-		//System.err.println("  preferred container size is " + dim);
 	    return dim;
 	 }
 

@@ -36,10 +36,7 @@ public class TrackTail extends LinkedList{
 	public void draw(Graphics dbf, XYint[] matrix){
 		if (this.size()<2) return;
 
-		//System.out.println(trackTail.getPointsString());
-		//LinkedList<XYint> trackTail = (LinkedList<XYint>) Main.trackTail.clone();
 		dbf.setColor(ColorsAndFonts.clTail);
-        //XYint prevpoint = null; //with screen coordinates
 
         int[] x = new int[this.size()];
         int[] y = new int[this.size()];
@@ -50,12 +47,7 @@ public class TrackTail extends LinkedList{
         	final XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.x, latlng.y, Config.zoom);
         	inmatrix.subtract(matrix[0]); //find point in tile matrix
         	inmatrix.add(matrix[1]); //point with matrix position drawing offset
-        	/*
-        	if (prevpoint!=null){
-				dbf.drawLine(prevpoint.x, prevpoint.y, inmatrix.x, inmatrix.y);
-			}
-			prevpoint = inmatrix;
-			*/
+
         	x[i] = inmatrix.x;
         	y[i] = inmatrix.y;
         	i++;

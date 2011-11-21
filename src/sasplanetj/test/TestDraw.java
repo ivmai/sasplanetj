@@ -10,14 +10,14 @@ public class TestDraw extends Frame implements MouseListener{
 
 	public void paint(Graphics g) {
 
-		int size = 10000;
+	int size = 10000;
 
         int[] x = new int[size];
         int[] y = new int[size];
         x[1] = y[1] = 100;
 
 		Date start = new Date();
-        g.drawPolyline(x, y, x.length);
+        	g.drawPolyline(x, y, x.length);
 		Date end = new Date();
 		System.out.println("drawn polyline in " + (end.getTime() - start.getTime()));
 
@@ -28,9 +28,6 @@ public class TestDraw extends Frame implements MouseListener{
 		}
 		end = new Date();
 		System.out.println("drawn lines in " + (end.getTime() - start.getTime()));
-
-		//System.exit(0);
-
 	}
 
 	/**

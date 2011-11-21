@@ -29,7 +29,6 @@ public class Tracks {
 			while ((s = br.readLine()) != null) {
 				lineCount++;
 				if (lineCount<=6) continue;
-				//System.out.println(s);
 				String[] splits = StringUtil.split(s, ",");
 				if (splits.length<3){
 					System.out.println("Tracks: wrong data on line "+lineCount+": "+s);
@@ -85,8 +84,6 @@ public class Tracks {
 
 
 	public static void draw(Graphics dbf, XYint[] matrix){
-		//System.out.println(trackTail.getPointsString());
-		//LinkedList<XYint> trackTail = (LinkedList<XYint>) Main.trackTail.clone();
 
 		dbf.setColor(ColorsAndFonts.clTrack);
 		for (Iterator tr = tracks.iterator(); tr.hasNext();) {
@@ -96,18 +93,12 @@ public class Tracks {
 	        int[] x = new int[track.length];
 	        int[] y = new int[track.length];
 
-	        //XYint prevpoint = null; //with screen coordinates
 	        for (int i=0; i<track.length; i++) {
 	        	final XY latlng = track[i]; //map pixel coordinates
 	        	final XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.x, latlng.y, Config.zoom);
 	        	inmatrix.subtract(matrix[0]); //find point in tile matrix
 	        	inmatrix.add(matrix[1]); //point with matrix position drawing offset
-	        	/*
-	        	if (prevpoint!=null){
-					dbf.drawLine(prevpoint.x, prevpoint.y, inmatrix.x, inmatrix.y);
-				}
-				prevpoint = inmatrix;
-				*/
+
 	        	x[i] = inmatrix.x;
 	        	y[i] = inmatrix.y;
 			}

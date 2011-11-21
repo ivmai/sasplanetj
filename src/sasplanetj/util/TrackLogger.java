@@ -57,8 +57,6 @@ public class TrackLogger implements GPSListener{
 	public static final File f = new File(logFilename);
 	public static FileWriter out;
 
-	//public static LatLng latlng = new LatLng();
-
 	public static int breakTrack = 1;
 
 	private static int skipCounter = 0;
@@ -70,7 +68,6 @@ public class TrackLogger implements GPSListener{
 			skipCounter++;
 			return;
 		}
-		//TrackLogger.latlng = latlng;
 		try {
 			out.write(LatLng.latlngFormat7.format(latlng.lat)+", "+LatLng.latlngFormat7.format(latlng.lng)+", "+breakTrack+"\r\n");
 			breakTrack = 0;

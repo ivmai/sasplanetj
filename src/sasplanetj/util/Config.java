@@ -28,7 +28,6 @@ public class Config{
 	public static boolean drawLatLng;
 	public static boolean drawTail;
 	public static boolean trackLog;
-	//public static boolean drawZoomLevel;
 	public static boolean drawWikimapia;
 
 	public static int trackTailSize;
@@ -57,7 +56,6 @@ public class Config{
 		new MapInfo("Google landscape", "LAND", "jpg"),
 		new MapInfo("Yandex satellite", "yasat", "jpg"),
 		new MapInfo("Yandex map", "yamap", "jpg"),
-		//new MapInfo("Yandex hybrid", "yahyb", "png"),
 		new MapInfo("Digital Globe", "DGsat", "jpg"),
 		new MapInfo("Virtual Earth satellite", "vesat", "jpg"),
 		new MapInfo("Gurtam", "Gumap", "PNG"),
@@ -125,8 +123,6 @@ public class Config{
 			out.write("drawGrid="+String.valueOf(drawGrid)+"\r\n");
 			out.write("\r\n# Рисовать координаты\r\n");
 			out.write("drawLatLng="+String.valueOf(drawLatLng)+"\r\n");
-			//out.write("\r\n# Рисовать уровень зума\r\n");
-			//out.write("drawZoomLevel="+String.valueOf(drawZoomLevel)+"\r\n");
 			out.write("\r\n# Писать трек\r\n");
 			out.write("trackLog="+String.valueOf(trackLog)+"\r\n");
 			out.write("\r\n# Рисовать хвост\r\n");

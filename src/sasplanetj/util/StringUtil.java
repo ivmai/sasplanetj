@@ -54,8 +54,6 @@ public class StringUtil {
 	 */
 	public static String normPath(String path) {
 		if (fileSepChar=='/') return path;
-		return path.replace('/', fileSepChar); //fileSepChar=='\' here :)
+		return path.replace('/', fileSepChar);
 	}
-
-
 }
