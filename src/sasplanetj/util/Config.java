@@ -117,33 +117,33 @@ public class Config{
 			out.write("longitude="+String.valueOf(Main.latlng.lng)+"\r\n");
 			out.write("zoom="+String.valueOf(zoom)+"\r\n");
 			out.write("curMap="+String.valueOf(curMapIndex)+"\r\n");
-			out.write("\r\n# Подключаться к GPS\r\n");
+			out.write("\r\n# Connect to GPS at start-up\r\n");
 			out.write("connectGPS="+String.valueOf(connectGPS)+"\r\n");
-			out.write("\r\n# Рисовать сетку\r\n");
+			out.write("\r\n# Draw map grid\r\n");
 			out.write("drawGrid="+String.valueOf(drawGrid)+"\r\n");
-			out.write("\r\n# Рисовать координаты\r\n");
+			out.write("\r\n# Draw coordinates\r\n");
 			out.write("drawLatLng="+String.valueOf(drawLatLng)+"\r\n");
-			out.write("\r\n# Писать трек\r\n");
+			out.write("\r\n# Turn on track logging\r\n");
 			out.write("trackLog="+String.valueOf(trackLog)+"\r\n");
-			out.write("\r\n# Рисовать хвост\r\n");
+			out.write("\r\n# Draw track tail\r\n");
 			out.write("drawTail="+String.valueOf(drawTail)+"\r\n");
-			out.write("\r\n# Сколько точек отображать в хвосте трека\r\n");
+			out.write("\r\n# How many points to draw in track tail\r\n");
 			out.write("trackTailSize="+String.valueOf(trackTailSize)+"\r\n");
-			out.write("\r\n# Сколько тайлов будет кешироваться в памяти\r\n");
+			out.write("\r\n# Amount of tails to cache in RAM\r\n");
 			out.write("imageCacheSize="+String.valueOf(imageCacheSize)+"\r\n");
-			out.write("\r\n# Пропускать точек при отрисовке карты\r\n");
+			out.write("\r\n# How many points to skip on map drawing\r\n");
 			out.write("drawMapSkip="+String.valueOf(drawMapSkip)+"\r\n");
-			out.write("\r\n# Пропускать точек при ведении записи трека\r\n");
+			out.write("\r\n# How many points to skip on track recording\r\n");
 			out.write("trackLogSkip="+String.valueOf(trackLogSkip)+"\r\n");
-			out.write("\r\n# Рисовать Wikimapia поверх\r\n");
+			out.write("\r\n# Draw Wikimapia layer\r\n");
 			out.write("drawWikimapia="+String.valueOf(drawWikimapia)+"\r\n");
-			out.write("\r\n# Сколько распарсеных wikimapia kml хранить в памяти\r\n");
+			out.write("\r\n# How many parsed Wikimapia KMLs to cache in RAM\r\n");
 			out.write("wikikmlCacheSize="+String.valueOf(wikikmlCacheSize)+"\r\n");
 
-			out.write("\r\n# Директория с пользовательсктм кешем, сюда можно положить Генштаб, например\r\n");
+			out.write("\r\n# User-defined map folder (e.g. for 'GenShtab')\r\n");
 			out.write("usermapdir="+usermapdir+"\r\n");
 
-			out.write("\r\n# Доступные уровни зума\r\n");
+			out.write("\r\n# Comma-separated list of available zoom levels\r\n");
 			out.write("zoomsAvail=");
 			boolean first = true;
 			for (Iterator iterator = zoomsAvail.iterator(); iterator.hasNext();) {
