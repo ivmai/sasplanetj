@@ -27,10 +27,13 @@
 /zip*test/
 
 # Native binary files
+*.dll
 *.exe
 *.o
 *.obj
 *.so
+/bin-*/
+/lib/
 
 # Auto-generated files and 3rd-party library sources
 /jcgo_Out/
