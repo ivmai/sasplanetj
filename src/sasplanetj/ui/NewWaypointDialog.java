@@ -1,6 +1,7 @@
 package sasplanetj.ui;
 
 import java.awt.*;
+import java.awt.event.*;
 
 import sasplanetj.App;
 import sasplanetj.gps.LatLng;
@@ -38,19 +39,24 @@ public class NewWaypointDialog extends Dialog {
 
 		add(new Button("OK"));
 		add(new Button("Cancel"));
+		addWindowListener(new WindowAdapter() {
+		  public void windowClosing(WindowEvent e) {
+		    dispose();
+		  }
+		});
 	}
 
 	public boolean action(Event e, Object o) {
-		if (e.target instanceof Button) {
-			if (((String) o).equals("OK")) {
-				LatLng latlng = new LatLng();
-				latlng.lat = Double.valueOf(lat.getText()).doubleValue();
-				latlng.lng = Double.valueOf(lng.getText()).doubleValue();
+		if (((e.target instanceof Button) && ((String)o).equals("OK"))
+		    || e.target instanceof TextField) {
+		  		LatLng latlng = new LatLng(decodeAsDouble(lat), decodeAsDouble(lng));
 				App.CreateWaypoint(latlng, name.getText());
-			}
 		}
 		dispose();
 		return true;
 	}
 
+	private static double decodeAsDouble(TextField f) {
+		return Double.valueOf(f.getText().replace(',', '.')).doubleValue();
+	}
 }

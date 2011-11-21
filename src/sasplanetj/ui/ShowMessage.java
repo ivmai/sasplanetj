@@ -1,6 +1,7 @@
 package sasplanetj.ui;
 
 import java.awt.*;
+import java.awt.event.*;
 
 import sasplanetj.App;
 
@@ -24,6 +25,13 @@ public class ShowMessage extends Dialog {
 		TextArea msgObj = new TextArea(msg);
 		add(msgObj, BorderLayout.CENTER);
 		add(new Button("OK"), BorderLayout.SOUTH);
+
+                addWindowListener(
+                  new WindowAdapter() {
+                    public void windowClosing(WindowEvent e) {
+                      dispose();
+                    }
+                  });
 
 		setVisible(true);
 	}

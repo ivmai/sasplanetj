@@ -11,10 +11,12 @@ import sasplanetj.Main;
 public class CenterOffsetBtn extends Button {
 
 	private static final Dimension size = new Dimension(25, 25);
-	public Image img = null;
+	private final Image img = loadImageFromFile("offset.png");
 
 	public CenterOffsetBtn(){
-		img = loadImageFromFile("offset.png");
+		if (img == null)
+		  return;
+
 		size.setSize(img.getWidth(null), img.getHeight(null));
 
 		setAllSizes();
@@ -35,15 +37,16 @@ public class CenterOffsetBtn extends Button {
 	private Image loadImageFromFile(String fname) {
 		try {
 			URL url = CenterOffsetBtn.class.getResource(fname);
-			Image img = getToolkit().getImage(url);
-			MediaTracker tracker = new MediaTracker(this);
-			tracker.addImage(img, 0);
-			tracker.waitForAll();
-			return img;
-		}catch (Exception e){
-			System.out.println("Can not open image: "+fname);
-			return null;
-		}
+			if (url != null) {
+			  Image img = getToolkit().getImage(url);
+			  MediaTracker tracker = new MediaTracker(this);
+			  tracker.addImage(img, 0);
+			  tracker.waitForAll();
+			  return img;
+			}
+		} catch (Exception e) {}
+		System.out.println("Can not open image: "+fname);
+		return null;
 	}
 
 	public void repaint(Graphics g){
@@ -52,7 +55,11 @@ public class CenterOffsetBtn extends Button {
 
 
 	public void paint(Graphics g){
-		g.drawImage(img, 0, 0, this);
+		if (img != null)
+		  g.drawImage(img, 0, 0, this);
 	}
 
+	public boolean isImageLoaded() {
+		 return img != null;
+	}
 }
