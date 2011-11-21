@@ -9,11 +9,11 @@ import sasplanetj.Main;
 public class Config{
 
 	/**
-	 * Current working direcotry. Some JVMs cant set working dirfrom command line, so we have to deal with absolute pathes  
+	 * Current working direcotry. Some JVMs cant set working dirfrom command line, so we have to deal with absolute pathes
 	 */
 	public static String curDir = System.getProperty("user.dir");
 	public static boolean isCE = System.getProperty("os.name").equals("Windows CE");
-	
+
 	public static String configFilename = StringUtil.normPath(curDir+"/config.txt");
 	/**
 	 * Directory with cache
@@ -21,7 +21,7 @@ public class Config{
 	public static final String cachePath = StringUtil.normPath(curDir+"/cache");
 
 	public static boolean connectGPS;
-	
+
 	public static int zoom;
 	public static ArrayList zoomsAvail = new ArrayList(TilesUtil.ZOOM_MAX-TilesUtil.ZOOM_MIN+1);
 	public static boolean drawGrid;
@@ -30,16 +30,16 @@ public class Config{
 	public static boolean trackLog;
 	//public static boolean drawZoomLevel;
 	public static boolean drawWikimapia;
-	
+
 	public static int trackTailSize;
 	public static int imageCacheSize;
 	public static int wikikmlCacheSize;
-	
+
 	public static int drawMapSkip;
 	public static int trackLogSkip;
 
 	public static String usermapdir;
-	
+
 	/**
 	 * Currently selected map
 	 */
@@ -50,32 +50,32 @@ public class Config{
 	 * Selected map is yandex
 	 */
 	public static boolean curMapYandex = true;
-	
-	public static final MapInfo[] maps = { 
-		new MapInfo("Google satellite", "SAT", "jpg"), 
-		new MapInfo("Google map", "MAP", "png"), 
-		new MapInfo("Google landscape", "LAND", "jpg"), 
-		new MapInfo("Yandex satellite", "yasat", "jpg"),	
-		new MapInfo("Yandex map", "yamap", "jpg"),	
-		//new MapInfo("Yandex hybrid", "yahyb", "png"),	
-		new MapInfo("Digital Globe", "DGsat", "jpg"),	
-		new MapInfo("Virtual Earth satellite", "vesat", "jpg"),	
-		new MapInfo("Gurtam", "Gumap", "PNG"),	
-		new MapInfo("WikiMap", "WikiMapia", "png"),	
-		new MapInfo("Usermapdir", "usermapdir", "jpg"),	
+
+	public static final MapInfo[] maps = {
+		new MapInfo("Google satellite", "SAT", "jpg"),
+		new MapInfo("Google map", "MAP", "png"),
+		new MapInfo("Google landscape", "LAND", "jpg"),
+		new MapInfo("Yandex satellite", "yasat", "jpg"),
+		new MapInfo("Yandex map", "yamap", "jpg"),
+		//new MapInfo("Yandex hybrid", "yahyb", "png"),
+		new MapInfo("Digital Globe", "DGsat", "jpg"),
+		new MapInfo("Virtual Earth satellite", "vesat", "jpg"),
+		new MapInfo("Gurtam", "Gumap", "PNG"),
+		new MapInfo("WikiMap", "WikiMapia", "png"),
+		new MapInfo("Usermapdir", "usermapdir", "jpg"),
 	};
-	
-	
+
+
 	public static void switchMapTo(int mapIndex){
 		curMapIndex = mapIndex;
-		curMapYandex = maps[curMapIndex].name.startsWith("Yandex"); 
+		curMapYandex = maps[curMapIndex].name.startsWith("Yandex");
 		curMapDir = maps[curMapIndex].dir;
 		curMapExt = maps[curMapIndex].extension;
 	}
-	
-	
+
+
 	public static final Properties ini = new Properties();
-	
+
 	public static void load() {
 	    try {
 	    	if (new File(configFilename).exists())
@@ -83,7 +83,7 @@ public class Config{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	    connectGPS = Boolean.valueOf(ini.getProperty("connectGPS", "true")).booleanValue();
 	    Main.latlng.lat = Double.valueOf(ini.getProperty("lat", "50.407781")).doubleValue();
 	    Main.latlng.lng = Double.valueOf(ini.getProperty("longitude", "30.662485")).doubleValue();
@@ -101,17 +101,17 @@ public class Config{
 	    trackLogSkip = Integer.valueOf(ini.getProperty("trackLogSkip", "0")).intValue();
 
 	    usermapdir = ini.getProperty("usermapdir", "usermapdir");
-	    maps[maps.length-1].dir = usermapdir; 
+	    maps[maps.length-1].dir = usermapdir;
 
 	    switchMapTo(curMapIndex);
-	    
+
 	    String zoomsStr = ini.getProperty("zoomsAvail", "1,2,3,4,5,6,7,8,10,12,14,17");
     	String[] zoomsAvailArray = StringUtil.split(zoomsStr, ",");
     	for (int i = 0; i < zoomsAvailArray.length; i++) {
 		    zoomsAvail.add(Integer.valueOf(zoomsAvailArray[i]));
 		}
 	}
-	
+
 	public static void save(){
 		try {
 			FileWriter out = new FileWriter(configFilename, false);
@@ -145,8 +145,8 @@ public class Config{
 			out.write("wikikmlCacheSize="+String.valueOf(wikikmlCacheSize)+"\r\n");
 
 			out.write("\r\n# Директория с пользовательсктм кешем, сюда можно положить Генштаб, например\r\n");
-			out.write("usermapdir="+usermapdir+"\r\n");			
-			
+			out.write("usermapdir="+usermapdir+"\r\n");
+
 			out.write("\r\n# Доступные уровни зума\r\n");
 			out.write("zoomsAvail=");
 			boolean first = true;
@@ -156,7 +156,7 @@ public class Config{
 				first = false;
 			}
 			out.write("\r\n");
-			
+
 			out.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -164,7 +164,7 @@ public class Config{
 
 	}
 
-	
+
 	public static class MapInfo{
 		/**
 		 * Just name, Google, Yandex...
@@ -184,6 +184,6 @@ public class Config{
 			this.dir = dir;
 			this.extension = extension;
 		}
-		
-	}	
+
+	}
 }

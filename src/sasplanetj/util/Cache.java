@@ -4,17 +4,17 @@ public class Cache{
 
 	Object[] keys;
 	Object[] values;
-	
+
 	public int size;
 	public int pos = 0;
-	
+
 	public Cache(int size){
 		this.size = size;
-		
+
 		keys = new Object[size];
 		values = new Object[size];
 	}
-	
+
 	/**
 	 * Returns index of the key
 	 * Returns -1 if cache does not contain key
@@ -38,17 +38,17 @@ public class Cache{
 		}
 		return null;
 	}
-	
+
 	public Object get(int i){
 		return values[i];
 	}
-	
+
 	public void put(Object key, Object value){
 		keys[pos] = key;
 		values[pos] = value;
-		
+
 		//jump to next free position
 		pos = pos==size-1 ? 0 : pos+1;
 	}
-	
+
 }

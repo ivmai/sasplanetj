@@ -89,22 +89,22 @@ public class XYLayout implements LayoutManager2, java.io.Serializable
 
   public void invalidateLayout(Container target) {}
 
-  
-  
-  
-  
-  
-  
-  
 
-  
+
+
+
+
+
+
+
+
   	// internal
 	private Hashtable info = new Hashtable(); // leave this as non-transient
   	static final XYConstraints defaultConstraints = new XYConstraints();
 
 	private Rectangle getComponentBounds(Component component, boolean doPreferred) {
 		XYConstraints constraints = (XYConstraints)info.get(component);
-		//XYConstraints constraints = new XYConstraints(component.get, component.getBounds().y, component.getBounds().width, component.getBounds().height); 
+		//XYConstraints constraints = new XYConstraints(component.get, component.getBounds().y, component.getBounds().width, component.getBounds().height);
 		//System.err.println("XYLayout.getComponentBounds(" + component + "," + doPreferred + ") constraints=" + constraints + " width=" + width + " height=" + height);
 		//System.err.println(component);
 		if (constraints==null){
@@ -112,19 +112,19 @@ public class XYLayout implements LayoutManager2, java.io.Serializable
 			constraints = defaultConstraints;
 		}
 		Rectangle r = new Rectangle(constraints.x, constraints.y, constraints.width, constraints.height);
-		
+
 		if (r.width <= 0 || r.height <= 0) {
 			//Dimension d = doPreferred ? component.getPreferredSize() : component.getMinimumSize();
 			Dimension d = component.getPreferredSize();
 			if (r.width <= 0) r.width = d.width;
 			if (r.height <= 0) r.height = d.height;
 		}
-		
+
 		return r;
 	}
 	private Dimension getLayoutSize(Container target, boolean doPreferred) {
 		Dimension dim = new Dimension(0, 0);
-		
+
 		//System.err.println("XYLayout.getLayoutSize(" + target + "," + doPreferred + ") width=" + width + " height=" + height);
 		if (width <= 0 || height <= 0) {
 		  int count = target.getComponentCount();

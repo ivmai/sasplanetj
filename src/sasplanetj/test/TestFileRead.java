@@ -20,7 +20,7 @@ public class TestFileRead {
 		end = new Date();
 		System.out.println("read file with FileReader in " + (end.getTime() - start.getTime()));
 
-		
+
 		start = new Date();
 		int len = (int) (new File(filename).length());
 		FileInputStream fis = new FileInputStream(filename);

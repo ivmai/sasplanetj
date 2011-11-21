@@ -23,20 +23,20 @@ public class NewWaypointDialog extends Dialog {
 		);
 
 		setLayout(new GridLayout(4, 2, 8, 8));
-		
+
 		add(new Label("Latitude:"));
 		lat.setText(LatLng.latlngFormat7.format(latlng.lat));
 		add(lat);
-		
+
 		add(new Label("Longitude:"));
 		lng.setText(LatLng.latlngFormat7.format(latlng.lng));
-		add(lng);		
+		add(lng);
 
 		add(new Label("Waypoint name:"));
 		name.setText("wp"+(Waypoints.points==null ? "1" : ""+(Waypoints.points.size()+1)) );
 		add(name);
-		
-		add(new Button("OK"));		
+
+		add(new Button("OK"));
 		add(new Button("Cancel"));
 	}
 

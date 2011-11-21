@@ -10,43 +10,43 @@ import sasplanetj.ui.ColorsAndFonts;
 
 public class Wikimapia {
 	public static Cache kmlCache; //Cache<String, ArrayList<KML>>
-	
+
 	public static final String mapDir = "Wiki";
 
 	/**
 	 * last drawn KMLs
 	 */
 	public static ArrayList drawnKmls = new ArrayList(); //ArrayList<KML>
-	
-	
+
+
     public static String getCachePath(int x, int y, int zoom){
     	///cache/Wiki/z17/37/x38343/21/y22152.kml
     	return Config.cachePath+StringUtil.fileSep+mapDir+StringUtil.fileSep+"z"+Config.zoom+StringUtil.fileSep+(x/1024)+StringUtil.fileSep+"x"+x+StringUtil.fileSep+(y/1024)+StringUtil.fileSep+"y"+y+".kml";
     }
-    
+
     /**
-     * 
+     *
      * @param tileXY
      * @param zoom
      * @return ArrayList<KML>
      */
 	public static ArrayList getTileKML(XYint tileXY, int zoom) {
 		String filename = getCachePath(tileXY.x, tileXY.y, zoom);
-		
+
 		int cachei = kmlCache.containsKey(filename);
 		if (cachei>-1) return (ArrayList) kmlCache.get(cachei);
-		
+
 		String kmlstr = loadKML(filename);
-		ArrayList kmls = parse(kmlstr, zoom);	
+		ArrayList kmls = parse(kmlstr, zoom);
 
 		kmlCache.put(filename, kmls);
 		//System.out.println("Caching "+filename);
-			
+
 		return kmls;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param kmlstr
 	 * @param zoom
 	 * @return ArrayList<KML>
@@ -54,15 +54,15 @@ public class Wikimapia {
 	 */
 	private static ArrayList parse(String kmlstr, int zoom) throws NumberFormatException {
 		if (kmlstr==null) return null;
-		
-		ArrayList kmls = new ArrayList(1); 
+
+		ArrayList kmls = new ArrayList(1);
 		int descrPos = 0;
 		while ( (descrPos = kmlstr.indexOf("<description>", descrPos+1))!=-1){
 			KML kml = new KML();
 			int descrTextStart = kmlstr.indexOf("<![CDATA[",  descrPos+1) + "<![CDATA[".length();
 			int descrTextEnd =  kmlstr.indexOf("<br>",  descrTextStart+1); //]]>
 			kml.description = kmlstr.substring(descrTextStart, descrTextEnd).trim();
-			
+
 			int coordinatesStart = kmlstr.indexOf("<coordinates>",  descrTextEnd) + "<coordinates>".length();
 			int coordinatesEnd = kmlstr.indexOf("</coordinates>",  coordinatesStart+1);
 			String coordsStr = kmlstr.substring(coordinatesStart, coordinatesEnd).trim();
@@ -85,8 +85,8 @@ public class Wikimapia {
 		System.out.println("Wikimapia: Parsed "+kmls.size()+" items");
 		return kmls.size()>0 ? kmls : null;
 	}
-	
-	
+
+
 	public static class KML{
 		public String description;
 		//Polygon poly;
@@ -95,13 +95,13 @@ public class Wikimapia {
 		public int y[];
 		//previously calculated polygon on screen
 		public Polygon drawnPoly;
-		
+
 		public String strip(){
 			return StringUtil.replace(description, "&amp;quot;", "\"");
 		}
 	}
-	
-	
+
+
 
 	public static String loadKML(String filename) {
 		/*Check if there are any zips instead of directories*/
@@ -122,10 +122,10 @@ public class Wikimapia {
 				return new String(binary);
 			}
 		}
-		
-		return loadKML_FS(filename);		
+
+		return loadKML_FS(filename);
 	}
-	
+
 	public static String loadKML_FS(String filename) {
 		File f = new File(filename);
 		if (!f.exists()){
@@ -143,11 +143,11 @@ public class Wikimapia {
 			String res = new String();
 			while ((str = bufread.readLine()) != null) {
 				res += str;
-			}			
+			}
 			bufread.close();
 			return res;
 			*/
-			
+
 			int len = (int) (new File(filename).length());
 			FileInputStream fis = new FileInputStream(filename);
 			byte buf[] = new byte[len];
@@ -164,9 +164,9 @@ public class Wikimapia {
 			e.printStackTrace();
 		}
 		return null;
-	} 		
+	}
 
-	
+
 	public static ArrayList drawTile(XYint xy, Graphics dbf, XYint[] matrix){
 		ArrayList kmlsForTile = Wikimapia.getTileKML(xy, Config.zoom);
 		if (kmlsForTile!=null){
@@ -185,5 +185,5 @@ public class Wikimapia {
 		}
 		return kmlsForTile;
 	}
-	
+
 }

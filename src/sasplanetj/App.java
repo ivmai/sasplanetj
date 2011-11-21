@@ -16,7 +16,7 @@ import sasplanetj.util.*;
 public class App extends Frame implements ActionListener, ItemListener{
 	private static App self;
 	public static String args[];
-	
+
 	public static SerialReader serialReader = null;
 
 	private static final String EXIT_COMMAND = "EXIT_COMMAND";
@@ -40,46 +40,46 @@ public class App extends Frame implements ActionListener, ItemListener{
 	public static CheckboxMenuItem cmiDrawGrid;
 	public static CheckboxMenuItem cmiDrawLatLng;
 	public static CheckboxMenuItem cmiDrawTail;
-	
+
 	public static MenuItem miZoomOut;
 	public static MenuItem miZoomIn;
 	public static Menu menuZoomOnlyTo;
 	public static CheckboxMenuItem[] chkMenuZoomOnlyTo;
 	public static Menu menuZoomTo;
 	public static CheckboxMenuItem[] chkMenuZoomTo;
-	
+
 	public Component currentView = null;
-	
+
 	public static CheckboxMenuItem[] cmiMaps = new CheckboxMenuItem[Config.maps.length];
-	
+
 	public App(String args[]){
 		App.args = args;
-		
+
 		self = this;
 		setTitle("SAS.Planet.J");
-	
+
 	    this.addWindowListener(new WindowAdapter(){
 	        public void windowClosing(WindowEvent we){
 	        	quit();
 	        }
-	    });		
-	    
+	    });
+
 	    Config.load();
-	} 
-	
+	}
+
 	private void quit() {
 		TrackLogger.loggerStop();
 		if (serialReader!=null && serialReader.isAlive())
 			serialReader.stopReading();
 		Config.save();
 		System.exit(0);
-	}	
-	
-	
+	}
+
+
 	public void addComponents(){
-		
+
 		MenuItem mi;
-		
+
 		Menu menu = new Menu("Menu");
 		menu.addActionListener(this);
 			mi = new MenuItem("Go to...");
@@ -95,7 +95,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 			mi.setActionCommand(NMEALOG_COMMAND);
 			menu.add(mi);
 			menu.addSeparator();
-			
+
 			Menu menuWaypoints = new Menu("Waypoints");
 			menuWaypoints.addActionListener(this);
 				mi = new MenuItem("Open waypoints...");
@@ -108,7 +108,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 				mi.setActionCommand("WAYPOINTS_SAVE");
 				menuWaypoints.add(mi);
 			menu.add(menuWaypoints);
-				
+
 			Menu menuTracks = new Menu("Tracks");
 			menuTracks.addActionListener(this);
 				mi = new MenuItem("Open track...");
@@ -125,7 +125,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 				mi.setActionCommand("TRACKLOG_DELETE");
 				menuTracks.add(mi);
 			menu.add(menuTracks);
-			
+
 			menu.addSeparator();
 			cmiConnectGPS = new CheckboxMenuItem("Connect to GPS");
 			cmiConnectGPS.setActionCommand("CONNECT_GPS");
@@ -153,7 +153,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 			cmiDrawTail.addItemListener(this);
 			menu.add(cmiDrawTail);
 		menuBar.add(menu);
-		
+
 
 		CheckboxMenuItem cmi;
 		menu = new Menu("Maps");
@@ -172,7 +172,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 		menuLayers.add(cmiWikimapia);
 		menu.add(menuLayers);
 		menuBar.add(menu);
-		
+
 		miZoomOut = new MenuItem("Zoom out");
 		miZoomOut.setActionCommand(ZOOMOUT_COMMAND);
 		miZoomIn = new MenuItem("Zoom in");
@@ -190,22 +190,22 @@ public class App extends Frame implements ActionListener, ItemListener{
 			cmi.addItemListener(this);
 			menuZoomOnlyTo.add(cmi);
 			chkMenuZoomOnlyTo[i - TilesUtil.ZOOM_MIN] = cmi;
-			
+
 			cmi = new CheckboxMenuItem("level " + i);
 			cmi.setActionCommand(ZOOMTO_COMMAND + i);
 			cmi.addItemListener(this);
 			menuZoomTo.add(cmi);
 			chkMenuZoomTo[i - TilesUtil.ZOOM_MIN] = cmi;
 		}
-		
+
 		setMenuBar(menuBar);
-		
+
 		TilesUtil.tilesCache = new Cache(Config.imageCacheSize); //Cache<String, Image>
-		Wikimapia.kmlCache = new Cache(Config.wikikmlCacheSize); //Cache<String, ArrayList<KML>> 
+		Wikimapia.kmlCache = new Cache(Config.wikikmlCacheSize); //Cache<String, ArrayList<KML>>
 
 		if (!Config.connectGPS) Config.trackLog = false;
 		//cmiTrackLog.setState(Config.trackLog);
-		
+
 		if (Config.connectGPS){
 			createSerialReader();
 			serialReader.start();
@@ -213,7 +213,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 		}else{
 			serialReader = new SerialReader(); //just a dumb that never runs
 		}
-		
+
 		if (main==null) main = new Main();
 		changeView(main);
 	}
@@ -226,10 +226,10 @@ public class App extends Frame implements ActionListener, ItemListener{
 		cmiDrawTail.setState(Config.drawTail);
 		cmiWikimapia.setState(Config.drawWikimapia);
 		cmiMaps[Config.curMapIndex].setState(true);
-		
+
 		zoomMenu();
 	}
-	
+
 
 	public void changeView(Component newView){
 		//System.out.println(NMEALog.class.getCanonicalName());
@@ -254,8 +254,8 @@ public class App extends Frame implements ActionListener, ItemListener{
 		}
 		//other windows register themselves
 	}
-	
-    
+
+
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
 		//System.out.println(command);
@@ -305,7 +305,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 			App.main.repaint();
 		}else if (command.equals("TRACKLOG_DELETE")) {
 			File tracklog = new File(TrackLogger.logFilename);
-			if (tracklog.exists()) 
+			if (tracklog.exists())
 				tracklog.delete();
 		}else if (command.equals("WAYPOINTS_SAVE")) {
 			if (Waypoints.points==null || Waypoints.points.size()==0){
@@ -322,10 +322,10 @@ public class App extends Frame implements ActionListener, ItemListener{
 					filename += File.separatorChar;
 				filename += d.getFile();
 				Waypoints.save(filename);
-			}			
+			}
 		}
-		
-		currentView.requestFocus(); //for creme		
+
+		currentView.requestFocus(); //for creme
 	}
 
 	public void itemStateChanged(ItemEvent e) {
@@ -334,13 +334,13 @@ public class App extends Frame implements ActionListener, ItemListener{
 		if (command == DRAWGRID_COMMAND) {
 			Config.drawGrid = e.getStateChange()==ItemEvent.SELECTED;
 			main.repaint();
-		}else if (command == DRAWLATLNG_COMMAND) {			
+		}else if (command == DRAWLATLNG_COMMAND) {
 			Config.drawLatLng = e.getStateChange()==ItemEvent.SELECTED;
 			main.repaint();
-		}else if (command == "WIKIMAPIA") {			
+		}else if (command == "WIKIMAPIA") {
 			Config.drawWikimapia = e.getStateChange()==ItemEvent.SELECTED;
 			main.repaint();
-		}else if (command.startsWith("MAPSWITCH")) {			
+		}else if (command.startsWith("MAPSWITCH")) {
 			for (int i = 0; i < Config.maps.length; i++) {
 				cmiMaps[i].setState(false);
 			}
@@ -354,9 +354,9 @@ public class App extends Frame implements ActionListener, ItemListener{
 			if (e.getStateChange()==ItemEvent.SELECTED){
 				Config.zoomsAvail.add(z);
 			}else{
-				Config.zoomsAvail.remove(z);				
+				Config.zoomsAvail.remove(z);
 			}
-		}else if (command == DRAWTAIL_COMMAND) {			
+		}else if (command == DRAWTAIL_COMMAND) {
 			Config.drawTail = e.getStateChange()==ItemEvent.SELECTED;
 			if (Config.drawTail) Main.trackTail.clear(); //clear to prevent jump in tail
 			main.repaint();
@@ -384,8 +384,8 @@ public class App extends Frame implements ActionListener, ItemListener{
 			if (Config.trackLog) TrackLogger.loggerStart();
 			else TrackLogger.loggerStop();
 		}
-		
-		currentView.requestFocus(); //for creme		
+
+		currentView.requestFocus(); //for creme
 	}
 
 	public static void zoomIn() {
@@ -404,7 +404,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 			System.out.println("This is the maximum zoom allowed");
 			return;
 		}
-		
+
 		zoom(zoom);
 	}
 
@@ -413,7 +413,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 			Toolkit.getDefaultToolkit().beep();
 			return;
 		}
-		
+
 		int zoom = Config.zoom-1;
 		for (int i = zoom; i >= TilesUtil.ZOOM_MIN; i--) {
 			if (Config.zoomsAvail.contains(new Integer(zoom))) break;
@@ -424,10 +424,10 @@ public class App extends Frame implements ActionListener, ItemListener{
 			System.out.println("This is the minimum zoom allowed");
 			return;
 		}
-		
+
 		zoom(zoom);
 	}
-	
+
 	public static void zoom(int zoom) {
 		double deltaview = (double)Math.pow(2, zoom) / Math.pow(2, Config.zoom);
 		//System.out.println(deltaview);
@@ -436,7 +436,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 		Config.zoom = zoom;
 		App.getSelf().zoomMenu();
 		main.repaint();
-	}	
+	}
 
 	/*
 	 * Such a trick because of Mysaifu bug with menuitem.setLabel
@@ -445,14 +445,14 @@ public class App extends Frame implements ActionListener, ItemListener{
 		if (menuBar.getMenuCount()>=4)
 			menuBar.remove(3);
 
-		
+
 		Menu menuZoom = new Menu("Zoom "+Config.zoom);
 		menuZoom.addActionListener(this);
 		menuZoom.add(miZoomOut);
 		menuZoom.add(miZoomIn);
 		menuZoom.addSeparator();
-		menuZoom.add(menuZoomTo);		
-		menuZoom.add(menuZoomOnlyTo);		
+		menuZoom.add(menuZoomTo);
+		menuZoom.add(menuZoomOnlyTo);
 
 		menuBar.add(menuZoom);
 
@@ -460,10 +460,10 @@ public class App extends Frame implements ActionListener, ItemListener{
 			chkMenuZoomTo[i-TilesUtil.ZOOM_MIN].setState(false);
 			chkMenuZoomOnlyTo[i-TilesUtil.ZOOM_MIN].setState(Config.zoomsAvail.contains(new Integer(i)));
 		}
-		
+
 		chkMenuZoomTo[Config.zoom-TilesUtil.ZOOM_MIN].setState(true);
-	}	
-	
+	}
+
 	public static void createSerialReader(){
 	 	if (args.length > 0) {
 		    String port = args[0];
@@ -476,9 +476,9 @@ public class App extends Frame implements ActionListener, ItemListener{
 		}else{
 			serialReader = new SerialReader();
 		}
-		
+
 	}
-	
+
 	/**
 	 * Moves map position to given coordinates
 	 * @param latlng
@@ -502,8 +502,8 @@ public class App extends Frame implements ActionListener, ItemListener{
 		Waypoints.points.add(new Waypoint(latlng, name));
 		App.main.repaint();
 	}
-	
-	public static void main(String args[]) throws Exception { 
+
+	public static void main(String args[]) throws Exception {
 		System.out.println("Working directory: "+Config.curDir);
 		if (args.length>0 && args[0].equals("list")){
 			Enumeration portList = CommPortIdentifier.getPortIdentifiers();
@@ -511,14 +511,14 @@ public class App extends Frame implements ActionListener, ItemListener{
 			while (portList.hasMoreElements()) {
 				CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();
 				System.out.println("\t"+portId.getName());
-			} 		
+			}
 			return;
 		}
-		
+
 		App app = new App(args);
 
 		//app.fullscreen();
-		
+
 		if (Config.isCE){
 			System.out.println("Screen size="+Toolkit.getDefaultToolkit().getScreenSize());
 			//app.setUndecorated(true); //1.3 compat
@@ -528,7 +528,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 			app.setLocation(600,100);
 			app.setSize(new Dimension(245, 320));
 		}
-		
+
 		app.addComponents();
 		//app.validate();
 		app.setVisible(true);
@@ -536,7 +536,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 		app.currentView.requestFocus();
 		//app.currentView.repaint();
 
-		
+
 	}
 
 	public void fullscreen(){

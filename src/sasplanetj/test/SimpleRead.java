@@ -8,8 +8,8 @@ import javax.comm.*;
 
 /**
  * Class declaration
- * 
- * 
+ *
+ *
  * @author
  * @version 1.8, 08/03/00
  */
@@ -22,10 +22,10 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 
 	/**
 	 * Method declaration
-	 * 
-	 * 
+	 *
+	 *
 	 * @param args
-	 * 
+	 *
 	 * @see
 	 */
 	public static void main(String[] args) {
@@ -56,8 +56,8 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 
 	/**
 	 * Constructor declaration
-	 * 
-	 * 
+	 *
+	 *
 	 * @see
 	 */
 	public SimpleRead() {
@@ -95,8 +95,8 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 
 	/**
 	 * Method declaration
-	 * 
-	 * 
+	 *
+	 *
 	 * @see
 	 */
 	public void run() {
@@ -112,10 +112,10 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 
 	/**
 	 * Method declaration
-	 * 
-	 * 
+	 *
+	 *
 	 * @param event
-	 * 
+	 *
 	 * @see
 	 */
 	public void serialEvent(SerialPortEvent event) {

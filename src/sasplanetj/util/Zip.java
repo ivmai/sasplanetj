@@ -9,10 +9,10 @@ import java.util.zip.*;
 public class Zip {
 
 	public static byte[] getZipFile(String  zipname, String fileinzip){
-		//return !Config.isCE ? getZipFileJava(zipname, fileinzip) : Native.getZipFileNative(zipname, fileinzip); 
+		//return !Config.isCE ? getZipFileJava(zipname, fileinzip) : Native.getZipFileNative(zipname, fileinzip);
 		return getZipFileJava(zipname, fileinzip);
 	}
-	
+
 	private static byte[] getZipFileJava(String  zipname, String fileinzip){
 		try {
 			final ZipFile zf = new ZipFile(zipname);
@@ -22,7 +22,7 @@ public class Zip {
 				return null;
 			}
 			//System.out.println("ze.getName()=" + ze.getName() + "," + "getSize()=" + ze.getSize());
-			
+
 			/*
 			//buffer reading method
 	        int size = (int)ze.getSize();
@@ -36,11 +36,11 @@ public class Zip {
 		        	System.arraycopy(buf, 0, res, read, ln);
 		        	read += ln;
 					size -= ln;
-				}	
+				}
 	        }
 	        */
-			
-			
+
+
 			//http://www.cs.cmu.edu/~jch/java/text/doug_erickson_961119.txt
 			DataInputStream zis = new DataInputStream(zf.getInputStream(ze));
 			byte res[] = new byte[(int)ze.getSize()];
@@ -52,7 +52,7 @@ public class Zip {
 			byte res[] = new byte[size];
 			zis.read(res, 0, size);
 			(/
-			
+
 		    zis.close();
 		    //zf.close(); //creme compat. no need to close file, i think
 
@@ -61,7 +61,7 @@ public class Zip {
 			fos.write(res);
 			fos.close();
 			*/
-		    
+
 		    return res;
 		} catch (IOException e) {
 			System.out.println("Zip: IOException while accessing "+zipname+": "+fileinzip);
@@ -69,39 +69,39 @@ public class Zip {
 		}
 		return null;
 	}
-	
-	
-	
-	public static void main(String args[]) throws Exception { 
-		test();		
-		test();		
-		test();		
+
+
+
+	public static void main(String args[]) throws Exception {
+		test();
+		test();
+		test();
 	}
 
 
 
 	private static void test() {
 		System.out.println("Working directory: "+Config.curDir);
-		
+
 		System.out.println("====================");
 		Date start = new Date();
-		
+
 		//String filename = "Wiki/z10/0/x299/0/y172.kml";
 		//String zipname = "cache/Wiki.zip";
 		String filename = "Wiki/z10/0/x299/0/y172.kml";
 		String zipname = StringUtil.normPath(Config.curDir+"/cache/Wiki.zip");
-		
+
 		byte[] z = getZipFile(zipname, filename);
 		Date end = new Date();
-		System.out.println("Unpacked  in " + (end.getTime() - start.getTime())+"ms");		
+		System.out.println("Unpacked  in " + (end.getTime() - start.getTime())+"ms");
 
 		start = new Date();
 		String s = new String(z);
 		System.out.println("First symbols="+s.substring(1, 50));
 
-		
+
 		end = new Date();
 		System.out.println("Decoded  in " + (end.getTime() - start.getTime())+"ms");
 	}
-	
+
 }

@@ -13,7 +13,7 @@ import sasplanetj.ui.ColorsAndFonts;
 http://forum.openstreetmap.org/viewtopic.php?id=244
 
 QPoint coordinateToDisplay(Coordinate& coordinate, int zoom)
-{    
+{
     double numberOfTiles = pow(2, zoom);
     // LonToX
     double x = (coordinate.getLongitude()+180) * (numberOfTiles*tilesize)/360.;
@@ -35,7 +35,7 @@ Coordinate displayToCoordinate(const QPoint& point, int zoom)
     lat = 1-lat;
     lat = lat*PI;
     lat = rad_deg(atan(sinh(lat)));
-    
+
     Coordinate coord = Coordinate(longitude, lat);
     return coord;
 }
@@ -43,15 +43,15 @@ Coordinate displayToCoordinate(const QPoint& point, int zoom)
  */
 
 public class TilesUtil {
-	
+
 	public static final int ZOOM_MIN = 1;
 	public static final int ZOOM_MAX = 19;
 
 	public static final int TILESIZE = 256;
-    public static Cache tilesCache; //<String, Image> 
+    public static Cache tilesCache; //<String, Image>
 
-    
-    
+
+
     /*
      * http://sasgis.ru/2009/05/27/yandekskarty-na-google-api/#more-248
      * Yandex maps have ellipse projection
@@ -65,19 +65,19 @@ public class TilesUtil {
 		double z = Math.sin(Math.toRadians(lat));
 		double c = PixelsAtZoom/(2*Math.PI);
 		double x = Math.floor(PixelsAtZoom/2+lng*(PixelsAtZoom/360));
-		double y = Math.floor(PixelsAtZoom/2-c*(atanh(z)-exct*atanh(exct*z)));		
+		double y = Math.floor(PixelsAtZoom/2-c*(atanh(z)-exct*atanh(exct*z)));
 	    //why??? but it works so
 	    y = y/2;
 	    x = x/2;
-	    
+
 	    //System.out.println("ya="+new XYint((int)Math.floor(x), (int)Math.floor(y)));
 		return new XYint((int)Math.floor(x), (int)Math.floor(y));
 	}
-    
-    
+
+
 	public static XYint coordinateToDisplay(double lat, double lng, int zoom){
 		if (Config.curMapYandex) return coordinateToDisplayYandex(lat, lng, zoom);
-		
+
 	    double numberOfTiles = Math.pow(2, zoom);
 	    // LonToX
 	    double x = (lng+180) * (numberOfTiles*TILESIZE)/360.;
@@ -86,21 +86,21 @@ public class TilesUtil {
 	    double y = (projection /Math.PI);
 	    y = 1-y;
 	    y = y/2  * (numberOfTiles*TILESIZE);
-	    
+
 	    //why??? but it works so
 	    y = y/2;
 	    x = x/2;
-	    
+
 	    //System.out.println(new XYint((int)Math.floor(x), (int)Math.floor(y)));
 	    return new XYint((int)Math.floor(x), (int)Math.floor(y));
-	}	
+	}
 
 	/** returns Tile XY with given display coordinates*/
 	public static XYint getTileByDisplayCoord(XYint p){
 		return new XYint((int)Math.floor(p.x/TILESIZE), (int)Math.floor(p.y/TILESIZE));
 	}
-	
-	
+
+
 	public static LatLng displayToCoordinate(XYint point, int zoom) {
 		point.x = point.x*2;
 		point.y = point.y*2;
@@ -113,29 +113,29 @@ public class TilesUtil {
 		lat = Math.toDegrees(Math.atan((Math.sinh(lat))));
 
 		return new LatLng(lat, longitude);
-	}	
-	
-	
-	
+	}
+
+
+
     public static String getCachePath(int x, int y, int zoom){
     	//sasplanet\cache\sat\z17\37\x38349\21\y22110.jpg
     	//result:=path+'\z'+zoom+'\'+(x div 1024)+'\x'+x+'\'+(y div 1024)+'\y'+y+ext;
     	return Config.cachePath+StringUtil.fileSep+Config.curMapDir+StringUtil.fileSep+"z"+Config.zoom+StringUtil.fileSep+(x/1024)+StringUtil.fileSep+"x"+x+StringUtil.fileSep+(y/1024)+StringUtil.fileSep+"y"+y+"."+Config.curMapExt;
     }
-    
+
 	public static Image getTileImage(XYint tileXY, int zoom) {
 		String filename = getCachePath(tileXY.x, tileXY.y, zoom);
-		
-		int cachei = tilesCache.containsKey(filename); 
+
+		int cachei = tilesCache.containsKey(filename);
 		if (cachei>-1) return (Image)tilesCache.get(cachei);
-		
+
 		Image img = loadImage(filename);
 		tilesCache.put(filename, img);
 		//System.out.println("Caching "+filename);
 		return img;
-	} 	
-	
-	
+	}
+
+
 	public static Image loadImage(String filename) {
 		/*Check if there are any zips instead of directories*/
 		String[] zipnames = checkZipFileExistance(filename);
@@ -148,7 +148,7 @@ public class TilesUtil {
 				return null;
 			}
 			//return Toolkit.getDefaultToolkit().createImage(binary);
-			
+
 			//Ensure that image is created. Otherwise sometimes there is white areas painted instead of image.
 	    	Image img = Toolkit.getDefaultToolkit().createImage(binary);
 	    	MediaTracker mt = new MediaTracker(App.getSelf());
@@ -161,11 +161,11 @@ public class TilesUtil {
 			System.out.println(" " + (new Date().getTime() - start.getTime()) + "ms");
 			return img;
 		}
-		
+
 		return loadImageFromFS(filename);
-		
+
 	}
-	
+
 	/**
 	 * Will return {zipname, filename} or null
 	 * For some reason fileSep in zips is / always, never \
@@ -190,7 +190,7 @@ public class TilesUtil {
 		}
 		return null;
 	}
-	
+
 	public static Image loadImageFromFS(String filename) {
 		//System.out.println(filename);
     	Image img = Toolkit.getDefaultToolkit().getImage(filename);
@@ -201,16 +201,16 @@ public class TilesUtil {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
     	if (img==null || img.getHeight(null)<0 || img.getWidth(null)<0) {
     		System.out.println("Error loading image "+filename);
     		return null;
     	}else{
     		return img;
     	}
-	}	
-	
-	
+	}
+
+
 	/**
 	 * calculate how much tiles needed to cover the area
 	 */
@@ -220,16 +220,16 @@ public class TilesUtil {
 
 		int tilesToTop = centerTileTopLeft.y>0 ? (int) Math.ceil((double)centerTileTopLeft.y/TILESIZE) : 0;
 		int tilesToBottom = centerTileTopLeft.y+TILESIZE<height ? (int) Math.ceil((double)(height-centerTileTopLeft.y-TILESIZE)/TILESIZE) : 0;
-		
-		
+
+
 		int totalMatrixW = tilesToLeft+tilesToRight+1;
 		int totalMatrixH = tilesToTop+tilesToBottom+1;
-		
+
 		int matrixX = centerTileTopLeft.x - tilesToLeft*TILESIZE;
 		int matrixY = centerTileTopLeft.y - tilesToTop*TILESIZE;
-		
-		XYint[] matrix = {new XYint((tileXY.x-tilesToLeft)*TILESIZE, (tileXY.y-tilesToTop)*TILESIZE), new XYint(matrixX, matrixY)}; 
-		
+
+		XYint[] matrix = {new XYint((tileXY.x-tilesToLeft)*TILESIZE, (tileXY.y-tilesToTop)*TILESIZE), new XYint(matrixX, matrixY)};
+
 		//System.out.println("matrix"+totalMatrixW+"x"+totalMatrixH+", tilesToTop="+tilesToTop+", tilesToBottom="+tilesToBottom+", tilesToLeft="+tilesToLeft+", tilesToRight="+tilesToRight);
 		if (Config.drawWikimapia){
 			Wikimapia.drawnKmls.clear();
@@ -245,7 +245,7 @@ public class TilesUtil {
 					dbf.setColor(ColorsAndFonts.clImageNotFound);
 					dbf.fillRect(x, y, TILESIZE, TILESIZE);
 				}
-				
+
 				if (Config.drawGrid){
 					dbf.setColor(ColorsAndFonts.clGrid);
 					dbf.drawRect(x, y, TILESIZE, TILESIZE);
@@ -262,18 +262,18 @@ public class TilesUtil {
 				}
 			}
 		}
-		
-		
-		
+
+
+
 		/**
 		 * 1) matrix display coordinates (map pixel)
 		 * 2) matrix screen offset coordinates
 		 */
 		return matrix;
 	}
-	
 
-	
-   
-	
+
+
+
+
 }

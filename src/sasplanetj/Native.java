@@ -8,7 +8,7 @@ public class Native {
 		if (Config.isCE)
 			System.loadLibrary("sasplanetj");
 	}
-	
+
 	public native static byte[] getZipFileNative(String  zipname, String fileinzip);
-	
+
 }

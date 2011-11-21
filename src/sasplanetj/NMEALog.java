@@ -12,13 +12,13 @@ public class NMEALog extends TextArea implements GPSListenerNMEA{
 	public NMEALog(){
 		App.serialReader.addNMEAListener(this);
 	}
-	
+
 	public void gpsEventNMEA(String msg) {
 		this.append(msg+"\n");
 	}
-	
+
 	public void removeListener(){
 		App.serialReader.removeNMEAListener(this);
 	}
-	
+
 }

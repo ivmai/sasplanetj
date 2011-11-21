@@ -1,7 +1,7 @@
 package sasplanetj.util;
 /*
  * http://www.fermoll.de/ozi_ce/formate.htm
- * 
+ *
  * Track File (.plt)
 
 Line 1 : File type and version information
@@ -14,9 +14,9 @@ Field 1 : always zero (0)
 Field 2 : width of track plot line on screen - 1 or 2 are usually the best
 Field 3 : track color (RGB)
 Field 4 : track description (no commas allowed)
-Field 5 : track skip value - reduces number of track points plotted, usually set to 1 
+Field 5 : track skip value - reduces number of track points plotted, usually set to 1
 Field 6 : track type - 0 = normal , 10 = closed polygon , 20 = Alarm Zone
-Field 7 : track fill style - 0 =bsSolid; 1 =bsClear; 2 =bsBdiagonal; 3 =bsFdiagonal; 4 =bsCross; 
+Field 7 : track fill style - 0 =bsSolid; 1 =bsClear; 2 =bsBdiagonal; 3 =bsFdiagonal; 4 =bsCross;
 5 =bsDiagCross; 6 =bsHorizontal; 7 =bsVertical;
 Field 8 : track fill color (RGB)
 
@@ -33,15 +33,15 @@ Field 2 : Longitude - decimal degrees.
 Field 3 : Code - 0 if normal, 1 if break in track line
 Field 4 : Altitude in feet (-777 if not valid)
 Field 5 : Date - see Date Format below, if blank a preset date will be used
-Field 6 : Date as a string 
+Field 6 : Date as a string
 Field 7 : Time as a string
 
 Note that OziExplorer reads the Date/Time from field 5, the date and time in fields 6 & 7 are ignored.
 
 Example
--27.350436, 153.055540,1,-777,36169.6307194, 09-Jan-99, 3:08:14 
+-27.350436, 153.055540,1,-777,36169.6307194, 09-Jan-99, 3:08:14
 -27.348610, 153.055867,0,-777,36169.6307194, 09-Jan-99, 3:08:14
- * 
+ *
  */
 import java.io.*;
 
@@ -50,19 +50,19 @@ import sasplanetj.gps.*;
 
 public class TrackLogger implements GPSListener{
 	public static final TrackLogger self = new TrackLogger();
-	
-	
-	public static final String logFilename = "track.plt"; 
-	
+
+
+	public static final String logFilename = "track.plt";
+
 	public static final File f = new File(logFilename);
 	public static FileWriter out;
-	
+
 	//public static LatLng latlng = new LatLng();
-	
+
 	public static int breakTrack = 1;
-	
+
 	private static int skipCounter = 0;
-	
+
 	public void gpsEvent(LatLng latlng) {
 		if (skipCounter==Config.trackLogSkip){
 			skipCounter=0;
@@ -99,13 +99,13 @@ public class TrackLogger implements GPSListener{
 				}
 				breakTrack = 1;
 				App.serialReader.addGPSListener(self);
-				App.cmiTrackLog.setState(Config.trackLog);				
+				App.cmiTrackLog.setState(Config.trackLog);
 			} catch (IOException e) {
 				System.out.println("TrackLogger: error opening "+logFilename);
 			}
 		}
 	}
-	
+
 	public static void loggerStop(){
 		if (out!=null){
 			App.serialReader.removeGPSListener(self);
@@ -117,7 +117,7 @@ public class TrackLogger implements GPSListener{
 			}
 			out = null;
 		}
-		App.cmiTrackLog.setState(Config.trackLog);				
+		App.cmiTrackLog.setState(Config.trackLog);
 	}
-	
+
 }

@@ -10,7 +10,7 @@ public class TestMenu extends Frame {
 
 	public TestMenu(){
 		setSize(200, 200);
-		
+
 		MenuBar menuBar = new MenuBar();
 
 		Menu menu = new Menu("Opts");
@@ -20,13 +20,13 @@ public class TestMenu extends Frame {
 		menuBar.add(menu);
 
 		cmi.setState(true);
-		
+
 		setMenuBar(menuBar);
-		
+
 		cmi.setState(true);
-		
+
 	}
-	
+
 	/**
 	 * @param args
 	 */
@@ -35,7 +35,7 @@ public class TestMenu extends Frame {
 		t.validate();
 		t.setVisible(true);
 		//t.cmi.setState(true);
-		
+
 	}
 
 }

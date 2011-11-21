@@ -16,8 +16,8 @@ public class XYint {
 		this.x = other.x;
 		this.y = other.y;
 	}
-	
-	
+
+
 	/**
 	 * Sets new x and y
 	 * @param x
@@ -27,7 +27,7 @@ public class XYint {
 		this.x = x;
 		this.y = y;
 	}
-	
+
 	public boolean equalXY(XYint xy) {
 		return this.x==xy.x && this.y==xy.y;
 	}
@@ -61,7 +61,7 @@ public class XYint {
 		return new XYint(this.x-other.x, this.y-other.y);
 	}
 
-	
+
 	/**
 	 * Adds coordinates of other point
 	 */
@@ -76,5 +76,5 @@ public class XYint {
 	public void multiply(double m) {
 		setLocation((int)(this.x*m), (int)(this.y*m));
 	}
-	
+
 }

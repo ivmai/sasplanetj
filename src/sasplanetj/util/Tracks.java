@@ -14,10 +14,10 @@ public class Tracks {
 	public static final Tracks self = new Tracks();
 
 	public static ArrayList tracks = null; //ArrayList<XY[]>
-	
+
 	public static void load(String filename){
 		System.out.println("Tracks: loading "+filename);
-		
+
 		Date start = new Date();
 		if (tracks==null) tracks = new ArrayList();
 	    try {
@@ -36,7 +36,7 @@ public class Tracks {
 					continue;
 				}
 				int newTrack = Integer.valueOf(splits[2].trim()).intValue();
-				
+
 				if (newTrack==1){
 					addTrack(track);
 					track = new ArrayList(200);
@@ -61,8 +61,8 @@ public class Tracks {
 		} catch (Exception e) {// Catch exception if any
 			e.printStackTrace();
 			System.out.println("Tracks: error reading "+filename);
-		}		
-				
+		}
+
 	}
 
 
@@ -81,9 +81,9 @@ public class Tracks {
 			System.out.println("Tracks: track "+tracks.size()+" has "+((XY[])tracks.get(tracks.size()-1)).length+" points");
 		}
 	}
-	
 
-	
+
+
 	public static void draw(Graphics dbf, XYint[] matrix){
 		//System.out.println(trackTail.getPointsString());
 		//LinkedList<XYint> trackTail = (LinkedList<XYint>) Main.trackTail.clone();
@@ -91,11 +91,11 @@ public class Tracks {
 		dbf.setColor(ColorsAndFonts.clTrack);
 		for (Iterator tr = tracks.iterator(); tr.hasNext();) {
 			XY[] track = (XY[]) tr.next();
-		
-	        
+
+
 	        int[] x = new int[track.length];
 	        int[] y = new int[track.length];
-	        
+
 	        //XYint prevpoint = null; //with screen coordinates
 	        for (int i=0; i<track.length; i++) {
 	        	final XY latlng = track[i]; //map pixel coordinates
@@ -110,9 +110,9 @@ public class Tracks {
 				*/
 	        	x[i] = inmatrix.x;
 	        	y[i] = inmatrix.y;
-			}	
+			}
 	        dbf.drawPolyline(x, y, track.length);
 		}
-	}	
-	
+	}
+
 }

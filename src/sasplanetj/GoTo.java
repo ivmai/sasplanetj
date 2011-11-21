@@ -21,17 +21,17 @@ public class GoTo extends Dialog {
 				owner.getLocation().y+(owner.getSize().height-this.getSize().height)/2
 		);
 
-		
+
 		setLayout(new GridLayout(3, 2, 8, 8));
-		
+
 		add(new Label("Latitude:"));
 		add(lat);
 		add(new Label("Longitude:"));
 		add(lng);
-		
+
 		//Panel p = new Panel();
 		//p.setLayout(new BoxLayout(p, BoxLayout.LINE_AXIS));
-		add(new Button("OK"));		
+		add(new Button("OK"));
 		add(new Button("Cancel"));
 		//add(p);
 	}

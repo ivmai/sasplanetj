@@ -10,7 +10,7 @@ public class LatLng implements Cloneable, java.io.Serializable {
 	// position
 	public double lat; //latitude
 	public double lng; //longitude
-	
+
 	public LatLng(){
 	}
 
@@ -18,7 +18,7 @@ public class LatLng implements Cloneable, java.io.Serializable {
 		this.lat = latitude;
 		this.lng = longitude;
 	}
-	
+
 	/*
 	public LatLng clone(){
 		return new LatLng(this.lat, this.lng);
@@ -29,18 +29,18 @@ public class LatLng implements Cloneable, java.io.Serializable {
 		other.lat = this.lat;
 		other.lng = this.lng;
 	}
-	
-	
+
+
 	public String toString(){
 		return "Lat "+latlngFormat7.format(this.lat)+" Lng "+latlngFormat7.format(this.lng);
 	}
-	
+
 	public String toShortString(){
 		return latlngFormat4.format(this.lat)+" "+latlngFormat4.format(this.lng);
 	}
-	
+
 	public boolean equalXY(LatLng other) {
 		return this.lat==other.lat && this.lng==other.lng;
 	}
-	
+
 }

@@ -14,11 +14,11 @@ public class NMEA {
 			//"$PGRME,HPE,,VPE,,EPE,",
 			//"$PGRMF,GPSWeek,GPSSeconds,utcdate,utc,GPSLeapSecondCount,lat,northHemi,longitude,eastHemi,mode,fixType,speedOverGround,courseOverGround,",
 			//"$PGRMT,GPSModel,romChecksum,recvFailure,storedDataLost,timeLostoscillatorDrift,dataCollection,boardTemperature,boardConfig",
-			//"$PGRMV,eastVelocity,northVelocity,upVelocity,", 
+			//"$PGRMV,eastVelocity,northVelocity,upVelocity,",
 	};
 	static final String GPGGA = "utc,lat,northHemi,longitude,eastHemi,quality,numberOfSatellites,horDilution,height,,geoidalHeight,,diffCorrection,diffStationId,";
 	*/
-	
+
 	/*
 	 * Fern
 	 * $GPGGA Sentence (Fix data)
@@ -28,8 +28,8 @@ public class NMEA {
 	 * $GPRMC Sentence (Position and time)
 	 * $GPVTG Sentence (Course over ground)
 	 */
-	
-	
+
+
 	// calculate checksum of NMEA message and compare
 	static boolean check(String msg) {
 		int msglen = msg.length();
@@ -49,8 +49,8 @@ public class NMEA {
 		// don't accept messages without checksum
 		return false;
 	}
-	
-	
+
+
 	static String checkSum(String msg) {
 		// perform NMEA checksum calculation
 		int chk = 0;
@@ -67,20 +67,20 @@ public class NMEA {
 
 		return chk_s;
 	}
-	
-	
+
+
 	/*
 	 * Used in GPS reciever confiration
 	 */
 	static String addCheckSum(String msg) {
 		return msg + "," + checkSum(msg + ",") + "*" + ((char) 13) + ((char) 10);
 	}
-	
+
 
 	public static boolean parse(String msg, LatLng latlng) throws Exception{
 		//Fern, speed optimization, use GPRMC as ozi does by default
 		if (msg.startsWith("$GPRMC")){
-			//"$GPRMC,1utc,2status,3lat,4northHemi,5longitude,6eastHemi,7speedOverGroundKnots,8courseOverGround,9utcdate,magnVariation,magnVarDirection,",		
+			//"$GPRMC,1utc,2status,3lat,4northHemi,5longitude,6eastHemi,7speedOverGroundKnots,8courseOverGround,9utcdate,magnVariation,magnVarDirection,",
 			int coma2 =  msg.indexOf(',', 8);
 			int coma3 =  msg.indexOf(',', coma2+1);
 			int coma4 =  msg.indexOf(',', coma3+1);
@@ -93,7 +93,7 @@ public class NMEA {
 			String lngStr = msg.substring(coma5+1, coma6);
 			if (latStr.length()==0 || lngStr.length()==0) return false;
 			latlng.lat = normLatLong(Double.valueOf(latStr).doubleValue());
-			latlng.lng = normLatLong(Double.valueOf(lngStr).doubleValue()); 
+			latlng.lng = normLatLong(Double.valueOf(lngStr).doubleValue());
 			return true;
 		}
 		/*
@@ -105,21 +105,21 @@ public class NMEA {
 			int coma5 =  msg.indexOf(',', coma4+1);
 
 			latlng.lat = normLatLong(Double.valueOf(msg.substring(coma2+1, coma3)));
-			latlng.lng = normLatLong(Double.valueOf(msg.substring(coma4+1, coma5))); 
+			latlng.lng = normLatLong(Double.valueOf(msg.substring(coma4+1, coma5)));
 			return true;
 		}
 		*/
 
-		
+
 		return false;
-	}	
-	
-	
+	}
+
+
 	/**
 	 * Normalize GPS Information: convert from degrees/minutes to degrees only
 	 * representation, convert from the GPS ellipsoid, and fill in the
 	 * GaussKrueger coordinates
-	 * 
+	 *
 	 *@param gi
 	 *            LatLng to normalize.
 	 */
@@ -129,12 +129,12 @@ public class NMEA {
 		gi.longitude = normLatLong(gi.longitude);
 	}
 	*/
-	
+
 	public static double normLatLong(double c) {
 		double deg = Math.floor(c * 1e-2);
 		double min = c - deg * 1e2;
 		// System.out.println("deg="+deg+" min="+min+" c="+c);
 		return deg + min / 60.0;
-	}	
-	
+	}
+
 }

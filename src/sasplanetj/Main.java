@@ -22,42 +22,42 @@ import sasplanetj.util.Wikimapia.KML;
 
 /**
  * Panel. In Creme panel does not gain focus.
- * But Container or Component flash during repaint 
+ * But Container or Component flash during repaint
  */
 public class Main extends Panel implements GPSListener, MouseListener, MouseMotionListener, KeyListener, ActionListener{
-	
+
 	public static LatLng latlng = new LatLng();
 	private static LatLng clickLatlng; //hold last click coordinates
 
-    public static TrackTail trackTail; 
-	
+    public static TrackTail trackTail;
+
     public static final XYint viewOffset = new XYint(0, 0);
     public static int viewOffsetStep = 50; //change view offset when pressing keys
     public static final CenterOffsetBtn offsetBtn = new CenterOffsetBtn();
-    
-    
-    public static final PopupMenu popup = new PopupMenu(); 
-	public static final ArrayList popupWiki = new ArrayList(); //ArrayList<MenuItem> 
-    
+
+
+    public static final PopupMenu popup = new PopupMenu();
+	public static final ArrayList popupWiki = new ArrayList(); //ArrayList<MenuItem>
+
     Graphics dbf; //double buffer
     Image offscreen;
-    
+
 	private static int skipCounter = 0;
-    
-    
+
+
 	public Main(){
 		popup.addActionListener(this);
 		add(popup);
-		
+
 		offsetBtn.setVisible(false);
 		trackTail = new TrackTail(Config.trackTailSize);
-		
+
 		setLayout(new XYLayout());
-		
+
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		this.addKeyListener(this);
-		
+
 		this.addComponentListener(new ComponentAdapter(){
 			public void componentHidden(ComponentEvent e) {
 				System.out.println("Hidden");
@@ -75,17 +75,17 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 					remove(offsetBtn);
 					add(offsetBtn, new XYConstraints(getSize().width-offsetBtn.getSize().width-5, getSize().height-offsetBtn.getSize().height-5, offsetBtn.getSize().width, offsetBtn.getSize().height));
 		    	}
-		    }		    
+		    }
 		});
 	}
-	
+
 	/**
 	 * Initializes double buffer with new size
 	 */
 	public void initDbf() {
 		System.out.println("Main size "+getSize().width+"x"+getSize().height);
 		if (this.getSize().width<=0 || this.getSize().height<=0) return;
-		
+
 		if (offscreen!=null){
 			if (offscreen.getWidth(null)==this.getWidth() && offscreen.getHeight(null)==this.getHeight())
 				return;
@@ -95,15 +95,15 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 		dbf = offscreen.getGraphics();
 		//dbf.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	}
-	
+
 	public Dimension getPreferredSize() {
 		return getSize();
-	}	
-	
+	}
+
     public void update(Graphics g) {
     	paint(g);
     }
-	
+
     public void paint(Graphics g) {
     	if (offscreen==null){
     		System.out.println("offscreen==null");
@@ -122,16 +122,16 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
         //System.out.println("displayXY="+displayXY+", tileXY="+tileXY);
         final XYint intile = new XYint(displayXY.x%TilesUtil.TILESIZE, displayXY.y%TilesUtil.TILESIZE);
         final XYint centerTileTopLeft = new XYint(center.x-intile.x, center.y-intile.y);
-    	
+
         final XYint[] matrix = TilesUtil.drawTilesArea(offscreen.getWidth(null), offscreen.getHeight(null), centerTileTopLeft, tileXY, dbf);
-    	
+
         /*Draw coordinates============================================================================================*/
     	if (Config.drawLatLng){
 	    	//dbf.setFont(ColorsAndFonts.font14bold);
 	    	dbf.setColor(ColorsAndFonts.clLatLng);
 	    	dbf.drawString(latlng.toString(), 3, 15);
     	}
-    	
+
     	/*
     	if (Config.drawZoomLevel){
 	    	dbf.setFont(ColorsAndFonts.font14bold);
@@ -139,32 +139,32 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
     		dbf.drawString(String.valueOf(Config.zoom), 3, offscreen.getHeight(null)-5);
     	}
     	*/
-    	
-        
+
+
         /*Draw track============================================================================================*/
     	if (Config.drawTail){
     		trackTail.draw(dbf, matrix);
     	}
-    	
+
 
     	if (Tracks.tracks!=null) Tracks.draw(dbf, matrix);
     	if (Waypoints.points!=null) Waypoints.draw(dbf, matrix);
-        
+
         /*Draw position============================================================================================*/
         drawPosition(dbf, center);
-        
-        
+
+
         /*Draw double buffer image to our view=====================================================================*/
         g.drawImage(offscreen,0,0,this);
-        
-        
+
+
 		//System.out.println("drawn in " + (new Date().getTime() - start.getTime())+"ms");
     }
 
 
-	
-	
-	
+
+
+
 
 	private void drawPosition(Graphics g, XYint position) {
 		//final Shape circle = new Ellipse2D.Double(viewOffset.x+position.x-3, viewOffset.y+position.y-3, 7, 7);
@@ -175,8 +175,8 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
         g.setColor(ColorsAndFonts.clPositionPen);
         //g.draw(circle); //1.3 compat
         g.drawOval(r.x, r.y, r.width, r.height);
-	}		
-    
+	}
+
 	public void gpsEvent(LatLng gi) {
 		if (skipCounter==Config.drawMapSkip){
 			skipCounter=0;
@@ -187,16 +187,16 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 		Main.latlng = gi;
 		repaint();
 	}
-	
-	
+
+
 	public void registerListener(){
 		App.serialReader.addGPSListener(this);
-	}	
+	}
 	public void removeListener(){
 		App.serialReader.removeGPSListener(this);
 	}
 
-	
+
 	public void mouseClicked(MouseEvent e) {
 
 	}
@@ -209,7 +209,7 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 		}else{
 			isPopup = e.isPopupTrigger() || e.getButton()==2 || e.getButton()==3;
 		}
-		
+
 		if (isPopup){
 			popup.removeAll();
 			final XYint displayXY = TilesUtil.coordinateToDisplay(latlng.lat, latlng.lng, Config.zoom);
@@ -217,12 +217,12 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 	        XYint clickOffset = new XYint(e.getPoint().x-getSize().width/2, e.getPoint().y-getSize().height/2);
 	        displayXY.add(clickOffset);
 	        clickLatlng = TilesUtil.displayToCoordinate(displayXY, Config.zoom);
-	        
-	        MenuItem mi; 
+
+	        MenuItem mi;
 
 	        mi = new MenuItem(clickLatlng.toShortString());
 			popup.add(mi);
-	        
+
 	        mi = new MenuItem("Go here");
 			mi.setActionCommand("GO_HERE");
 			popup.add(mi);
@@ -230,7 +230,7 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 			mi = new MenuItem("Create waypoint");
 			mi.setActionCommand("CREATE_WAYPOINT");
 			popup.add(mi);
-			
+
 			if (Config.drawWikimapia){
 				popupWiki.clear();
 				int i=0;
@@ -249,7 +249,7 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 					popup.add((MenuItem)popupWiki.get(i));
 				}
 			}
-			
+
 			popup.show(this, e.getX(), e.getY());
 		}
 		return isPopup;
@@ -320,7 +320,7 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 			break;
 		}
 	}
-	
+
 	public void viewOffsetChanged(){
 		if (viewOffset.x!=0 || viewOffset.y!=0){
 			boolean found = false;
@@ -352,8 +352,8 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 		repaint();
 		this.requestFocus();
 	}
-	
-	
+
+
 	public void viewOffset0(){
 		viewOffset.setLocation(0, 0);
 		viewOffsetChanged();

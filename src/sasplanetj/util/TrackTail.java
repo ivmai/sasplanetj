@@ -12,12 +12,12 @@ import sasplanetj.ui.ColorsAndFonts;
 public class TrackTail extends LinkedList{
 
 	int MAX_ENTRIES;
-	
+
 	public TrackTail(int maxsize){
 		super();
 		this.MAX_ENTRIES = maxsize;
 	}
-	
+
 	public void addPoint(XY point){
 		if (this.size()>=MAX_ENTRIES){
 			this.removeFirst();
@@ -32,15 +32,15 @@ public class TrackTail extends LinkedList{
 		}
 		return result;
 	}
-	
+
 	public void draw(Graphics dbf, XYint[] matrix){
 		if (this.size()<2) return;
-		
+
 		//System.out.println(trackTail.getPointsString());
 		//LinkedList<XYint> trackTail = (LinkedList<XYint>) Main.trackTail.clone();
 		dbf.setColor(ColorsAndFonts.clTail);
         //XYint prevpoint = null; //with screen coordinates
-        
+
         int[] x = new int[this.size()];
         int[] y = new int[this.size()];
 
@@ -62,5 +62,5 @@ public class TrackTail extends LinkedList{
 		}
         dbf.drawPolyline(x, y, x.length);
 	}
-	
+
 }

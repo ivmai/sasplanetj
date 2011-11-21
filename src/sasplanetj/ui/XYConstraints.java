@@ -16,9 +16,9 @@ public class XYConstraints implements Cloneable, java.io.Serializable
   }
 
   public XYConstraints(Rectangle r){
-	  this(r.x, r.y, r.width, r.height);	  
+	  this(r.x, r.y, r.width, r.height);
   }
-  
+
   public XYConstraints(int x, int y, int width, int height) {
     this.x = x;
     this.y = y;

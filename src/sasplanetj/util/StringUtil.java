@@ -4,7 +4,7 @@ import java.util.StringTokenizer;
 
 public class StringUtil {
 	public static final String fileSep = System.getProperty("file.separator");
-	public static final char fileSepChar = fileSep.charAt(0); 
+	public static final char fileSepChar = fileSep.charAt(0);
 
 	/**
 	 * Much fater String.split using StringTokenizer
@@ -47,7 +47,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * Normilizes path to with system's file.separator. 
+	 * Normilizes path to with system's file.separator.
 	 * Out internal pathes use Unix slash /
 	 * @param path
 	 * @return
@@ -56,6 +56,6 @@ public class StringUtil {
 		if (fileSepChar=='/') return path;
 		return path.replace('/', fileSepChar); //fileSepChar=='\' here :)
 	}
-	
-	
+
+
 }

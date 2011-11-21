@@ -28,18 +28,18 @@ Field 10 : Background Color (RGB value)
 Field 11 : Description (max 40), no commas
 Field 12 : Pointer Direction
 Field 13 : Garmin Display Format
-Field 14 : Proximity Distance - 0 is off any other number is valid 
+Field 14 : Proximity Distance - 0 is off any other number is valid
 Field 15 : Altitude - in feet (-777 if not valid)
 Field 16 : Font Size - in points
 Field 17 : Font Style - 0 is normal, 1 is bold.
 Field 18 : Symbol Size - 17 is normal size
 Field 19 : Proximity Symbol Position
-Field 20 : Proximity Time 
-Field 21 : Proximity or Route or Both 
-Field 22 : File Attachment Name 
-Field 23 : Proximity File Attachment Name 
+Field 20 : Proximity Time
+Field 21 : Proximity or Route or Both
+Field 22 : File Attachment Name
+Field 23 : Proximity File Attachment Name
 Field 24 : Proximity Symbol Name
- * 
+ *
  */
 import java.awt.*;
 import java.io.*;
@@ -51,12 +51,12 @@ import sasplanetj.ui.ColorsAndFonts;
 import sasplanetj.ui.ShowMessage;
 
 public class Waypoints {
-	public static ArrayList points = new ArrayList(); //<Waypoint> 
-	
-	
+	public static ArrayList points = new ArrayList(); //<Waypoint>
+
+
 	public static void load(String filename){
 		System.out.println("Waypoints: loading "+filename);
-		
+
 		if (points==null) points = new ArrayList();
 	    try {
 			FileInputStream fstream = new FileInputStream(filename);
@@ -86,11 +86,11 @@ public class Waypoints {
 			App.main.repaint();
 		} catch (Exception e) {// Catch exception if any
 			System.out.println("Waypoints: error reading "+filename);
-		}		
-		
-		
+		}
+
+
 	}
-	
+
 	public static void draw(Graphics dbf, XYint[] matrix){
 		/*TODO:
 		 * skip WPs which are out of screen
@@ -105,20 +105,20 @@ public class Waypoints {
         	dbf.setColor(ColorsAndFonts.clWaypointBrush);
         	//dbf.fill(circle);
         	dbf.fillOval(r.x, r.y, r.width, r.height);
-        	
+
         	//dbf.setFont(ColorsAndFonts.fontWaypoint);
         	dbf.drawString(wp.name, inmatrix.x+5, inmatrix.y+5);
-        	
+
         	dbf.setColor(ColorsAndFonts.clWaypointPen);
         	//dbf.draw(circle);
         	dbf.drawOval(r.x, r.y, r.width, r.height);
-		}	
-	}		
+		}
+	}
 
-	
+
 	public static void save(String filename){
 		if (points==null || points.size()==0) return;
-		
+
 		//File f = new File(filename);
 		try {
 			FileWriter out = new FileWriter(filename, false);
@@ -126,8 +126,8 @@ public class Waypoints {
 			out.write("WGS 84\r\n");
 			out.write("Reserved 2\r\n");
 			out.write("Reserved 3\r\n");
-			out.flush();			
-			
+			out.flush();
+
 	        for (Iterator it = points.iterator(); it.hasNext();) {
 	        	Waypoint wp = (Waypoint) it.next();
 	        	out.write("-1,"+wp.name+","+wp.latlng.lat+","+wp.latlng.lng);
@@ -141,5 +141,5 @@ public class Waypoints {
 		}
 
 	}
-	
+
 }
