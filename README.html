@@ -5,16 +5,17 @@
 <meta content="Fern" name="author">
 </head><body>
 <h1>SAS.Планета J</h1>
-v0.0.1<br>
+v0.0.6<br>
 <a href="http://fern.kiev.ua/sasplanetj">http://fern.kiev.ua/sasplanetj</a><br>
-<a href="http://sasgis.ru/forum/viewforum.php?f=14">Форум</a><br>
+<a href="http://sasgis.ru/forum/viewforum.php?f=14">Форум SAS.Планета J на sasgis.ru</a><br>
 <br>
 <br>
 <h3>Установка</h3>
 <ul>
-<li><a href="http://www2s.biglobe.ne.jp/%7Edat/java/project/jvm/download_en.html">Отсюда</a> качаем Mysaifu JVM и Java Communications API для него, на сегодня
-версии 0.4.5 и 0.0.3.</li>
-<li><a href="http://sourceforge.jp/projects/mysaifujvm/releases/37970">jvm.0.4.5-bin.zip</a>
+<li><a href="http://www2s.biglobe.ne.jp/%7Edat/java/project/jvm/download_en.html">Отсюда</a>
+качаем Mysaifu JVM и Java Communications API для него, на сегодня
+версии 0.4.7 и 0.0.3, соответственно.</li>
+<li><a href="http://sourceforge.jp/projects/mysaifujvm/releases/37970">jvm.0.4.7-bin.zip</a>
 распаковываем и копируем CAB на КПК, там его запускаем и устанавливаем,
 можно на карточку.</li>
 <li><a href="http://sourceforge.jp/projects/mysaifujvm/releases/34835">javaxcomm-0.0.3-bin.zip</a>
@@ -24,26 +25,26 @@ v0.0.1<br>
 
 <ul>
 <li>Распаковываем sasplanetj.zip и переписыаем sasplanetj на
-КПК, например в&nbsp; "\Карта памяти\sasplanetj"</li>
+КПК, например в "\Карта памяти\sasplanetj"</li>
 <li>Создаём там же папку "cache", переписываем
-туда&nbsp;нужный кеш с компьюра. Как лучше всего это сделать -
+туда нужный кеш с компьютера. Как лучше всего это сделать -
 смотрите ниже на сайте.</li>
 </ul>
 
 <ul>
-<li>Теперь из "Программ" запускаем Mysaifu и указваем параметры
+<li>Теперь из "Программ" запускаем Mysaifu и указываем параметры
 для запуска sasplanetj</li>
 </ul>
 <div style="margin-left: 40px;">
 <ul>
-<li>В&nbsp;CLASSPATH на надо указать путь к папке "\Карта
-памяти\sasplanetj\bin"
+<li>В CLASSPATH на надо указать путь к папке "\Карта
+памяти\sasplanetj\sasplanetj.jar"
 и к "\Карта памяти\Program Files\Mysaifu JVM\jre\lib\javaxcomm.jar"
 <br>
-т.е. CLASSPATH=\Карта памяти\sasplanetj\bin;\Карта памяти\Program
+т.е. CLASSPATH=\Карта памяти\sasplanetj\sasplanetj.jar;\Карта памяти\Program
 Files\Mysaifu JVM\jre\lib\javaxcomm.jar</li>
-<li>Current directory: текущая директория, где лежит кеш,
-конфиги, программа и т.д. "\Карта памяти\sasplanetj"</li>
+<li>Опционально можно ещё указать Current directory: текущая директория, где
+лежит кеш, конфиги, программа и т.д. "\Карта памяти\sasplanetj"</li>
 <li>Type: Class</li>
 <li>Name: sasplanetj.App (какой класс запускать)</li>
 <li>Command line arguments: <br>
@@ -53,7 +54,7 @@ Files\Mysaifu JVM\jre\lib\javaxcomm.jar</li>
 <ul style="margin-left: 40px;">
 <ul>
 <li>без параметров запустится симуляция из nmealog.txt (в
-котором&nbsp;должны быть&nbsp;NMEA сентенции)</li>
+котором должны быть NMEA сентенции)</li>
 </ul>
 <ul>
 <li>list - выведет список доступных портов</li>
@@ -66,14 +67,52 @@ Files\Mysaifu JVM\jre\lib\javaxcomm.jar</li>
 </ul>
 <div style="margin-left: 40px;">
 <ul>
-<li>В&nbsp;опциях можно указать больше памяти доступной для
+<li>В опциях можно указать больше памяти доступной для
 Java, по-умолчанию всего 2Мб.</li>
 <li>Ставим галочку "Show console", чтобы видеть консоль с
-отладочной информацией</li>
+отладочной информацией (необязательно)</li>
 </ul>
 <br>
 <br>
 Нажимаем "Execute"<br>
 </div>
 <br>
+
+<h3>Hot keys (Клавиши управления)</h3>
+<ul>
+<li>PgUp, F1, Shift+Up - zoom in;
+<li>PgDn, F2, Shift+Down - zoom out;
+<li>Left/Right/Up/Down - navigate;
+<li>Enter - center map (return to origin);
+<li>'1', Shift+Right - Switch to next map;
+<li>'2', Shift+Left - Switch to previous map.
+</ul>
+<br>
+
+<h3>Supported maps (cache folders)</h3>
+<ul>
+<li>Google satellite (SAT);
+<li>Google map (MAP);
+<li>Google landscape (land);
+<li>Yandex satellite (yasat);
+<li>Yandex map (yamapng);
+<li>OpenStreetMap (osmmap);
+<li>Virtual Earth satellite (vesat);
+<li>Gurtam (gumap);
+<li>WikiMap (WikiMap).
+</ul>
+<p>Supported layer: Wiki KML.
+<br>
+
+<h3>ChangeLog (public versions)</h3>
+<ul>
+<li>v0.0.1 (by Fern &lt;fern@kgroup.biz>)
+<li>v0.0.2m 2009-11-16 (by Ivan Maidanski &lt;ivmai@mail.ru>)
+<li>v0.0.3 2009-11-19 (by Ivan Maidanski)
+<li>v0.0.4 2009-11-28 (by Ivan Maidanski)
+<li>v0.0.5 2009-12-01 (by Ivan Maidanski)
+<li>v0.0.6 2009-12-05 (by Ivan Maidanski)
+</ul>
+<br>
+
 </body></html>
