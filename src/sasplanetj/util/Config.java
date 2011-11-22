@@ -11,14 +11,14 @@ public class Config{
 	/**
 	 * Current working direcotry. Some JVMs cant set working dirfrom command line, so we have to deal with absolute pathes
 	 */
-	public static String curDir = System.getProperty("user.dir");
+	public static String curDir = getProgBaseFolder();
 	public static boolean isCE = System.getProperty("os.name").equals("Windows CE");
 
-	public static String configFilename = StringUtil.normPath(curDir+"/config.txt");
+	public static String configFilename = StringUtil.normPath(curDir + File.separator + "config.txt");
 	/**
 	 * Directory with cache
 	 */
-	public static final String cachePath = StringUtil.normPath(curDir+"/cache");
+	public static final String cachePath = StringUtil.normPath(curDir + File.separator + "cache");
 
 	public static boolean connectGPS;
 
@@ -50,25 +50,25 @@ public class Config{
 	/**
 	 * Selected map is yandex
 	 */
-	public static boolean curMapYandex = true;
+	public static boolean isMapYandex;
 
 	public static final MapInfo[] maps = {
-		new MapInfo("Google satellite", "SAT", "jpg"),
-		new MapInfo("Google map", "MAP", "png"),
-		new MapInfo("Google landscape", "LAND", "jpg"),
-		new MapInfo("Yandex satellite", "yasat", "jpg"),
-		new MapInfo("Yandex map", "yamap", "jpg"),
-		new MapInfo("Digital Globe", "DGsat", "jpg"),
-		new MapInfo("Virtual Earth satellite", "vesat", "jpg"),
-		new MapInfo("Gurtam", "Gumap", "PNG"),
-		new MapInfo("WikiMap", "WikiMapia", "png"),
-		new MapInfo("Usermapdir", "usermapdir", "jpg"),
+		new MapInfo("Google satellite", 'G', "SAT", "jpg"),
+		new MapInfo("Google map", 'M', "MAP", "png"),
+		new MapInfo("Google landscape", 'L', "LAND", "jpg"),
+		new MapInfo("Yandex satellite", 'Y', "yasat", "jpg"),
+		new MapInfo("Yandex map", 'Q', "yamap", "jpg"),
+		new MapInfo("OpenStreetMap", 'O', "osmmap", "png"),
+		new MapInfo("Virtual Earth satellite", 'V', "vesat", "jpg"),
+		new MapInfo("Gurtam", 'U', "gumap", "png"),
+		new MapInfo("WikiMap", 'W', "WikiMap", "png"),
+		new MapInfo("Usermapdir", 'R', "usermapdir", "jpg"),
 	};
 
 
 	public static void switchMapTo(int mapIndex){
 		curMapIndex = mapIndex;
-		curMapYandex = maps[curMapIndex].name.startsWith("Yandex");
+		isMapYandex = maps[curMapIndex].name.startsWith("Yandex");
 		curMapDir = maps[curMapIndex].dir;
 		curMapExt = maps[curMapIndex].extension;
 	}
@@ -76,12 +76,16 @@ public class Config{
 
 	public static final Properties ini = new Properties();
 
+	public static int curMapMinZoom() {
+		return maps[curMapIndex].name.startsWith("Gurtam") ? 4 : 1;
+	}
+
 	public static void load() {
 	    try {
 	    	if (new File(configFilename).exists())
 	    		ini.load(new FileInputStream(configFilename));
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("Error loading config: " + e.getMessage());
 		}
 
 	    Main.latlng.lat = Double.valueOf(ini.getProperty("lat", "55.795781")).doubleValue();
@@ -102,7 +106,7 @@ public class Config{
 	    zipCacheSize = Integer.valueOf(ini.getProperty("zipCacheSize", "2")).intValue();
 	    useSoftRefs = Boolean.valueOf(ini.getProperty("useSoftRefs", "true")).booleanValue();
 	    usermapdir = ini.getProperty("usermapdir", "usermapdir");
-	    maps[maps.length-1].dir = usermapdir;
+	    // FIXME: add: maps[maps.length-1].dir = usermapdir;
 
 	    switchMapTo(curMapIndex);
 
@@ -115,77 +119,113 @@ public class Config{
 
 	public static void save(){
 		try {
-			FileWriter out = new FileWriter(configFilename, false);
-   			out.write("# SAS.Planet.J (sasplanetj) configuration file\r\n\r\n");
-			out.write("lat="+String.valueOf(Main.latlng.lat)+"\r\n");
-			out.write("longitude="+String.valueOf(Main.latlng.lng)+"\r\n");
-			out.write("zoom="+String.valueOf(zoom)+"\r\n");
-			out.write("curMap="+String.valueOf(curMapIndex)+"\r\n");
-			out.write("\r\n# Connect to GPS at start-up\r\n");
-			out.write("connectGPS="+String.valueOf(connectGPS)+"\r\n");
-			out.write("\r\n# Draw map grid\r\n");
-			out.write("drawGrid="+String.valueOf(drawGrid)+"\r\n");
-			out.write("\r\n# Draw coordinates\r\n");
-			out.write("drawLatLng="+String.valueOf(drawLatLng)+"\r\n");
-			out.write("\r\n# Turn on track logging\r\n");
-			out.write("trackLog="+String.valueOf(trackLog)+"\r\n");
-			out.write("\r\n# Draw track tail\r\n");
-			out.write("drawTail="+String.valueOf(drawTail)+"\r\n");
-			out.write("\r\n# How many points to draw in track tail\r\n");
-			out.write("trackTailSize="+String.valueOf(trackTailSize)+"\r\n");
-			out.write("\r\n# Amount of tails to cache in RAM\r\n");
-			out.write("imageCacheSize="+String.valueOf(imageCacheSize)+"\r\n");
-			out.write("\r\n# How many points to skip on map drawing\r\n");
-			out.write("drawMapSkip="+String.valueOf(drawMapSkip)+"\r\n");
-			out.write("\r\n# How many points to skip on track recording\r\n");
-			out.write("trackLogSkip="+String.valueOf(trackLogSkip)+"\r\n");
-			out.write("\r\n# Draw Wikimapia layer\r\n");
-			out.write("drawWikimapia="+String.valueOf(drawWikimapia)+"\r\n");
-			out.write("\r\n# How many parsed Wikimapia KMLs to cache in RAM\r\n");
-			out.write("wikikmlCacheSize="+String.valueOf(wikikmlCacheSize)+"\r\n");
+			PrintWriter out = new PrintWriter(new FileWriter(configFilename));
+   			out.println("# SAS.Planet.J (sasplanetj) configuration file");
+			out.println();
+			out.println("lat=" + Main.latlng.lat);
+			out.println("longitude=" + Main.latlng.lng);
+			out.println("zoom=" + zoom);
+			out.println("curMap=" + curMapIndex);
+			out.println();
+			out.println("# Connect to GPS at start-up");
+			out.println("connectGPS=" + connectGPS);
+			out.println();
+			out.println("# Draw map grid");
+			out.println("drawGrid=" + drawGrid);
+			out.println();
+			out.println("# Draw coordinates");
+			out.println("drawLatLng=" + drawLatLng);
+			out.println();
+			out.println("# Turn on track logging");
+			out.println("trackLog=" + trackLog);
+			out.println();
+			out.println("# Draw track tail");
+			out.println("drawTail=" + drawTail);
+			out.println();
+			out.println("# How many points to draw in track tail");
+			out.println("trackTailSize=" + trackTailSize);
+			out.println();
+			out.println("# Amount of tails to cache in RAM");
+			out.println("imageCacheSize=" + imageCacheSize);
+			out.println();
+			out.println("# How many points to skip on map drawing");
+			out.println("drawMapSkip=" + drawMapSkip);
+			out.println();
+			out.println("# How many points to skip on track recording");
+			out.println("trackLogSkip=" + trackLogSkip);
+			out.println();
+			out.println("# Draw Wikimapia layer");
+			out.println("drawWikimapia=" + drawWikimapia);
+			out.println();
+			out.println("# How many parsed Wikimapia KMLs to cache in RAM");
+			out.println("wikikmlCacheSize=" + wikikmlCacheSize);
+			out.println();
 
-			out.write("\r\n# How many ZIP files to keep open for quick access\r\n");
-			out.write("zipCacheSize=" + zipCacheSize + "\r\n");
-			out.write("\r\n# Use SoftReference-based cache\r\n");
-			out.write("useSoftRefs=" + useSoftRefs + "\r\n");
+			out.println("# How many ZIP files to keep open for quick access");
+			out.println("zipCacheSize=" + zipCacheSize + "");
+			out.println();
+			out.println("# Use SoftReference-based cache");
+			out.println("useSoftRefs=" + useSoftRefs + "");
+			out.println();
 
-			out.write("\r\n# User-defined map folder (e.g. for 'GenShtab')\r\n");
-			out.write("usermapdir="+usermapdir+"\r\n");
+			out.println("# User-defined map folder (e.g. for 'GenShtab')");
+			out.println("usermapdir="+usermapdir);
+			out.println();
 
-			out.write("\r\n# Comma-separated list of available zoom levels\r\n");
-			out.write("zoomsAvail=");
-			boolean first = true;
+			StringBuffer sb = new StringBuffer();
 			for (Iterator iterator = zoomsAvail.iterator(); iterator.hasNext();) {
 				Integer z = (Integer)iterator.next();
-				out.write((first ? "":",")+z.toString());
-				first = false;
+				sb.append("," + z.toString());
 			}
-			out.write("\r\n");
-
-			out.flush();
+			out.println("# Comma-separated list of available zoom levels");
+			out.println("zoomsAvail=" + (sb.length() > 0 ?
+						sb.toString().substring(1) : ""));
+			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("Error saving config.txt: " + e.getMessage());
 		}
 
 	}
 
+	private static String getProgBaseFolder() {
+		String classPath = System.getProperty("java.class.path");
+		int pathSepIndex = classPath.indexOf(File.pathSeparatorChar);
+		if (pathSepIndex >= 0) {
+			classPath = classPath.substring(0, pathSepIndex);
+		}
+		String baseDir = classPath;
+		File f = new File(baseDir);
+		String name = f.getName();
+
+		if ((name.equals("bin") || name.equals("BIN")
+		     || name.endsWith(".jar") || name.endsWith(".JAR")
+		     || name.endsWith(".zip") || name.endsWith(".ZIP"))
+		    && (baseDir = f.getParent()) == null) {
+			baseDir = ".";
+		}
+		return baseDir;
+	}
 
 	public static class MapInfo{
 		/**
 		 * Just name, Google, Yandex...
 		 */
-		public String name;
+		public final String name;
+
+		public final char key;
+
 		/**
 		 * directory name, SAT, yhhyb
 		 */
-		public String dir;
+		public final String dir;
 		/**
 		 * tile file extension, jpg, png
 		 */
-		public String extension;
+		public final String extension;
 
-		public MapInfo(String name, String dir, String extension) {
+		public MapInfo(String name, char key, String dir, String extension) {
 			this.name = name;
+			this.key = key;
 			this.dir = dir;
 			this.extension = extension;
 		}

@@ -6,16 +6,35 @@ import java.util.zip.*;
 
 public class Zip {
 
+	public static Cache zipsCache;
+
 	public static byte[] getZipFile(String  zipname, String fileinzip){
 		return getZipFileJava(zipname, fileinzip);
 	}
 
 	private static byte[] getZipFileJava(String  zipname, String fileinzip){
 		try {
-			final ZipFile zf = new ZipFile(zipname);
+			ZipFile zf = (ZipFile)zipsCache.get(zipname);
+			if (zf == null) {
+				Wikimapia.StopWatch watch = new Wikimapia.StopWatch();
+				watch.start();
+				Runtime runtime = Runtime.getRuntime();
+				long memSizeInUse = runtime.totalMemory() - runtime.freeMemory();
+
+			        zf = new ZipFile(zipname);
+				long entriesCnt = zf.size();
+				memSizeInUse = runtime.totalMemory() - runtime.freeMemory() - memSizeInUse;
+				System.out.println("Zip: opened ("
+					+ (new File(zipname).length() >> 10)
+					+ " KiB, " + entriesCnt + " files) in "
+					+ watch.currentMillis() + "ms"
+					+ (memSizeInUse >= 0x400 ? " (" + (memSizeInUse >> 10)
+								+ " KiB of RAM used)" : ""));
+				zipsCache.put(zipname, zf, Config.useSoftRefs);
+			}
+
 			final ZipEntry ze = zf.getEntry(fileinzip);
 			if (ze==null){
-				System.out.println("File not found in ZIP "+fileinzip);
 				return null;
 			}
 
@@ -23,10 +42,10 @@ public class Zip {
 			DataInputStream zis = new DataInputStream(zf.getInputStream(ze));
 			byte res[] = new byte[(int)ze.getSize()];
 			zis.readFully(res);
+			zis.close();
 		        return res;
 		} catch (IOException e) {
-			System.out.println("Zip: IOException while accessing "+zipname+": "+fileinzip);
-			e.printStackTrace();
+			System.err.println("Zip: exception while accessing " + zipname + ": " + fileinzip + ": " + e);
 		}
 		return null;
 	}
@@ -38,8 +57,6 @@ public class Zip {
 		test();
 		test();
 	}
-
-
 
 	private static void test() {
 		System.out.println("Working directory: "+Config.curDir);

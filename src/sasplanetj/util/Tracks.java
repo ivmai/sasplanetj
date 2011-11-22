@@ -3,7 +3,6 @@ package sasplanetj.util;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 
 import sasplanetj.App;
@@ -18,10 +17,11 @@ public class Tracks {
 	public static void load(String filename){
 		System.out.println("Tracks: loading "+filename);
 
-		Date start = new Date();
 		if (tracks==null) tracks = new ArrayList();
 	    try {
 			BufferedReader br = new BufferedReader(new FileReader(filename));
+			Wikimapia.StopWatch watch = new Wikimapia.StopWatch();
+			watch.start();
 			String s;
 			// Read File Line By Line
 			int lineCount = 0;
@@ -54,12 +54,12 @@ public class Tracks {
 				System.out.println("Tracks: no tracks found in file");
 				tracks = null;
 			}else{
-				System.out.println("Tracks: now we have "+tracks.size()+" tracks loaded in " + (new Date().getTime() - start.getTime()) + "ms");
+				System.out.println("Tracks: now we have " + tracks.size() + " tracks loaded in " + watch.currentMillis() + "ms");
 			}
 			App.main.repaint();
 		} catch (Exception e) {// Catch exception if any
 			e.printStackTrace();
-			System.out.println("Tracks: error reading "+filename);
+			System.err.println("Tracks: error reading "+filename);
 		}
 
 	}
@@ -95,7 +95,7 @@ public class Tracks {
 
 	        for (int i=0; i<track.length; i++) {
 	        	final XY latlng = track[i]; //map pixel coordinates
-	        	final XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.x, latlng.y, Config.zoom);
+	        	final XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.x, latlng.y, Config.zoom, Config.isMapYandex);
 	        	inmatrix.subtract(matrix[0]); //find point in tile matrix
 	        	inmatrix.add(matrix[1]); //point with matrix position drawing offset
 

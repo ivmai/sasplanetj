@@ -18,6 +18,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 	public static String args[];
 
 	public static SerialReader serialReader = null;
+	private static final TrackLogger trackLogger = new TrackLogger();
 
 	private static final String EXIT_COMMAND = "EXIT_COMMAND";
 	private static final String NMEALOG_COMMAND = "NMEALOG_COMMAND";
@@ -68,13 +69,20 @@ public class App extends Frame implements ActionListener, ItemListener{
 	}
 
 	private void quit() {
-		TrackLogger.loggerStop();
+		trackLogger.loggerStop();
 		if (serialReader!=null && serialReader.isAlive())
 			serialReader.stopReading();
 		Config.save();
 		System.exit(0);
 	}
 
+	public static boolean useAwtWorkaround() {
+		return false; // FIXME: Use: miCheckboxClass == null;
+	}
+
+	public static void cmiTrackLogSetState() {
+		// FIXME: Add: menuCheckboxSetState(cmiTrackLog, Config.trackLog);
+	}
 
 	public void addComponents(){
 
@@ -207,7 +215,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 		if (Config.connectGPS){
 			createSerialReader();
 			serialReader.start();
-			if (Config.trackLog) TrackLogger.loggerStart();
+			if (Config.trackLog) trackLogger.loggerStart();
 		}else{
 			serialReader = new SerialReader(); //just a dumb that never runs
 		}
@@ -299,7 +307,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 			Tracks.tracks = null;
 			App.main.repaint();
 		}else if (command.equals("TRACKLOG_DELETE")) {
-			File tracklog = new File(TrackLogger.logFilename);
+			File tracklog = new File(trackLogger.logFilename);
 			if (tracklog.exists())
 				tracklog.delete();
 		}else if (command.equals("WAYPOINTS_SAVE")) {
@@ -359,7 +367,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 			Config.connectGPS = e.getStateChange()==ItemEvent.SELECTED;
 			if (!Config.connectGPS){
 				Config.trackLog = false;
-				TrackLogger.loggerStop();
+				trackLogger.loggerStop();
 				main.removeListener();
 				if (serialReader.isAlive())
 					serialReader.stopReading();
@@ -376,8 +384,8 @@ public class App extends Frame implements ActionListener, ItemListener{
 		}else if (command == "TRACKLOG") {
 			Config.trackLog = e.getStateChange()==ItemEvent.SELECTED;
 			if (!Config.connectGPS) Config.trackLog = false;
-			if (Config.trackLog) TrackLogger.loggerStart();
-			else TrackLogger.loggerStop();
+			if (Config.trackLog) trackLogger.loggerStart();
+			else trackLogger.loggerStop();
 		}
 
 		currentView.requestFocus(); //for creme

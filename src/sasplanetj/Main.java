@@ -108,7 +108,7 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
     	final XYint center = new XYint(offscreen.getWidth(null)/2, offscreen.getHeight(null)/2);
 
     	/*Tile calculation*/
-        final XYint displayXY = TilesUtil.coordinateToDisplay(latlng.lat, latlng.lng, Config.zoom);
+        final XYint displayXY = TilesUtil.coordinateToDisplay(latlng.lat, latlng.lng, Config.zoom, Config.isMapYandex);
         if (Config.drawTail && latlng.lat!=0 && latlng.lng!=0){
     		trackTail.addPoint(new XY(latlng.lat, latlng.lng));
         }
@@ -117,7 +117,7 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
         final XYint intile = new XYint(displayXY.x%TilesUtil.TILESIZE, displayXY.y%TilesUtil.TILESIZE);
         final XYint centerTileTopLeft = new XYint(center.x-intile.x, center.y-intile.y);
 
-        final XYint[] matrix = TilesUtil.drawTilesArea(offscreen.getWidth(null), offscreen.getHeight(null), centerTileTopLeft, tileXY, dbf);
+        final XYint[] matrix = TilesUtil.drawTilesArea(offscreen.getWidth(null), offscreen.getHeight(null), centerTileTopLeft, tileXY, tileXY, dbf);
 
         /*Draw coordinates============================================================================================*/
     	if (Config.drawLatLng){
@@ -189,11 +189,11 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 
 		if (isPopup){
 			popup.removeAll();
-			final XYint displayXY = TilesUtil.coordinateToDisplay(latlng.lat, latlng.lng, Config.zoom);
+			final XYint displayXY = TilesUtil.coordinateToDisplay(latlng.lat, latlng.lng, Config.zoom, Config.isMapYandex);
 	        displayXY.subtract(viewOffset);
 	        XYint clickOffset = new XYint(e.getPoint().x-getSize().width/2, e.getPoint().y-getSize().height/2);
 	        displayXY.add(clickOffset);
-	        clickLatlng = TilesUtil.displayToCoordinate(displayXY, Config.zoom);
+	        clickLatlng = TilesUtil.displayToCoordinate(displayXY, Config.zoom, Config.isMapYandex);
 
 	        MenuItem mi;
 
@@ -211,7 +211,7 @@ public class Main extends Panel implements GPSListener, MouseListener, MouseMoti
 			if (Config.drawWikimapia){
 				popupWiki.clear();
 				int i=0;
-				for (Iterator iterator = Wikimapia.drawnKmls.iterator(); iterator.hasNext();) {
+				for (Iterator iterator = Wikimapia.drawnKmlsIterator(); iterator.hasNext();) {
 					KML kml = (KML) iterator.next();
 					if (kml.drawnPoly.contains(e.getPoint())){
 						mi = new MenuItem(kml.strip());

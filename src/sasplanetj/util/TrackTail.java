@@ -44,7 +44,7 @@ public class TrackTail extends LinkedList{
         int i=0;
         for (Iterator it = this.iterator(); it.hasNext();) {
         	final XY latlng = (XY) it.next(); //map pixel coordinates
-        	final XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.x, latlng.y, Config.zoom);
+        	final XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.x, latlng.y, Config.zoom, Config.isMapYandex);
         	inmatrix.subtract(matrix[0]); //find point in tile matrix
         	inmatrix.add(matrix[1]); //point with matrix position drawing offset
 
