@@ -10,6 +10,7 @@ import sasplanetj.gps.*;
 public class NMEALog extends TextArea implements GPSListenerNMEA{
 
 	public NMEALog(){
+	   if (App.serialReader != null)
 		App.serialReader.addNMEAListener(this);
 	}
 
@@ -18,6 +19,7 @@ public class NMEALog extends TextArea implements GPSListenerNMEA{
 	}
 
 	public void removeListener(){
+	   if (App.serialReader != null)
 		App.serialReader.removeNMEAListener(this);
 	}
 

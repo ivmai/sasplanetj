@@ -10,6 +10,7 @@ import sasplanetj.gps.*;
 public class GPSLog extends TextArea implements GPSListener{
 
 	public GPSLog(){
+	   if (App.serialReader != null)
 		App.serialReader.addGPSListener(this);
 	}
 
@@ -18,6 +19,7 @@ public class GPSLog extends TextArea implements GPSListener{
 	}
 
 	public void removeListener(){
+	   if (App.serialReader != null)
 		App.serialReader.removeGPSListener(this);
 	}
 
