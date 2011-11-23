@@ -9,10 +9,9 @@ import sasplanetj.Main;
 public class Config{
 
 	/**
-	 * Current working direcotry. Some JVMs cant set working dirfrom command line, so we have to deal with absolute pathes
+	 * Current working directory. Some JVMs cannot set working dir from command line, so we have to deal with absolute paths
 	 */
 	public static String curDir = getProgBaseFolder();
-	public static boolean isCE = System.getProperty("os.name").equals("Windows CE");
 
 	public static String configFilename = StringUtil.normPath(curDir + File.separator + "config.txt");
 	/**

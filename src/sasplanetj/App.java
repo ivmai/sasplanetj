@@ -2,10 +2,9 @@ package sasplanetj;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.Method;
 import java.io.*;
 import java.util.*;
-
-import javax.comm.*;
 
 import sasplanetj.gps.LatLng;
 import sasplanetj.gps.SerialReader;
@@ -34,28 +33,50 @@ public class App extends Frame implements ActionListener, ItemListener{
 	private static final String GOTO_COMMAND = "GOTO_COMMAND";
 
 	public static Main main = null;
-	private static final MenuBar menuBar = new MenuBar();
-	public static CheckboxMenuItem cmiConnectGPS;
-	public static CheckboxMenuItem cmiTrackLog;
-	public static CheckboxMenuItem cmiWikimapia;
-	public static CheckboxMenuItem cmiDrawGrid;
-	public static CheckboxMenuItem cmiDrawLatLng;
-	public static CheckboxMenuItem cmiDrawTail;
+	private static MenuBar menuBar;
+	private static Menu mapsMenu;
+	private static MenuItem cmiMapView;
+	private static MenuItem cmiCoords;
+	private static MenuItem cmiNmea;
+	private static MenuItem cmiConnectGPS;
+	private static MenuItem cmiTrackLog;
+	private static MenuItem cmiWikimapia;
+	private static MenuItem cmiDrawGrid;
+	private static MenuItem cmiDrawLatLng;
+	private static MenuItem cmiDrawTail;
+	private static final MenuItem chkMenuZoomOnlyTo[] = new MenuItem[TilesUtil.ZOOM_MAX];
+	private static final MenuItem chkMenuZoomTo[] = new MenuItem[TilesUtil.ZOOM_MAX];
+	private static final MenuItem cmiMaps[] = new MenuItem[Config.maps.length];
 
 	public static MenuItem miZoomOut;
 	public static MenuItem miZoomIn;
 	public static Menu menuZoomOnlyTo;
-	public static CheckboxMenuItem[] chkMenuZoomOnlyTo;
-	public static Menu menuZoomTo;
-	public static CheckboxMenuItem[] chkMenuZoomTo;
+
+	private static Menu menuZoomToHigh;
+	private static Menu menuZoomToLow;
+	private static MenuItem miCenter;
 
 	public Component currentView = null;
 
-	public static CheckboxMenuItem[] cmiMaps = new CheckboxMenuItem[Config.maps.length];
+	private static Class miCheckboxClass;
+	private static Method cmiSetStateMethod;
 
-	public App(String args[]){
-		App.args = args;
+	static {
+		try {
+			miCheckboxClass = Class.forName("java.awt.CheckboxMenuItem");
+				// Check whether the class is present in JVM class library
+			if (!MenuItem.class.isAssignableFrom(miCheckboxClass)) {
+				miCheckboxClass = null;
+			} else {
+				cmiSetStateMethod = miCheckboxClass.getMethod("setState", new Class[] { boolean.class });
+			}
+		} catch (Exception e) {
+			miCheckboxClass = null;
+		}
+	}
 
+	public App(String appArgs[]) {
+		args = appArgs;
 		self = this;
 		setTitle("SAS.Planet.J");
 
@@ -70,18 +91,63 @@ public class App extends Frame implements ActionListener, ItemListener{
 
 	private void quit() {
 		trackLogger.loggerStop();
-		if (serialReader!=null && serialReader.isAlive())
+		if (serialReader!=null)
 			serialReader.stopReading();
 		Config.save();
+
+		if (getToolkit().getClass().getName().endsWith(".BBToolkit")) // workaround for "BB" AWT implementation
+			Runtime.getRuntime().halt(0);
 		System.exit(0);
 	}
 
 	public static boolean useAwtWorkaround() {
-		return false; // FIXME: Use: miCheckboxClass == null;
+		return miCheckboxClass == null;
 	}
 
 	public static void cmiTrackLogSetState() {
-		// FIXME: Add: menuCheckboxSetState(cmiTrackLog, Config.trackLog);
+		menuCheckboxSetState(cmiTrackLog, Config.trackLog);
+	}
+
+	public static void cmiCurMapSetState(boolean state) {
+		menuCheckboxSetState(cmiMaps[Config.curMapIndex], state);
+		if (state) {
+			mapsMenu.setLabel("Map (" + Config.maps[Config.curMapIndex].key + ")");
+		}
+	}
+
+	private static void menuCheckboxSetState(MenuItem item, boolean state) {
+		if (miCheckboxClass != null) {
+			try {
+				cmiSetStateMethod.invoke(item, new Object[] { new Boolean(state) });
+			} catch (Exception e) {
+				throw new RuntimeException(e.toString());
+			}
+		} else {
+			String label = item.getLabel();
+			if (label.startsWith(">>")) {
+				label = label.substring(2);
+			}
+			item.setLabel(state ? ">>" + label : label);
+		}
+	}
+
+	private MenuItem menuAddNewCheckbox(String name, String cmd, Menu menu) {
+		MenuItem cmi;
+		if (miCheckboxClass != null) {
+			try {
+				cmi = (MenuItem)miCheckboxClass.newInstance();
+			} catch (Exception e) {
+				throw new RuntimeException(e.toString());
+			}
+			((ItemSelectable)cmi).addItemListener(this);
+			cmi.setLabel(name);
+		} else {
+			cmi = new MenuItem(name);
+			cmi.addActionListener(this);
+		}
+		cmi.setActionCommand(cmd);
+		menu.add(cmi);
+		return cmi;
 	}
 
 	public void addComponents(){
@@ -93,15 +159,12 @@ public class App extends Frame implements ActionListener, ItemListener{
 			mi = new MenuItem("Go to...");
 			mi.setActionCommand(GOTO_COMMAND);
 			menu.add(mi);
-			mi = new MenuItem("Map");
-			mi.setActionCommand(MAIN_COMMAND);
-			menu.add(mi);
-			mi = new MenuItem("GPS coordinates");
-			mi.setActionCommand(GPSLOG_COMMAND);
-			menu.add(mi);
-			mi = new MenuItem("NMEA");
-			mi.setActionCommand(NMEALOG_COMMAND);
-			menu.add(mi);
+			menu.addSeparator();
+
+			cmiMapView = menuAddNewCheckbox("Map view", "MAIN_COMMAND", menu);
+			menuCheckboxSetState(cmiMapView, true);
+			cmiCoords = menuAddNewCheckbox("GPS coordinates", "GPSLOG_COMMAND", menu);
+			cmiNmea = menuAddNewCheckbox("NMEA", "NMEALOG_COMMAND", menu);
 			menu.addSeparator();
 
 			Menu menuWaypoints = new Menu("Waypoints");
@@ -125,20 +188,15 @@ public class App extends Frame implements ActionListener, ItemListener{
 				mi = new MenuItem("Clear tracks");
 				mi.setActionCommand("TRACK_CLEAR");
 				menuTracks.add(mi);
-				cmiTrackLog = new CheckboxMenuItem("Log to \"track.plt\"");
-				cmiTrackLog.setActionCommand("TRACKLOG");
-				cmiTrackLog.addItemListener(this);
-				menuTracks.add(cmiTrackLog);
+				cmiTrackLog = menuAddNewCheckbox("Log to \"track.plt\"",
+								 "TRACKLOG", menuTracks);
 				mi = new MenuItem("Delete \"track.plt\"");
 				mi.setActionCommand("TRACKLOG_DELETE");
 				menuTracks.add(mi);
 			menu.add(menuTracks);
 
 			menu.addSeparator();
-			cmiConnectGPS = new CheckboxMenuItem("Connect to GPS");
-			cmiConnectGPS.setActionCommand("CONNECT_GPS");
-			cmiConnectGPS.addItemListener(this);
-			menu.add(cmiConnectGPS);
+			cmiConnectGPS = menuAddNewCheckbox("Connect to GPS", "CONNECT_GPS", menu);
 			menu.addSeparator();
 			mi = new MenuItem("Exit");
 			mi.setActionCommand(EXIT_COMMAND);
@@ -147,37 +205,23 @@ public class App extends Frame implements ActionListener, ItemListener{
 		menuBar.add(menu);
 
 		menu = new Menu("Opts");
-			cmiDrawGrid = new CheckboxMenuItem("Draw grid");
-			cmiDrawGrid.setActionCommand(DRAWGRID_COMMAND);
-			cmiDrawGrid.addItemListener(this);
-			menu.add(cmiDrawGrid);
-			cmiDrawLatLng = new CheckboxMenuItem("Draw LatLng");
-			cmiDrawLatLng.setActionCommand(DRAWLATLNG_COMMAND);
-			cmiDrawLatLng.addItemListener(this);
-			menu.add(cmiDrawLatLng);
-			cmiDrawTail = new CheckboxMenuItem("Draw track tail");
-			cmiDrawTail.setActionCommand(DRAWTAIL_COMMAND);
-			cmiDrawTail.addItemListener(this);
-			menu.add(cmiDrawTail);
+			cmiDrawGrid = menuAddNewCheckbox("Draw grid", "DRAWGRID_COMMAND", menu);
+			cmiDrawLatLng = menuAddNewCheckbox("Draw LatLng", "DRAWLATLNG_COMMAND", menu);
+			cmiDrawTail = menuAddNewCheckbox("Draw track tail", "DRAWTAIL_COMMAND", menu);
 		menuBar.add(menu);
 
 
 		CheckboxMenuItem cmi;
-		menu = new Menu("Maps");
+		menu = new Menu();
 		for (int i = 0; i < Config.maps.length; i++) {
-			cmi = new CheckboxMenuItem(Config.maps[i].name);
-			cmi.setActionCommand("MAPSWITCH"+i);
-			cmi.addItemListener(this);
-			menu.add(cmi);
-			cmiMaps[i] = cmi;
+			cmiMaps[i] = menuAddNewCheckbox(Config.maps[i].name,
+							"MAPSWITCH" + i, menu);
 		}
 		menu.addSeparator();
 		Menu menuLayers = new Menu("Layers");
-		cmiWikimapia = new CheckboxMenuItem("Wikimapa KML");
-		cmiWikimapia.setActionCommand("WIKIMAPIA");
-		cmiWikimapia.addItemListener(this);
-		menuLayers.add(cmiWikimapia);
+		cmiWikimapia = menuAddNewCheckbox("Wikimapa KML", "WIKIMAPIA", menuLayers);
 		menu.add(menuLayers);
+		mapsMenu = menu;
 		menuBar.add(menu);
 
 		miZoomOut = new MenuItem("Zoom out");
@@ -187,51 +231,56 @@ public class App extends Frame implements ActionListener, ItemListener{
 
 		menuZoomOnlyTo = new Menu("Zoom in/out...");
 		menuZoomOnlyTo.addActionListener(this);
-		chkMenuZoomOnlyTo = new CheckboxMenuItem[TilesUtil.ZOOM_MAX - TilesUtil.ZOOM_MIN + 1];
-		menuZoomTo = new Menu("Zoom to...");
-		menuZoomTo.addActionListener(this);
-		chkMenuZoomTo = new CheckboxMenuItem[TilesUtil.ZOOM_MAX - TilesUtil.ZOOM_MIN + 1];
+		menuZoomToHigh = new Menu("Zoom to (high)...");
+		menuZoomToHigh.addActionListener(this);
+		menuZoomToLow = new Menu("Zoom to (low)...");
+		menuZoomToLow.addActionListener(this);
+		miCenter = new MenuItem("Center");
+		miCenter.setActionCommand("CENTER_COMMAND");
 		for (int i = TilesUtil.ZOOM_MAX; i >= TilesUtil.ZOOM_MIN; i--) {
-			cmi = new CheckboxMenuItem("level " + i);
-			cmi.setActionCommand(ZOOMONLYTO_COMMAND + i);
-			cmi.addItemListener(this);
-			menuZoomOnlyTo.add(cmi);
-			chkMenuZoomOnlyTo[i - TilesUtil.ZOOM_MIN] = cmi;
-
-			cmi = new CheckboxMenuItem("level " + i);
-			cmi.setActionCommand(ZOOMTO_COMMAND + i);
-			cmi.addItemListener(this);
-			menuZoomTo.add(cmi);
-			chkMenuZoomTo[i - TilesUtil.ZOOM_MIN] = cmi;
+			chkMenuZoomOnlyTo[i - 1] = menuAddNewCheckbox("level " + i,
+								      "ZOOMONLYTO_COMMAND" + i,
+								      menuZoomOnlyTo);
+			chkMenuZoomTo[i - 1] = menuAddNewCheckbox("level " + i,
+								  "ZOOMTO_COMMAND" + i,
+								  i > TilesUtil.ZOOM_MAX / 2 ?
+									menuZoomToHigh : menuZoomToLow);
 		}
 
 		setMenuBar(menuBar);
 
+		Zip.zipsCache = new Cache(Config.useSoftRefs ?
+					  Config.zipCacheSize * 2 + 1 : Config.zipCacheSize);
 		TilesUtil.tilesCache = new Cache(Config.imageCacheSize); //Cache<String, Image>
 		Wikimapia.kmlCache = new Cache(Config.wikikmlCacheSize); //Cache<String, ArrayList<KML>>
 
-		if (!Config.connectGPS) Config.trackLog = false;
-
 		if (Config.connectGPS){
 			createSerialReader();
+			if (serialReader == null) {
+				serialReader = new SerialReader();
+			}
 			serialReader.start();
 			if (Config.trackLog) trackLogger.loggerStart();
 		}else{
-			serialReader = new SerialReader(); //just a dumb that never runs
+			Config.trackLog = false;
 		}
 
 		if (main==null) main = new Main();
 		changeView(main);
 	}
 
+	private void redrawMenuCheckboxes() {
+		menuCheckboxSetState(cmiConnectGPS, Config.connectGPS);
+		menuCheckboxSetState(cmiDrawGrid, Config.drawGrid);
+		menuCheckboxSetState(cmiDrawLatLng, Config.drawLatLng);
+		menuCheckboxSetState(cmiDrawTail, Config.drawTail);
+		menuCheckboxSetState(cmiWikimapia, Config.drawWikimapia);
+	}
+
 	//Mysaifu bug. set states only after setVisible of frame
 	private void afterSetVisible() {
-		cmiConnectGPS.setState(Config.connectGPS);
-		cmiDrawGrid.setState(Config.drawGrid);
-		cmiDrawLatLng.setState(Config.drawLatLng);
-		cmiDrawTail.setState(Config.drawTail);
-		cmiWikimapia.setState(Config.drawWikimapia);
-		cmiMaps[Config.curMapIndex].setState(true);
+		redrawMenuCheckboxes();
+		cmiCurMapSetState(true);
 
 		zoomMenu();
 	}
@@ -247,14 +296,24 @@ public class App extends Frame implements ActionListener, ItemListener{
 				((Main) currentView).removeListener();
 			}
 			remove(currentView);
+			menuCheckboxSetState(cmiMapView, false);
+			menuCheckboxSetState(cmiCoords, false);
+			menuCheckboxSetState(cmiNmea, false);
 		}
 		add(newView);
 		currentView = newView;
 		currentView.requestFocus();
 		validate();
 
-		if (currentView==main && Config.connectGPS){
+		if (currentView==main) {
+		    menuCheckboxSetState(cmiMapView, true);
+		    if (Config.connectGPS) {
 			((Main) currentView).registerListener();
+		    } else if (currentView.getClass() == GPSLog.class) {
+			menuCheckboxSetState(cmiCoords, true);
+		    } else if (currentView.getClass() == NMEALog.class) {
+			menuCheckboxSetState(cmiNmea, true);
+		    }
 		}
 		//other windows register themselves
 	}
@@ -264,16 +323,13 @@ public class App extends Frame implements ActionListener, ItemListener{
 		String command = e.getActionCommand();
 		if (command == EXIT_COMMAND) {
 			quit();
-		}else if (command == NMEALOG_COMMAND) {
-			changeView(new NMEALog());
-		}else if (command == GPSLOG_COMMAND) {
-			changeView(new GPSLog());
-		}else if (command == MAIN_COMMAND) {
-			changeView(main);
 		}else if (command == ZOOMIN_COMMAND) {
 			zoomIn();
 		}else if (command == ZOOMOUT_COMMAND) {
 			zoomOut();
+		} else if (command == "CENTER_COMMAND") {
+			main.viewOffset0();
+			return;
 		}else if (command == GOTO_COMMAND) {
 			new GoTo(this).setVisible(true);
 		}else if (command.equals("WAYPOINTS_OPEN")) {
@@ -307,9 +363,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 			Tracks.tracks = null;
 			App.main.repaint();
 		}else if (command.equals("TRACKLOG_DELETE")) {
-			File tracklog = new File(trackLogger.logFilename);
-			if (tracklog.exists())
-				tracklog.delete();
+			trackLogger.deleteFile();
 		}else if (command.equals("WAYPOINTS_SAVE")) {
 			if (Waypoints.points==null || Waypoints.points.size()==0){
 				new ShowMessage("Waypoint list is empty");
@@ -328,61 +382,84 @@ public class App extends Frame implements ActionListener, ItemListener{
 			}
 		}
 
+	    if (miCheckboxClass != null) {
 		currentView.requestFocus(); //for creme
+	    } else {
+		processCheckboxToggled(command);
+		redrawMenuCheckboxes();
+	    }
 	}
 
 	public void itemStateChanged(ItemEvent e) {
-		CheckboxMenuItem chk =  (CheckboxMenuItem) e.getSource();
-		String command = chk.getActionCommand();
-		if (command == DRAWGRID_COMMAND) {
-			Config.drawGrid = e.getStateChange()==ItemEvent.SELECTED;
+		processCheckboxToggled(((MenuItem)e.getSource()).getActionCommand());
+	}
+
+	private void processCheckboxToggled(String command) {
+		if (command == MAIN_COMMAND) {
+			changeView(main);
+		} else if (command == GPSLOG_COMMAND) {
+			changeView(new GPSLog());
+		} else if (command == NMEALOG_COMMAND) {
+			changeView(new NMEALog());
+		} else if (command == DRAWGRID_COMMAND) {
+			Config.drawGrid = !Config.drawGrid;
 			main.repaint();
 		}else if (command == DRAWLATLNG_COMMAND) {
-			Config.drawLatLng = e.getStateChange()==ItemEvent.SELECTED;
+			Config.drawLatLng = !Config.drawLatLng;
 			main.repaint();
 		}else if (command == "WIKIMAPIA") {
-			Config.drawWikimapia = e.getStateChange()==ItemEvent.SELECTED;
+			Config.drawWikimapia = !Config.drawWikimapia;
 			main.repaint();
 		}else if (command.startsWith("MAPSWITCH")) {
-			for (int i = 0; i < Config.maps.length; i++) {
-				cmiMaps[i].setState(false);
-			}
+			cmiCurMapSetState(false);
+
 			Config.switchMapTo(Integer.valueOf( command.substring("MAPSWITCH".length()) ).intValue() );
-			cmiMaps[Config.curMapIndex].setState(true);
+			cmiCurMapSetState(true);
 			main.repaint();
 		}else if (command.startsWith(ZOOMTO_COMMAND)) {
 			zoom(new Integer(command.substring(ZOOMTO_COMMAND.length())).intValue());
 		}else if (command.startsWith(ZOOMONLYTO_COMMAND)) {
 			Integer z = Integer.valueOf( command.substring(ZOOMONLYTO_COMMAND.length()) );
-			if (e.getStateChange()==ItemEvent.SELECTED){
+			if (!Config.zoomsAvail.contains(z)) {
 				Config.zoomsAvail.add(z);
 			}else{
 				Config.zoomsAvail.remove(z);
 			}
 		}else if (command == DRAWTAIL_COMMAND) {
-			Config.drawTail = e.getStateChange()==ItemEvent.SELECTED;
+			Config.drawTail = !Config.drawTail;
 			if (Config.drawTail) Main.trackTail.clear(); //clear to prevent jump in tail
 			main.repaint();
 		}else if (command == "CONNECT_GPS") {
-			Config.connectGPS = e.getStateChange()==ItemEvent.SELECTED;
+			Config.connectGPS = !Config.connectGPS;
 			if (!Config.connectGPS){
 				Config.trackLog = false;
 				trackLogger.loggerStop();
 				main.removeListener();
-				if (serialReader.isAlive())
-					serialReader.stopReading();
+				if (serialReader != null) {
+					serialReader.suspendReading();
+				}
 			}else{
 				if (Config.drawTail){
 					Main.trackTail.clear();
 				}
-				if (serialReader==null || !serialReader.isAlive()){
+
+				if (serialReader != null && serialReader.isAlive()) {
+					main.registerListener();
+					serialReader.resumeReading();
+				} else {
 					createSerialReader();
+				    if (serialReader != null) {
 					main.registerListener();
 					serialReader.start();
+				    } else {
+					Config.connectGPS = false;
+					redrawMenuCheckboxes();
+					getToolkit().beep();
+				    }
 				}
 			}
 		}else if (command == "TRACKLOG") {
-			Config.trackLog = e.getStateChange()==ItemEvent.SELECTED;
+			Config.trackLog = !Config.trackLog;
 			if (!Config.connectGPS) Config.trackLog = false;
 			if (Config.trackLog) trackLogger.loggerStart();
 			else trackLogger.loggerStop();
@@ -402,7 +479,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 			if (Config.zoomsAvail.contains(new Integer(zoom))) break;
 			else zoom++;
 		}
-		if (zoom==TilesUtil.ZOOM_MAX+1){
+		if (zoom > TilesUtil.ZOOM_MAX) {
 			Toolkit.getDefaultToolkit().beep();
 			System.out.println("This is the maximum zoom allowed");
 			return;
@@ -432,7 +509,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 	}
 
 	public static void zoom(int zoom) {
-		double deltaview = (double)Math.pow(2, zoom) / Math.pow(2, Config.zoom);
+		double deltaview = Math.pow(2, zoom - Config.zoom);
 		Main.viewOffset.multiply(deltaview);
 		Config.zoom = zoom;
 		App.getSelf().zoomMenu();
@@ -452,27 +529,31 @@ public class App extends Frame implements ActionListener, ItemListener{
 		menuZoom.add(miZoomOut);
 		menuZoom.add(miZoomIn);
 		menuZoom.addSeparator();
-		menuZoom.add(menuZoomTo);
+		menuZoom.add(menuZoomToHigh);
+		menuZoom.add(menuZoomToLow);
 		menuZoom.add(menuZoomOnlyTo);
+		menuZoom.addSeparator();
+		menuZoom.add(miCenter);
 
 		menuBar.add(menuZoom);
 
 		for (int i = TilesUtil.ZOOM_MAX; i >= TilesUtil.ZOOM_MIN; i--) {
-			chkMenuZoomTo[i-TilesUtil.ZOOM_MIN].setState(false);
-			chkMenuZoomOnlyTo[i-TilesUtil.ZOOM_MIN].setState(Config.zoomsAvail.contains(new Integer(i)));
+			menuCheckboxSetState(chkMenuZoomTo[i - TilesUtil.ZOOM_MIN], false);
+			menuCheckboxSetState(chkMenuZoomOnlyTo[i - TilesUtil.ZOOM_MIN],
+					     Config.zoomsAvail.contains(new Integer(i)));
 		}
 
-		chkMenuZoomTo[Config.zoom-TilesUtil.ZOOM_MIN].setState(true);
+		menuCheckboxSetState(chkMenuZoomTo[Config.zoom - TilesUtil.ZOOM_MIN], true);
 	}
 
 	public static void createSerialReader(){
 	 	if (args.length > 0) {
 		    String port = args[0];
-		    int baudRate = args.length > 1 ? new Integer(args[1]).intValue() : 9600;
 		    try {
+		    		int baudRate = args.length > 1 ? new Integer(args[1]).intValue() : 9600;
 				serialReader = new SerialReader(port, baudRate);
 			} catch (Exception e) {
-				e.printStackTrace();
+				serialReader = null;
 			}
 		}else{
 			serialReader = new SerialReader();
@@ -486,7 +567,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 	 */
 	public static void Goto(LatLng latlng){
 		Config.connectGPS = false;
-		App.cmiConnectGPS.setState(false);
+		menuCheckboxSetState(cmiConnectGPS, false);
 		App.main.removeListener();
 		Main.trackTail.clear();
 		latlng.copyTo(Main.latlng);
@@ -502,25 +583,29 @@ public class App extends Frame implements ActionListener, ItemListener{
 		App.main.repaint();
 	}
 
+	private static final boolean isCE = System.getProperty("os.name").equals("Windows CE");
+
 	public static void main(String args[]) throws Exception {
+		System.out.println("SAS.Planet.J v0.0.6");
+
 		System.out.println("Working directory: "+Config.curDir);
 		if (args.length>0 && args[0].equals("list")){
-			Enumeration portList = CommPortIdentifier.getPortIdentifiers();
-			System.out.println("Available ports:");
-			while (portList.hasMoreElements()) {
-				CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();
-				System.out.println("\t"+portId.getName());
-			}
+			SerialReader.listPorts();
 			return;
 		}
 
+		if (miCheckboxClass == null) {
+			System.out.println("No CheckboxMenuItem class");
+		}
+		menuBar = new MenuBar();
 		App app = new App(args);
 
-		if (Config.isCE){
-			System.out.println("Screen size="+Toolkit.getDefaultToolkit().getScreenSize());
-			app.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		if (isCE){
+			System.out.println("Screen size=" + screenSize);
+			app.setSize(screenSize);
 		}else{
-			app.setLocation(600,100);
+			app.setLocation(screenSize.width / 2, screenSize.height / 10);
 			app.setSize(new Dimension(245, 320));
 		}
 
@@ -530,11 +615,11 @@ public class App extends Frame implements ActionListener, ItemListener{
 		app.currentView.requestFocus();
 	}
 
-	public void fullscreen(){
+	/*public void fullscreen(){
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		gd.setFullScreenWindow(this);
 
-	}
+	}*/
 
 	public static App getSelf() {
 		return self;

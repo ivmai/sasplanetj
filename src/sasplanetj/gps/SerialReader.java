@@ -98,7 +98,8 @@ public class SerialReader extends Thread{
 		Enumeration portList = CommPortIdentifier.getPortIdentifiers();
 		System.out.println("Available ports:");
 		while (portList.hasMoreElements()) {
-			System.out.println("\t" + ((CommPortIdentifier)portList.nextElement()).getName());
+			CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();
+			System.out.println("\t" + portId.getName());
   		}
 	}
 
