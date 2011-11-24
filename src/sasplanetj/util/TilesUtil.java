@@ -34,7 +34,7 @@ public class TilesUtil {
 	public static final int ZOOM_MAX = 23;
 
 	public static final int LOG2_TILESIZE = 8;
-	public static final int TILESIZE = 1 << LOG2_TILESIZE;
+	private static final int TILESIZE = 1 << LOG2_TILESIZE;
 
 
     public static Cache tilesCache; //<String, Image>
@@ -158,7 +158,7 @@ public class TilesUtil {
 				emulate_sinh(projection) : Math.sinh(projection))), lng);
 	}
 
-    public static String getCachePath(int x, int y, int zoom){
+    private static String getCachePath(int x, int y, int zoom) {
     	//sasplanet\cache\sat\z17\37\x38349\21\y22110.jpg
     	//result:=path+'\z'+zoom+'\'+(x div 1024)+'\x'+x+'\'+(y div 1024)+'\y'+y+ext;
     	return Config.cachePath+StringUtil.fileSep+Config.curMapDir+StringUtil.fileSep+"z"+Config.zoom+StringUtil.fileSep+(x/1024)+StringUtil.fileSep+"x"+x+StringUtil.fileSep+(y/1024)+StringUtil.fileSep+"y"+y+"."+Config.curMapExt;

@@ -161,10 +161,10 @@ public class Config{
 			out.println();
 
 			out.println("# How many ZIP files to keep open for quick access");
-			out.println("zipCacheSize=" + zipCacheSize + "");
+			out.println("zipCacheSize=" + zipCacheSize);
 			out.println();
 			out.println("# Use SoftReference-based cache");
-			out.println("useSoftRefs=" + useSoftRefs + "");
+			out.println("useSoftRefs=" + useSoftRefs);
 			out.println();
 
 			out.println("# User-defined map folder (e.g. for 'GenShtab')");

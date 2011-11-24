@@ -9,10 +9,6 @@ public class Zip {
 	public static Cache zipsCache;
 
 	public static byte[] getZipFile(String  zipname, String fileinzip){
-		return getZipFileJava(zipname, fileinzip);
-	}
-
-	private static byte[] getZipFileJava(String  zipname, String fileinzip){
 		try {
 			ZipFile zf = (ZipFile)zipsCache.get(zipname);
 			if (zf == null) {

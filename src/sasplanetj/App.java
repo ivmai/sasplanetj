@@ -188,7 +188,7 @@ public class App extends Frame implements ActionListener, ItemListener{
 				mi = new MenuItem("Clear tracks");
 				mi.setActionCommand("TRACK_CLEAR");
 				menuTracks.add(mi);
-				cmiTrackLog = menuAddNewCheckbox("Log to \"track.plt\"",
+				cmiTrackLog = menuAddNewCheckbox("Log to \"" + TrackLogger.logFilename + "\"",
 								 "TRACKLOG", menuTracks);
 				mi = new MenuItem("Delete \"track.plt\"");
 				mi.setActionCommand("TRACKLOG_DELETE");
@@ -309,11 +309,11 @@ public class App extends Frame implements ActionListener, ItemListener{
 		    menuCheckboxSetState(cmiMapView, true);
 		    if (Config.connectGPS) {
 			((Main) currentView).registerListener();
-		    } else if (currentView.getClass() == GPSLog.class) {
-			menuCheckboxSetState(cmiCoords, true);
-		    } else if (currentView.getClass() == NMEALog.class) {
-			menuCheckboxSetState(cmiNmea, true);
 		    }
+		} else if (currentView.getClass() == GPSLog.class) {
+		    menuCheckboxSetState(cmiCoords, true);
+		} else if (currentView.getClass() == NMEALog.class) {
+		    menuCheckboxSetState(cmiNmea, true);
 		}
 		//other windows register themselves
 	}

@@ -40,12 +40,10 @@ public class GoTo extends Dialog {
 	}
 
 	public boolean action(Event e, Object o) {
-		if (e.target instanceof Button) {
-			if (((String) o).equals("OK")
-			    || e.target instanceof TextField) {
-				LatLng latlng = new LatLng(decodeAsDouble(lat), decodeAsDouble(lng));
-				App.Goto(latlng);
-			}
+		if ((e.target instanceof Button && ((String) o).equals("OK"))
+		    || e.target instanceof TextField) {
+			LatLng latlng = new LatLng(decodeAsDouble(lat), decodeAsDouble(lng));
+			App.Goto(latlng);
 		}
 		dispose();
 		return true;

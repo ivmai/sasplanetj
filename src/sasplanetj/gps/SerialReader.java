@@ -48,10 +48,10 @@ public class SerialReader extends Thread{
 		try {
 			serialPort = (SerialPort) CommPortIdentifier.getPortIdentifier(port).open("sasplanetj", 1000);
 		} catch (PortInUseException e) {
-			System.out.println("SerialReader: PortInUseException");
+			System.err.println("SerialReader: PortInUseException");
 			throw e;
 		} catch (NoSuchPortException e) {
-			System.out.println("SerialReader: NoSuchPortException");
+			System.err.println("SerialReader: NoSuchPortException");
 			throw e;
 		} catch (ClassCastException e) {
 			System.err.println("SerialReader: not a serial port");
@@ -63,14 +63,14 @@ public class SerialReader extends Thread{
 			inputStream = serialPort.getInputStream();
 			outputStream = serialPort.getOutputStream();
 		} catch (IOException e) {
-			System.out.println("SerialReader: Error opening streams");
+			System.err.println("SerialReader: Error opening streams");
 			throw e;
 		}
 
 		try {
 			serialPort.setSerialPortParams(baudRate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 		} catch (UnsupportedCommOperationException e) {
-			System.out.println("SerialReader: Warning: cannot program serial line parameters!");
+			System.err.println("SerialReader: Warning: cannot program serial line parameters!");
 		}
 
 		try {
@@ -148,8 +148,8 @@ public class SerialReader extends Thread{
 			return;
 		}
 
-		String msg = null;
 		while (stopFlag==false){
+			String msg = null;
 			try {
 				msg = in.readLine();
 				if (msg == null || msg.length() == 0) {
@@ -170,7 +170,7 @@ public class SerialReader extends Thread{
 					prevlatlng = new LatLng();
 				}
 			} catch (Exception e) {
-				System.out.println("SerialReader: Exception, msg="+msg);
+				System.err.println("SerialReader: Exception, msg="+msg);
 				e.printStackTrace();
 				break;
 			} catch (OutOfMemoryError e) {
@@ -223,9 +223,9 @@ public class SerialReader extends Thread{
 				sleep(3000);
 			}
 		} catch (FileNotFoundException e) {
-			System.out.println("SerialReader: FileNotFoundException "+ simulateFname);
+			System.err.println("SerialReader: FileNotFoundException "+ simulateFname);
 		} catch (Exception e) {
-			System.out.println("SerialReader: Exception, msg="+msg);
+			System.err.println("SerialReader: Exception, msg="+msg);
 			e.printStackTrace();
 		}
 	}
