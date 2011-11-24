@@ -8,8 +8,8 @@ public class XYConstraints implements Cloneable, java.io.Serializable
 {
   int x;
   int y;
-  int width;       // <= 0 means use the components's preferred size
-  int height;      // <= 0 means use the components's preferred size
+  int width;       // <= 0 means use the components' preferred size
+  int height;      // <= 0 means use the components' preferred size
 
   public XYConstraints() {
     this(0, 0, 0, 0);

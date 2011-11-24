@@ -21,7 +21,7 @@
 package sasplanetj.gps;
 
 /**
- *  The XY class represents a tupel of coordinates (GaussKrueger or
+ *  The XY class represents a tuple of coordinates (GaussKrueger or
  *  Longitude=X/Latitude=Y).
  *
  *@author     Uli Walther

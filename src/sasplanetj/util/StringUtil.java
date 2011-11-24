@@ -9,8 +9,8 @@ public class StringUtil {
 	/**
 	 * Much fater String.split using StringTokenizer
 	 */
-	public static String[] split(String s, String delimeter) {
-		StringTokenizer st1 = new StringTokenizer(s, delimeter);
+	public static String[] split(String s, String delimiter) {
+		StringTokenizer st1 = new StringTokenizer(s, delimiter);
 		String[] res = new String[st1.countTokens()];
 		for (int i = 0; i < res.length; i++) {
 			res[i] = st1.nextToken();
@@ -47,8 +47,8 @@ public class StringUtil {
 	}
 
 	/**
-	 * Normilizes path to with system's file.separator.
-	 * Out internal pathes use Unix slash /
+	 * Normalizes path to with system's file.separator.
+	 * Out internal paths use Unix slash /
 	 * @param path
 	 * @return
 	 */
