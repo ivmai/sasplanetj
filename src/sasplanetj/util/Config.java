@@ -56,7 +56,7 @@ public class Config{
 		new MapInfo("Google map", 'M', "MAP", "png"),
 		new MapInfo("Google landscape", 'L', "LAND", "jpg"),
 		new MapInfo("Yandex satellite", 'Y', "yasat", "jpg"),
-		new MapInfo("Yandex map", 'Q', "yamap", "jpg"),
+		new MapInfo("Yandex map", 'Q', "yamapng", "png"),
 		new MapInfo("OpenStreetMap", 'O', "osmmap", "png"),
 		new MapInfo("Virtual Earth satellite", 'V', "vesat", "jpg"),
 		new MapInfo("Gurtam", 'U', "gumap", "png"),
