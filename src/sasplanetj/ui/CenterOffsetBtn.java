@@ -1,27 +1,30 @@
 package sasplanetj.ui;
 
-import java.awt.*;
+import java.awt.Button;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.MediaTracker;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
 
 import sasplanetj.App;
-import sasplanetj.Main;
 
 public class CenterOffsetBtn extends Button {
 
 	private static final Dimension size = new Dimension(25, 25);
 	private final Image img = loadImageFromFile("offset.png");
 
-	public CenterOffsetBtn(){
+	public CenterOffsetBtn() {
 		if (img == null)
-		  return;
+			return;
 
 		size.setSize(img.getWidth(null), img.getHeight(null));
 
 		setAllSizes();
 
-		this.addMouseListener(new MouseAdapter(){
+		this.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				App.main.viewOffset0();
 			}
@@ -29,37 +32,36 @@ public class CenterOffsetBtn extends Button {
 
 	}
 
-    private void setAllSizes(){
-    	setSize(size);
-    }
-
+	private void setAllSizes() {
+		setSize(size);
+	}
 
 	private Image loadImageFromFile(String fname) {
 		try {
 			URL url = CenterOffsetBtn.class.getResource(fname);
 			if (url != null) {
-			  Image img = getToolkit().getImage(url);
-			  MediaTracker tracker = new MediaTracker(this);
-			  tracker.addImage(img, 0);
-			  tracker.waitForAll();
-			  return img;
+				Image img = getToolkit().getImage(url);
+				MediaTracker tracker = new MediaTracker(this);
+				tracker.addImage(img, 0);
+				tracker.waitForAll();
+				return img;
 			}
-		} catch (Exception e) {}
-		System.out.println("Cannot open image: "+fname);
+		} catch (Exception e) {
+		}
+		System.out.println("Cannot open image: " + fname);
 		return null;
 	}
 
-	public void repaint(Graphics g){
+	public void repaint(Graphics g) {
 		paint(g);
 	}
 
-
-	public void paint(Graphics g){
+	public void paint(Graphics g) {
 		if (img != null)
-		  g.drawImage(img, 0, 0, this);
+			g.drawImage(img, 0, 0, this);
 	}
 
 	public boolean isImageLoaded() {
-		 return img != null;
+		return img != null;
 	}
 }

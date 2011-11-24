@@ -1,126 +1,146 @@
-
 package sasplanetj.ui;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.LayoutManager2;
+import java.awt.Rectangle;
+import java.util.Hashtable;
 
-public class XYLayout implements LayoutManager2, java.io.Serializable
-{
-  private static final long serialVersionUID = 200L;
+public class XYLayout implements LayoutManager2, java.io.Serializable {
+	private static final long serialVersionUID = 200L;
 
-  int width;           // <= 0 means use the container's preferred size
-  int height;          // <= 0 means use the container's preferred size
+	int width; // <= 0 means use the container's preferred size
+	int height; // <= 0 means use the container's preferred size
 
-  public XYLayout() {}
+	public XYLayout() {
+	}
 
-  public XYLayout(int width, int height) {
-    this.width  = width;
-    this.height = height;
-  }
+	public XYLayout(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
 
-  public int getWidth() { return width; }
-  public void setWidth(int width) { this.width = width; }
+	public int getWidth() {
+		return width;
+	}
 
-  public int getHeight() { return height; }
-  public void setHeight(int height) { this.height = height; }
+	public void setWidth(int width) {
+		this.width = width;
+	}
 
-  public String toString() {
-    return "XYLayout" + "[width=" + width + ",height=" + height + "]";
-  }
+	public int getHeight() {
+		return height;
+	}
 
-  // LayoutManager interface
+	public void setHeight(int height) {
+		this.height = height;
+	}
 
-  public void addLayoutComponent(String name, Component component) {
-  }
+	public String toString() {
+		return "XYLayout" + "[width=" + width + ",height=" + height + "]";
+	}
 
-  public void removeLayoutComponent(Component component) {
-    info.remove(component);
-  }
+	// LayoutManager interface
 
-  public Dimension preferredLayoutSize(Container target) {
-    return getLayoutSize(target, true);
-  }
+	public void addLayoutComponent(String name, Component component) {
+	}
 
-  public Dimension minimumLayoutSize(Container target) {
-    return getLayoutSize(target, false);
-  }
+	public void removeLayoutComponent(Component component) {
+		info.remove(component);
+	}
 
-  public void layoutContainer(Container target) {
-    Insets insets = target.getInsets();
-    int count = target.getComponentCount();
-    for (int i = 0 ; i < count; i++) {
-      Component component = target.getComponent(i);
-      if (component.isVisible()) {
-        Rectangle r = getComponentBounds(component, true);
-        component.setBounds(insets.left + r.x, insets.top + r.y, r.width, r.height);
-      }
-    }
-  }
+	public Dimension preferredLayoutSize(Container target) {
+		return getLayoutSize(target, true);
+	}
 
-  // LayoutManager2 interface
+	public Dimension minimumLayoutSize(Container target) {
+		return getLayoutSize(target, false);
+	}
 
-  public void addLayoutComponent(Component component, Object constraints) {
-    if (constraints instanceof XYConstraints){
-    	info.put(component, constraints);
-    }
-  }
+	public void layoutContainer(Container target) {
+		Insets insets = target.getInsets();
+		int count = target.getComponentCount();
+		for (int i = 0; i < count; i++) {
+			Component component = target.getComponent(i);
+			if (component.isVisible()) {
+				Rectangle r = getComponentBounds(component, true);
+				component.setBounds(insets.left + r.x, insets.top + r.y,
+						r.width, r.height);
+			}
+		}
+	}
 
-  public Dimension maximumLayoutSize(Container target) {
-    return new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
-  }
+	// LayoutManager2 interface
 
-  public float getLayoutAlignmentX(Container target) {
-    return 0.5f;
-  }
+	public void addLayoutComponent(Component component, Object constraints) {
+		if (constraints instanceof XYConstraints) {
+			info.put(component, constraints);
+		}
+	}
 
-  public float getLayoutAlignmentY(Container target) {
-    return 0.5f;
-  }
+	public Dimension maximumLayoutSize(Container target) {
+		return new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
+	}
 
-  public void invalidateLayout(Container target) {}
+	public float getLayoutAlignmentX(Container target) {
+		return 0.5f;
+	}
 
+	public float getLayoutAlignmentY(Container target) {
+		return 0.5f;
+	}
 
-  	// internal
+	public void invalidateLayout(Container target) {
+	}
+
+	// internal
 	private Hashtable info = new Hashtable(); // leave this as non-transient
-  	static final XYConstraints defaultConstraints = new XYConstraints();
+	static final XYConstraints defaultConstraints = new XYConstraints();
 
-	private Rectangle getComponentBounds(Component component, boolean doPreferred) {
-		XYConstraints constraints = (XYConstraints)info.get(component);
-		if (constraints==null){
+	private Rectangle getComponentBounds(Component component,
+			boolean doPreferred) {
+		XYConstraints constraints = (XYConstraints) info.get(component);
+		if (constraints == null) {
 			constraints = defaultConstraints;
 		}
-		Rectangle r = new Rectangle(constraints.x, constraints.y, constraints.width, constraints.height);
+		Rectangle r = new Rectangle(constraints.x, constraints.y,
+				constraints.width, constraints.height);
 
 		if (r.width <= 0 || r.height <= 0) {
 			Dimension d = component.getPreferredSize();
-			if (r.width <= 0) r.width = d.width;
-			if (r.height <= 0) r.height = d.height;
+			if (r.width <= 0)
+				r.width = d.width;
+			if (r.height <= 0)
+				r.height = d.height;
 		}
 
 		return r;
 	}
+
 	private Dimension getLayoutSize(Container target, boolean doPreferred) {
 		Dimension dim = new Dimension(0, 0);
 
 		if (width <= 0 || height <= 0) {
-		  int count = target.getComponentCount();
-		  for (int i = 0; i < count; i++) {
-		    Component component = target.getComponent(i);
-		    if (component.isVisible()) {
-		      Rectangle r = getComponentBounds(component, doPreferred);
-		      dim.width  = Math.max(dim.width , r.x + r.width);
-		      dim.height = Math.max(dim.height, r.y + r.height);
-		    }
-		  }
+			int count = target.getComponentCount();
+			for (int i = 0; i < count; i++) {
+				Component component = target.getComponent(i);
+				if (component.isVisible()) {
+					Rectangle r = getComponentBounds(component, doPreferred);
+					dim.width = Math.max(dim.width, r.x + r.width);
+					dim.height = Math.max(dim.height, r.y + r.height);
+				}
+			}
 		}
 		if (width > 0)
-		  dim.width = width;
+			dim.width = width;
 		if (height > 0)
-		  dim.height = height;
+			dim.height = height;
 		Insets insets = target.getInsets();
 		dim.width += insets.left + insets.right;
 		dim.height += insets.top + insets.bottom;
-	    return dim;
-	 }
+		return dim;
+	}
 
 }

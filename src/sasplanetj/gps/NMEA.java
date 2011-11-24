@@ -3,12 +3,9 @@ package sasplanetj.gps;
 public class NMEA {
 
 	/*
-	 * $GPGGA Sentence (Fix data)
-	 * $GPGLL Sentence (Position)
-	 * $GPGSV Sentence (Satellites in view)
-	 * $GPGSA Sentence (Active satellites)
-	 * $GPRMC Sentence (Position and time)
-	 * $GPVTG Sentence (Course over ground)
+	 * $GPGGA Sentence (Fix data) $GPGLL Sentence (Position) $GPGSV Sentence
+	 * (Satellites in view) $GPGSA Sentence (Active satellites) $GPRMC Sentence
+	 * (Position and time) $GPVTG Sentence (Course over ground)
 	 */
 
 	// calculate checksum of NMEA message and compare
@@ -31,7 +28,6 @@ public class NMEA {
 		return false;
 	}
 
-
 	static String checkSum(String msg) {
 		// perform NMEA checksum calculation
 		int chk = 0;
@@ -49,31 +45,31 @@ public class NMEA {
 		return chk_s;
 	}
 
-
 	/*
 	 * Used in GPS reciever confiration
 	 */
 	static String addCheckSum(String msg) {
-		return msg + "," + checkSum(msg + ",") + "*" + ((char) 13) + ((char) 10);
+		return msg + "," + checkSum(msg + ",") + "*" + ((char) 13)
+				+ ((char) 10);
 	}
 
-
-	public static boolean parse(String msg, LatLng latlng) throws Exception{
+	public static boolean parse(String msg, LatLng latlng) throws Exception {
 		// Speed optimization, use GPRMC as ozi does by default
-		if (msg.startsWith("$GPRMC")){
-			//"$GPRMC,1utc,2status,3lat,4northHemi,5longitude,6eastHemi,7speedOverGroundKnots,8courseOverGround,9utcdate,magnVariation,magnVarDirection,",
-			int coma2 =  msg.indexOf(',', 8);
-			int coma3 =  msg.indexOf(',', coma2+1);
-			int coma4 =  msg.indexOf(',', coma3+1);
-			int coma5 =  msg.indexOf(',', coma4+1);
-			int coma6 =  msg.indexOf(',', coma5+1);
+		if (msg.startsWith("$GPRMC")) {
+			// "$GPRMC,1utc,2status,3lat,4northHemi,5longitude,6eastHemi,7speedOverGroundKnots,8courseOverGround,9utcdate,magnVariation,magnVarDirection,",
+			int coma2 = msg.indexOf(',', 8);
+			int coma3 = msg.indexOf(',', coma2 + 1);
+			int coma4 = msg.indexOf(',', coma3 + 1);
+			int coma5 = msg.indexOf(',', coma4 + 1);
+			int coma6 = msg.indexOf(',', coma5 + 1);
 
 			if ((coma2 | coma3 | coma4 | coma5 | coma6) < 0)
 				return false;
 
-			String latStr = msg.substring(coma3+1, coma4);
-			String lngStr = msg.substring(coma5+1, coma6);
-			if (latStr.length()==0 || lngStr.length()==0) return false;
+			String latStr = msg.substring(coma3 + 1, coma4);
+			String lngStr = msg.substring(coma5 + 1, coma6);
+			if (latStr.length() == 0 || lngStr.length() == 0)
+				return false;
 			latlng.lat = normLatLong(Double.valueOf(latStr).doubleValue());
 			latlng.lng = normLatLong(Double.valueOf(lngStr).doubleValue());
 			return true;
@@ -81,7 +77,6 @@ public class NMEA {
 
 		return false;
 	}
-
 
 	public static double normLatLong(double c) {
 		double deg = Math.floor(c * 1e-2);

@@ -17,9 +17,9 @@ public class XYint {
 		this.y = other.y;
 	}
 
-
 	/**
 	 * Sets new x and y
+	 * 
 	 * @param x
 	 * @param y
 	 */
@@ -29,7 +29,7 @@ public class XYint {
 	}
 
 	public boolean equalXY(XYint xy) {
-		return this.x==xy.x && this.y==xy.y;
+		return this.x == xy.x && this.y == xy.y;
 	}
 
 	public int getX() {
@@ -49,32 +49,32 @@ public class XYint {
 	}
 
 	public String toString() {
-		return "["+x+","+y+"]";
+		return "[" + x + "," + y + "]";
 	}
 
 	/**
 	 * Return the difference in coordinates, this-other
+	 * 
 	 * @param other
 	 * @return
 	 */
 	public XYint getDifference(XYint other) {
-		return new XYint(this.x-other.x, this.y-other.y);
+		return new XYint(this.x - other.x, this.y - other.y);
 	}
-
 
 	/**
 	 * Adds coordinates of other point
 	 */
 	public void add(XYint other) {
-		setLocation(this.x+other.x, this.y+other.y);
+		setLocation(this.x + other.x, this.y + other.y);
 	}
 
 	public void subtract(XYint other) {
-		setLocation(this.x-other.x, this.y-other.y);
+		setLocation(this.x - other.x, this.y - other.y);
 	}
 
 	public void multiply(double m) {
-		setLocation((int)(this.x*m), (int)(this.y*m));
+		setLocation((int) (this.x * m), (int) (this.y * m));
 	}
 
 }

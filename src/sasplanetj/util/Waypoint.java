@@ -6,10 +6,10 @@ public class Waypoint {
 	public String name;
 	public LatLng latlng;
 
-	public Waypoint(){
+	public Waypoint() {
 	}
 
-	public Waypoint(LatLng latlng, String name){
+	public Waypoint(LatLng latlng, String name) {
 		this.latlng = latlng;
 		this.name = name;
 	}

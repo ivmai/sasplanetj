@@ -2,14 +2,14 @@ package sasplanetj.util;
 
 import java.lang.ref.SoftReference;
 
-public class Cache{
+public class Cache {
 
 	private Object[] keys;
 	private Object[] values;
 
 	private int pos;
 
-	public Cache(int size){
+	public Cache(int size) {
 		keys = new Object[size];
 		values = new Object[size];
 	}
@@ -17,14 +17,14 @@ public class Cache{
 	/**
 	 * returns null if no object with such key
 	 */
-	public Object get(Object key){
+	public Object get(Object key) {
 		if (key != null) {
 			for (int i = 0; i < keys.length; i++) {
 				if (key.equals(keys[i])) {
 					Object obj = values[i];
 					if (obj != null) {
 						if (!(obj instanceof SoftReference)
-						    || (obj = ((SoftReference)obj).get()) != null)
+								|| (obj = ((SoftReference) obj).get()) != null)
 							return obj;
 						System.out.println("Cache SoftRef cleared for: " + key);
 					}
@@ -46,10 +46,10 @@ public class Cache{
 			return;
 
 		keys[pos] = key;
-		values[pos] = value != null && useSoftRefs ?
-				new SoftReference(value) : value;
+		values[pos] = value != null && useSoftRefs ? new SoftReference(value)
+				: value;
 
-		//jump to next free position
+		// jump to next free position
 		pos = pos < keys.length - 1 ? pos + 1 : 0;
 	}
 

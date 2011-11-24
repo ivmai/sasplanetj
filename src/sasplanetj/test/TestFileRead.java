@@ -1,6 +1,9 @@
 package sasplanetj.test;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -18,8 +21,8 @@ public class TestFileRead {
 		while ((str = bufread.readLine()) != null) {
 		}
 		end = new Date();
-		System.out.println("read file with FileReader in " + (end.getTime() - start.getTime()));
-
+		System.out.println("read file with FileReader in "
+				+ (end.getTime() - start.getTime()));
 
 		start = new Date();
 		int len = (int) (new File(filename).length());
@@ -35,8 +38,9 @@ public class TestFileRead {
 			filepos = pos + 1;
 		}
 		end = new Date();
-		System.out.println("read file with full file read in " + (end.getTime() - start.getTime()));
-		System.out.println("file lines size="+file.size());
+		System.out.println("read file with full file read in "
+				+ (end.getTime() - start.getTime()));
+		System.out.println("file lines size=" + file.size());
 
 	}
 

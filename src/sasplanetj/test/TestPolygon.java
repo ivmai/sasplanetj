@@ -1,6 +1,7 @@
 package sasplanetj.test;
 
-import java.awt.*;
+import java.awt.Point;
+import java.awt.Polygon;
 
 public class TestPolygon {
 
@@ -15,7 +16,8 @@ public class TestPolygon {
 		poly.addPoint(12, 213);
 		poly.addPoint(12, 206);
 
-		System.out.println("Contacins="+poly.getBounds().contains(new Point(8, 209)));
+		System.out.println("Contacins="
+				+ poly.getBounds().contains(new Point(8, 209)));
 	}
 
 }

@@ -1,14 +1,15 @@
 package sasplanetj.test;
 
-import java.awt.*;
-
-import sasplanetj.util.Config;
+import java.awt.CheckboxMenuItem;
+import java.awt.Frame;
+import java.awt.Menu;
+import java.awt.MenuBar;
 
 public class TestMenu extends Frame {
 
 	public CheckboxMenuItem cmi;
 
-	public TestMenu(){
+	public TestMenu() {
 		setSize(200, 200);
 
 		MenuBar menuBar = new MenuBar();

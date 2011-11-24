@@ -1,7 +1,6 @@
 package sasplanetj.ui;
 
 import java.awt.Color;
-import java.awt.Font;
 
 public class ColorsAndFonts {
 
@@ -18,7 +17,6 @@ public class ColorsAndFonts {
 
 	public static final Color clPositionPen = new Color(0xf9f8b0);
 	public static final Color clPositionBrush = new Color(0xe52e4c);
-
 
 	public static final Color clWaypointPen = new Color(0x000000);
 	public static final Color clWaypointBrush = new Color(0xb0fb25);

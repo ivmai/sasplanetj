@@ -1,15 +1,21 @@
 package sasplanetj.test;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.TooManyListenersException;
 
-
-import java.io.*;
-import java.util.*;
-import javax.comm.*;
+import javax.comm.CommPortIdentifier;
+import javax.comm.PortInUseException;
+import javax.comm.SerialPort;
+import javax.comm.SerialPortEvent;
+import javax.comm.SerialPortEventListener;
+import javax.comm.UnsupportedCommOperationException;
 
 /**
  * Class declaration
- *
- *
+ * 
+ * 
  * @author
  * @version 1.8, 08/03/00
  */
@@ -22,10 +28,10 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 
 	/**
 	 * Method declaration
-	 *
-	 *
+	 * 
+	 * 
 	 * @param args
-	 *
+	 * 
 	 * @see
 	 */
 	public static void main(String[] args) {
@@ -56,8 +62,8 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 
 	/**
 	 * Constructor declaration
-	 *
-	 *
+	 * 
+	 * 
 	 * @see
 	 */
 	public SimpleRead() {
@@ -82,7 +88,8 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 		serialPort.notifyOnDataAvailable(true);
 
 		try {
-			serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+			serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8,
+					SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 		} catch (UnsupportedCommOperationException e) {
 		}
 		System.out.println("Setted serial params");
@@ -95,14 +102,14 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 
 	/**
 	 * Method declaration
-	 *
-	 *
+	 * 
+	 * 
 	 * @see
 	 */
 	public void run() {
 		System.out.println("Thread running");
 		try {
-			while (true){
+			while (true) {
 				Thread.sleep(1000);
 			}
 		} catch (InterruptedException e) {
@@ -112,10 +119,10 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 
 	/**
 	 * Method declaration
-	 *
-	 *
+	 * 
+	 * 
 	 * @param event
-	 *
+	 * 
 	 * @see
 	 */
 	public void serialEvent(SerialPortEvent event) {

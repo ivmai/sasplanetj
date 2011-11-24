@@ -1,7 +1,14 @@
 package sasplanetj.ui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Button;
+import java.awt.Dialog;
+import java.awt.Event;
+import java.awt.Frame;
+import java.awt.GridLayout;
+import java.awt.Label;
+import java.awt.TextField;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import sasplanetj.App;
 import sasplanetj.gps.LatLng;
@@ -13,15 +20,16 @@ public class NewWaypointDialog extends Dialog {
 	TextField lng = new TextField();
 	TextField name = new TextField();
 
-	public NewWaypointDialog(Frame owner, LatLng latlng){
+	public NewWaypointDialog(Frame owner, LatLng latlng) {
 		super(owner);
 		setTitle("Create waypoint");
 		setModal(true);
 		this.setSize(220, 180);
 		this.setLocation(
-				owner.getLocation().x+(owner.getSize().width-this.getSize().width)/2,
-				owner.getLocation().y+(owner.getSize().height-this.getSize().height)/2
-		);
+				owner.getLocation().x
+						+ (owner.getSize().width - this.getSize().width) / 2,
+				owner.getLocation().y
+						+ (owner.getSize().height - this.getSize().height) / 2);
 
 		setLayout(new GridLayout(4, 2, 8, 8));
 
@@ -34,23 +42,25 @@ public class NewWaypointDialog extends Dialog {
 		add(lng);
 
 		add(new Label("Waypoint name:"));
-		name.setText("wp"+(Waypoints.points==null ? "1" : ""+(Waypoints.points.size()+1)) );
+		name.setText("wp"
+				+ (Waypoints.points == null ? "1" : ""
+						+ (Waypoints.points.size() + 1)));
 		add(name);
 
 		add(new Button("OK"));
 		add(new Button("Cancel"));
 		addWindowListener(new WindowAdapter() {
-		  public void windowClosing(WindowEvent e) {
-		    dispose();
-		  }
+			public void windowClosing(WindowEvent e) {
+				dispose();
+			}
 		});
 	}
 
 	public boolean action(Event e, Object o) {
-		if (((e.target instanceof Button) && ((String)o).equals("OK"))
-		    || e.target instanceof TextField) {
-		  		LatLng latlng = new LatLng(decodeAsDouble(lat), decodeAsDouble(lng));
-				App.CreateWaypoint(latlng, name.getText());
+		if (((e.target instanceof Button) && ((String) o).equals("OK"))
+				|| e.target instanceof TextField) {
+			LatLng latlng = new LatLng(decodeAsDouble(lat), decodeAsDouble(lng));
+			App.CreateWaypoint(latlng, name.getText());
 		}
 		dispose();
 		return true;

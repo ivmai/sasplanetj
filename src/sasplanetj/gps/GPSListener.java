@@ -21,15 +21,16 @@
 package sasplanetj.gps;
 
 /**
- *  The GPS driver calls gpsEvent on all registered GPS listeners.
- *
- *@author    walther
+ * The GPS driver calls gpsEvent on all registered GPS listeners.
+ * 
+ * @author walther
  */
 public interface GPSListener {
 	/**
-	 *  GPS Callback. Called everytime the GPS driver has new GPS data available.
-	 *
-	 *@param  gi  Current LatLng.
+	 * GPS Callback. Called everytime the GPS driver has new GPS data available.
+	 * 
+	 * @param gi
+	 *            Current LatLng.
 	 */
-	void gpsEvent( LatLng gi );
+	void gpsEvent(LatLng gi);
 }

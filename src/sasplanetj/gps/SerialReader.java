@@ -1,15 +1,23 @@
 package sasplanetj.gps;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 import javax.comm.*;
 
 import sasplanetj.util.Config;
 import sasplanetj.util.StringUtil;
 
-
-public class SerialReader extends Thread{
+public class SerialReader extends Thread {
 	String port = null;
 	int baudRate;
 
@@ -20,33 +28,34 @@ public class SerialReader extends Thread{
 	private final LatLng latlng = new LatLng();
 	int gpsParsedMessages;
 
-	/*LatLng listeners*/
-	ArrayList listeners = new ArrayList(); //<GPSListener>
-	/*raw NMEA string listeners*/
-	ArrayList listenersNMEA = new ArrayList(); //<GPSListenerNMEA>
+	/* LatLng listeners */
+	ArrayList listeners = new ArrayList(); // <GPSListener>
+	/* raw NMEA string listeners */
+	ArrayList listenersNMEA = new ArrayList(); // <GPSListenerNMEA>
 
 	public String simulateFname;
 
 	public boolean stopFlag = false;
 	private boolean suspendFlag;
 
-
 	/*
 	 * Simulation creator
 	 */
-	public SerialReader(){
-		simulateFname = StringUtil.normPath(Config.curDir + File.separator + "nmealog.txt");
+	public SerialReader() {
+		simulateFname = StringUtil.normPath(Config.curDir + File.separator
+				+ "nmealog.txt");
 	}
 
 	/*
 	 * Real port creator
 	 */
-	public SerialReader(String port, int baudRate) throws Exception{
+	public SerialReader(String port, int baudRate) throws Exception {
 		this.port = port;
 		this.baudRate = baudRate;
 
 		try {
-			serialPort = (SerialPort) CommPortIdentifier.getPortIdentifier(port).open("sasplanetj", 1000);
+			serialPort = (SerialPort) CommPortIdentifier
+					.getPortIdentifier(port).open("sasplanetj", 1000);
 		} catch (PortInUseException e) {
 			System.err.println("SerialReader: PortInUseException");
 			throw e;
@@ -68,17 +77,21 @@ public class SerialReader extends Thread{
 		}
 
 		try {
-			serialPort.setSerialPortParams(baudRate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+			serialPort.setSerialPortParams(baudRate, SerialPort.DATABITS_8,
+					SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 		} catch (UnsupportedCommOperationException e) {
-			System.err.println("SerialReader: Warning: cannot program serial line parameters!");
+			System.err
+					.println("SerialReader: Warning: cannot program serial line parameters!");
 		}
 
 		try {
 			// GARMIN GPS25: enable all output messages
-			outputStream.write(NMEA.addCheckSum("$PGRMO,,3").getBytes("US-ASCII"));
+			outputStream.write(NMEA.addCheckSum("$PGRMO,,3").getBytes(
+					"US-ASCII"));
 
 			// trigger GPS to send current configuration
-			outputStream.write(NMEA.addCheckSum("$PGRMCE,").getBytes("US-ASCII"));
+			outputStream.write(NMEA.addCheckSum("$PGRMCE,")
+					.getBytes("US-ASCII"));
 			// default configuration string is:
 			// $PGRMC,A,218.8,100,6378137.000,298.257223563,0.0,0.0,0.0,A,3,1,1,4,30
 
@@ -98,13 +111,14 @@ public class SerialReader extends Thread{
 		Enumeration portList = CommPortIdentifier.getPortIdentifiers();
 		System.out.println("Available ports:");
 		while (portList.hasMoreElements()) {
-			CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();
+			CommPortIdentifier portId = (CommPortIdentifier) portList
+					.nextElement();
 			System.out.println("\t" + portId.getName());
-  		}
+		}
 	}
 
 	public void stopReading() {
-    		stopFlag = true;
+		stopFlag = true;
 		resumeReading();
 	}
 
@@ -130,7 +144,7 @@ public class SerialReader extends Thread{
 	public void run() {
 		System.out.println("SerialReader: thread is running");
 
-		if (port==null){//silmulation
+		if (port == null) {// silmulation
 			try {
 				simulate();
 			} catch (InterruptedException e) {
@@ -139,16 +153,18 @@ public class SerialReader extends Thread{
 			return;
 		}
 
-		System.out.println("SerialReader: using port "+port+" at baudrate "+baudRate);
+		System.out.println("SerialReader: using port " + port + " at baudrate "
+				+ baudRate);
 		BufferedReader in;
 		try {
-			in = new BufferedReader(new InputStreamReader(inputStream, "US-ASCII"));
+			in = new BufferedReader(new InputStreamReader(inputStream,
+					"US-ASCII"));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			return;
 		}
 
-		while (stopFlag==false){
+		while (stopFlag == false) {
 			String msg = null;
 			try {
 				msg = in.readLine();
@@ -158,7 +174,9 @@ public class SerialReader extends Thread{
 				}
 				if (NMEA.check(msg)) {
 					if (NMEA.parse(msg, latlng)) {
-						if (!prevlatlng.equalXY(latlng)){//prevent duplicate coordinates process
+						if (!prevlatlng.equalXY(latlng)) {// prevent duplicate
+															// coordinates
+															// process
 							latlng.copyTo(prevlatlng);
 							processGPSListeners();
 						}
@@ -170,7 +188,7 @@ public class SerialReader extends Thread{
 					prevlatlng = new LatLng();
 				}
 			} catch (Exception e) {
-				System.err.println("SerialReader: Exception, msg="+msg);
+				System.err.println("SerialReader: Exception, msg=" + msg);
 				e.printStackTrace();
 				break;
 			} catch (OutOfMemoryError e) {
@@ -195,14 +213,18 @@ public class SerialReader extends Thread{
 		File inFile = new File(simulateFname);
 		String msg = null;
 		try {
-			while (true){//infinite loop over log
+			while (true) {// infinite loop over log
 				FileInputStream fis = new FileInputStream(inFile);
-				BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-				while ( (msg = br.readLine())!=null ) {
-					if (msg!=null && NMEA.check(msg)) {
+				BufferedReader br = new BufferedReader(new InputStreamReader(
+						fis));
+				while ((msg = br.readLine()) != null) {
+					if (msg != null && NMEA.check(msg)) {
 
 						if (NMEA.parse(msg, latlng)) {
-							if (!prevlatlng.equalXY(latlng)){//prevent duplicate coordinates process
+							if (!prevlatlng.equalXY(latlng)) {// prevent
+																// duplicate
+																// coordinates
+																// process
 								latlng.copyTo(prevlatlng);
 								processGPSListeners();
 								sleep(500);
@@ -211,8 +233,9 @@ public class SerialReader extends Thread{
 
 					}
 					processNMEAListeners(msg);
-					if (stopFlag){
-						System.out.println("SerialReader: simulating thread stopped");
+					if (stopFlag) {
+						System.out
+								.println("SerialReader: simulating thread stopped");
 						return;
 					}
 					if (suspendFlag) {
@@ -223,23 +246,26 @@ public class SerialReader extends Thread{
 				sleep(3000);
 			}
 		} catch (FileNotFoundException e) {
-			System.err.println("SerialReader: FileNotFoundException "+ simulateFname);
+			System.err.println("SerialReader: FileNotFoundException "
+					+ simulateFname);
 		} catch (Exception e) {
-			System.err.println("SerialReader: Exception, msg="+msg);
+			System.err.println("SerialReader: Exception, msg=" + msg);
 			e.printStackTrace();
 		}
 	}
 
 	void processGPSListeners() {
 		for (int i = 0; i < listeners.size(); i++) {
-			((GPSListener)listeners.get(i)).gpsEvent(latlng);
+			((GPSListener) listeners.get(i)).gpsEvent(latlng);
 		}
 	}
 
 	public void addGPSListener(GPSListener gl) {
 		synchronized (listeners) {
 			if (!listeners.contains(gl)) {
-				System.out.println("SerialReader.addGPSListener: adding listener "+gl.getClass().getName());
+				System.out
+						.println("SerialReader.addGPSListener: adding listener "
+								+ gl.getClass().getName());
 				listeners.add(gl);
 			}
 		}
@@ -247,22 +273,25 @@ public class SerialReader extends Thread{
 
 	public void removeGPSListener(GPSListener gl) {
 		synchronized (listeners) {
-			System.out.println("SerialReader.removeGPSListener: removing listener "+gl.getClass().getName());
+			System.out
+					.println("SerialReader.removeGPSListener: removing listener "
+							+ gl.getClass().getName());
 			listeners.remove(gl);
 		}
 	}
 
-
 	void processNMEAListeners(String msg) {
 		for (int i = 0; i < listenersNMEA.size(); i++) {
-			((GPSListenerNMEA)listenersNMEA.get(i)).gpsEventNMEA(msg);
+			((GPSListenerNMEA) listenersNMEA.get(i)).gpsEventNMEA(msg);
 		}
 	}
 
 	public void addNMEAListener(GPSListenerNMEA gl) {
 		synchronized (listenersNMEA) {
 			if (!listenersNMEA.contains(gl)) {
-				System.out.println("SerialReader.addNMEAListener: adding listener "+gl.getClass().getName());
+				System.out
+						.println("SerialReader.addNMEAListener: adding listener "
+								+ gl.getClass().getName());
 				listenersNMEA.add(gl);
 			}
 		}
@@ -270,7 +299,9 @@ public class SerialReader extends Thread{
 
 	public void removeNMEAListener(GPSListenerNMEA gl) {
 		synchronized (listenersNMEA) {
-			System.out.println("SerialReader.removeNMEAListener: removing listener "+gl.getClass().getName());
+			System.out
+					.println("SerialReader.removeNMEAListener: removing listener "
+							+ gl.getClass().getName());
 			listenersNMEA.remove(gl);
 		}
 	}
@@ -279,11 +310,12 @@ public class SerialReader extends Thread{
 		System.out.println("Testing SerialReader");
 
 		SerialReader serialReader;
-	 	if (args.length > 0) {
-		    String port = args[0];
-		    int baudRate = args.length > 1 ? new Integer(args[1]).intValue() : 9600;
-		    serialReader = new SerialReader(port, baudRate);
-		}else{
+		if (args.length > 0) {
+			String port = args[0];
+			int baudRate = args.length > 1 ? new Integer(args[1]).intValue()
+					: 9600;
+			serialReader = new SerialReader(port, baudRate);
+		} else {
 			serialReader = new SerialReader();
 		}
 		serialReader.start();

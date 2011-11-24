@@ -20,6 +20,7 @@ public class StringUtil {
 
 	/**
 	 * 1.3 compat
+	 * 
 	 * @param source
 	 * @param pattern
 	 * @param replace
@@ -47,13 +48,15 @@ public class StringUtil {
 	}
 
 	/**
-	 * Normalizes path to with system's file.separator.
-	 * Out internal paths use Unix slash /
+	 * Normalizes path to with system's file.separator. Out internal paths use
+	 * Unix slash /
+	 * 
 	 * @param path
 	 * @return
 	 */
 	public static String normPath(String path) {
-		if (fileSepChar=='/') return path;
+		if (fileSepChar == '/')
+			return path;
 		return path.replace('/', fileSepChar);
 	}
 }

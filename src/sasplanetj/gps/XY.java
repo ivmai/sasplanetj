@@ -21,45 +21,44 @@
 package sasplanetj.gps;
 
 /**
- *  The XY class represents a tuple of coordinates (GaussKrueger or
- *  Longitude=X/Latitude=Y).
- *
- *@author     Uli Walther
- *@version    1.0
+ * The XY class represents a tuple of coordinates (GaussKrueger or
+ * Longitude=X/Latitude=Y).
+ * 
+ * @author Uli Walther
+ * @version 1.0
  */
 
 public class XY {
 	/**
-	 *  GaussKrueger x or lat.
+	 * GaussKrueger x or lat.
 	 */
 	public double x;
 	/**
-	 *  GaussKrueger y or longitude.
+	 * GaussKrueger y or longitude.
 	 */
 	public double y;
 
+	/**
+	 * Create uninitialized coordinate.
+	 */
+	public XY() {
+	}
 
 	/**
-	 *  Create uninitialized coordinate.
+	 * Create a coordinate.
+	 * 
+	 * @param _x
+	 *            x or lat.
+	 * @param _y
+	 *            y or longitude.
 	 */
-	public XY() { }
-
-
-	/**
-	 *  Create a coordinate.
-	 *
-	 *@param  _x  x or lat.
-	 *@param  _y  y or longitude.
-	 */
-	public XY( double _x, double _y )
-	{
+	public XY(double _x, double _y) {
 		x = _x;
 		y = _y;
 	}
 
-
 	public String toString() {
-		return "["+x+","+y+"]";
+		return "[" + x + "," + y + "]";
 	}
 
 }
