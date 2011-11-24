@@ -88,11 +88,11 @@ public class Config{
 			System.err.println("Error loading config: " + e.getMessage());
 		}
 
-	    Main.latlng.lat = Double.valueOf(ini.getProperty("lat", "55.795781")).doubleValue();
-	    Main.latlng.lng = Double.valueOf(ini.getProperty("longitude", "30.662563")).doubleValue();
+	    Main.latlng.lat = Double.valueOf(ini.getProperty("lat", "50.407781")).doubleValue();
+	    Main.latlng.lng = Double.valueOf(ini.getProperty("longitude", "30.662485")).doubleValue();
 	    curMapIndex = Integer.valueOf(ini.getProperty("curMap", "0")).intValue();
 	    zoom = Integer.valueOf(ini.getProperty("zoom", "4")).intValue();
-	    connectGPS = Boolean.valueOf(ini.getProperty("connectGPS", "true")).booleanValue();
+	    connectGPS = Boolean.valueOf(ini.getProperty("connectGPS", "false")).booleanValue();
 	    drawGrid = Boolean.valueOf(ini.getProperty("drawGrid", "true")).booleanValue();
 	    drawLatLng = Boolean.valueOf(ini.getProperty("drawLatLng", "true")).booleanValue();
 	    trackLog = Boolean.valueOf(ini.getProperty("trackLog", "false")).booleanValue();
