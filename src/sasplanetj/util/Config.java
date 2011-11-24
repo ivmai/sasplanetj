@@ -91,8 +91,8 @@ public class Config{
 	    Main.latlng.lat = Double.valueOf(ini.getProperty("lat", "50.407781")).doubleValue();
 	    Main.latlng.lng = Double.valueOf(ini.getProperty("longitude", "30.662485")).doubleValue();
 	    curMapIndex = Integer.valueOf(ini.getProperty("curMap", "0")).intValue();
-	    zoom = Integer.valueOf(ini.getProperty("zoom", "4")).intValue();
-	    connectGPS = Boolean.valueOf(ini.getProperty("connectGPS", "false")).booleanValue();
+	    zoom = Integer.valueOf(ini.getProperty("zoom", "17")).intValue();
+	    connectGPS = Boolean.valueOf(ini.getProperty("connectGPS", "true")).booleanValue();
 	    drawGrid = Boolean.valueOf(ini.getProperty("drawGrid", "true")).booleanValue();
 	    drawLatLng = Boolean.valueOf(ini.getProperty("drawLatLng", "true")).booleanValue();
 	    trackLog = Boolean.valueOf(ini.getProperty("trackLog", "false")).booleanValue();
@@ -104,7 +104,7 @@ public class Config{
 	    drawWikimapia = Boolean.valueOf(ini.getProperty("drawWikimapia", "false")).booleanValue();
 	    wikikmlCacheSize = Integer.valueOf(ini.getProperty("wikikmlCacheSize", "64")).intValue();
 	    zipCacheSize = Integer.valueOf(ini.getProperty("zipCacheSize", "2")).intValue();
-	    useSoftRefs = Boolean.valueOf(ini.getProperty("useSoftRefs", "true")).booleanValue();
+	    useSoftRefs = Boolean.valueOf(ini.getProperty("useSoftRefs", "false")).booleanValue();
 	    usermapdir = ini.getProperty("usermapdir", "usermapdir");
 
 	    switchMapTo(curMapIndex);
