@@ -61,7 +61,7 @@ public class Config{
 		new MapInfo("Virtual Earth satellite", 'V', "vesat", "jpg"),
 		new MapInfo("Gurtam", 'U', "gumap", "png"),
 		new MapInfo("WikiMap", 'W', "WikiMap", "png"),
-		new MapInfo("Usermapdir", 'R', null, "jpg"),
+		// FIXME: disabled in v0.0.6: new MapInfo("Usermapdir", 'R', null, "jpg"),
 	};
 
 
@@ -167,9 +167,9 @@ public class Config{
 			out.println("useSoftRefs=" + useSoftRefs);
 			out.println();
 
-			out.println("# User-defined map folder (e.g. for 'GenShtab')");
-			out.println("usermapdir="+usermapdir);
-			out.println();
+			// FIXME: disabled in v0.0.6: out.println("# User-defined map folder (e.g. for 'GenShtab')");
+			// out.println("usermapdir="+usermapdir);
+			// out.println();
 
 			StringBuffer sb = new StringBuffer();
 			for (Iterator iterator = zoomsAvail.iterator(); iterator.hasNext();) {
