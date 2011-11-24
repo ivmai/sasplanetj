@@ -9,6 +9,10 @@
 /sasplanetj/bin/
 /sasplanetj/cache
 
+# Eclipse misc config and auto-generated files
+/.checkstyle
+/.codepro/
+
 # Auto-generated files
 /config.txt
 
