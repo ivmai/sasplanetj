@@ -16,9 +16,9 @@ public class TestFileRead {
 		start = new Date();
 		FileReader fileread = new FileReader(filename);
 		BufferedReader bufread = new BufferedReader(fileread);
-		String str = new String();
 		/* while loop that reads the file line after line until finished. */
-		while ((str = bufread.readLine()) != null) {
+		while (bufread.readLine() != null) {
+			// Empty
 		}
 		end = new Date();
 		System.out.println("read file with FileReader in "

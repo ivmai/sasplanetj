@@ -5,6 +5,9 @@ package sasplanetj.ui;
 import java.awt.Rectangle;
 
 public class XYConstraints implements Cloneable, java.io.Serializable {
+
+	private static final long serialVersionUID = -8941172169659525490L;
+
 	int x;
 	int y;
 	int width; // <= 0 means use the components' preferred size

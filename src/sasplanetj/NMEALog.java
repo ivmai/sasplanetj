@@ -9,6 +9,8 @@ import sasplanetj.gps.GPSListenerNMEA;
  */
 public class NMEALog extends TextArea implements GPSListenerNMEA {
 
+	private static final long serialVersionUID = 8960810619223547067L;
+
 	public NMEALog() {
 		if (App.serialReader != null)
 			App.serialReader.addNMEAListener(this);

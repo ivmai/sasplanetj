@@ -12,6 +12,8 @@ import sasplanetj.ui.ColorsAndFonts;
  */
 public class TrackTail extends LinkedList {
 
+	private static final long serialVersionUID = -5736366814412155585L;
+
 	int MAX_ENTRIES;
 
 	public TrackTail(int maxsize) {

@@ -6,6 +6,8 @@ import java.util.Locale;
 
 public class LatLng implements Cloneable, java.io.Serializable {
 
+	private static final long serialVersionUID = -9036204396329210484L;
+
 	private static final DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(
 			Locale.US);
 

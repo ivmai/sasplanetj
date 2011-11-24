@@ -7,6 +7,8 @@ import java.awt.MenuBar;
 
 public class TestMenu extends Frame {
 
+	private static final long serialVersionUID = 7770522675456988394L;
+
 	public CheckboxMenuItem cmi;
 
 	public TestMenu() {

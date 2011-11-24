@@ -1,6 +1,5 @@
 package sasplanetj;
 
-import java.awt.CheckboxMenuItem;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FileDialog;
@@ -33,6 +32,9 @@ import sasplanetj.util.Wikimapia;
 import sasplanetj.util.Zip;
 
 public class App extends Frame implements ActionListener, ItemListener {
+
+	private static final long serialVersionUID = -5248004842918375714L;
+
 	private static App self;
 	public static String args[];
 
@@ -241,7 +243,6 @@ public class App extends Frame implements ActionListener, ItemListener {
 				menu);
 		menuBar.add(menu);
 
-		CheckboxMenuItem cmi;
 		menu = new Menu();
 		for (int i = 0; i < Config.maps.length; i++) {
 			cmiMaps[i] = menuAddNewCheckbox(Config.maps[i].name, "MAPSWITCH"

@@ -16,6 +16,8 @@ import sasplanetj.util.Waypoints;
 
 public class NewWaypointDialog extends Dialog {
 
+	private static final long serialVersionUID = 823995977304341944L;
+
 	TextField lat = new TextField();
 	TextField lng = new TextField();
 	TextField name = new TextField();

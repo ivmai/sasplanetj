@@ -49,6 +49,8 @@ import sasplanetj.util.Zip;
 public class Main extends Panel implements GPSListener, MouseListener,
 		MouseMotionListener, KeyListener, ActionListener {
 
+	private static final long serialVersionUID = -4867581244823612838L;
+
 	private static final boolean debugMouseEvents = false;
 
 	public static LatLng latlng = new LatLng();

@@ -8,6 +8,8 @@ import java.util.Date;
 
 public class TestDraw extends Frame implements MouseListener {
 
+	private static final long serialVersionUID = -5244619909817202555L;
+
 	public void paint(Graphics g) {
 
 		int size = 10000;
@@ -46,23 +48,15 @@ public class TestDraw extends Frame implements MouseListener {
 	}
 
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

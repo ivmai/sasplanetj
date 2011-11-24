@@ -14,6 +14,8 @@ import sasplanetj.gps.LatLng;
 
 public class GoTo extends Dialog {
 
+	private static final long serialVersionUID = -6442614629327052440L;
+
 	TextField lat = new TextField(LatLng.latlngFormat7.format(Main.latlng.lat),
 			4);
 	TextField lng = new TextField(LatLng.latlngFormat7.format(Main.latlng.lng),

@@ -50,7 +50,7 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 				if (portId.getName().equals(defaultPort)) {
 					System.out.println("Found port: " + defaultPort);
 					portFound = true;
-					SimpleRead reader = new SimpleRead();
+					new SimpleRead();
 				}
 			}
 		}
@@ -153,7 +153,7 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 
 			try {
 				while (inputStream.available() > 0) {
-					int numBytes = inputStream.read(readBuffer);
+					inputStream.read(readBuffer);
 				}
 
 				System.out.print(new String(readBuffer));

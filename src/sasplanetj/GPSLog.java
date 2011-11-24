@@ -10,6 +10,8 @@ import sasplanetj.gps.LatLng;
  */
 public class GPSLog extends TextArea implements GPSListener {
 
+	private static final long serialVersionUID = -8255611988159037941L;
+
 	public GPSLog() {
 		if (App.serialReader != null)
 			App.serialReader.addGPSListener(this);
