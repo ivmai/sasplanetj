@@ -61,14 +61,15 @@ public class Config{
 		new MapInfo("Virtual Earth satellite", 'V', "vesat", "jpg"),
 		new MapInfo("Gurtam", 'U', "gumap", "png"),
 		new MapInfo("WikiMap", 'W', "WikiMap", "png"),
-		new MapInfo("Usermapdir", 'R', "usermapdir", "jpg"),
+		new MapInfo("Usermapdir", 'R', null, "jpg"),
 	};
 
 
 	public static void switchMapTo(int mapIndex){
 		curMapIndex = mapIndex;
 		isMapYandex = maps[curMapIndex].name.startsWith("Yandex");
-		curMapDir = maps[curMapIndex].dir;
+		String dir = maps[curMapIndex].dir;
+		curMapDir = dir != null ? dir : usermapdir;
 		curMapExt = maps[curMapIndex].extension;
 	}
 
@@ -105,7 +106,6 @@ public class Config{
 	    zipCacheSize = Integer.valueOf(ini.getProperty("zipCacheSize", "2")).intValue();
 	    useSoftRefs = Boolean.valueOf(ini.getProperty("useSoftRefs", "true")).booleanValue();
 	    usermapdir = ini.getProperty("usermapdir", "usermapdir");
-	    // FIXME: add: maps[maps.length-1].dir = usermapdir;
 
 	    switchMapTo(curMapIndex);
 
@@ -214,9 +214,10 @@ public class Config{
 		public final char key;
 
 		/**
-		 * directory name, SAT, yhhyb
+		 * directory name (e.g., "yamap").
+		 * If null then use usermapdir value.
 		 */
-		public final String dir;
+		final String dir;
 		/**
 		 * tile file extension, jpg, png
 		 */
