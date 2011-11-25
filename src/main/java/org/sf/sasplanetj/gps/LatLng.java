@@ -4,9 +4,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-public class LatLng implements java.io.Serializable {
-
-	private static final long serialVersionUID = -9036204396329210484L;
+public class LatLng {
 
 	private static final DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(
 			Locale.US);

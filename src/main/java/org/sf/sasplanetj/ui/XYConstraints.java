@@ -2,9 +2,7 @@ package org.sf.sasplanetj.ui;
 
 import java.awt.Rectangle;
 
-public class XYConstraints implements java.io.Serializable {
-
-	private static final long serialVersionUID = -8941172169659525490L;
+public class XYConstraints {
 
 	int x;
 	int y;

@@ -8,8 +8,7 @@ import java.awt.LayoutManager2;
 import java.awt.Rectangle;
 import java.util.Hashtable;
 
-public class XYLayout implements LayoutManager2, java.io.Serializable {
-	private static final long serialVersionUID = 200L;
+public class XYLayout implements LayoutManager2 {
 
 	int width; // <= 0 means use the container's preferred size
 	int height; // <= 0 means use the container's preferred size
