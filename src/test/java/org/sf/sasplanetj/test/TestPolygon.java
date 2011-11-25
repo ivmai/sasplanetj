@@ -5,9 +5,6 @@ import java.awt.Polygon;
 
 public class TestPolygon {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		Polygon poly = new Polygon();
 		poly.addPoint(12, 206);

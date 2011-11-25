@@ -33,9 +33,6 @@ public class TestDraw extends Frame implements MouseListener {
 				+ (end.getTime() - start.getTime()));
 	}
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		TestDraw t = new TestDraw();
 		t.addMouseListener(t);

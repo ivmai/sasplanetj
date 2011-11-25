@@ -7,28 +7,15 @@ import java.util.TooManyListenersException;
 
 import javax.comm.*;
 
-/**
- * Class declaration
- * 
- * 
- * @author
- * @version 1.8, 08/03/00
- */
 public class SimpleRead implements Runnable, SerialPortEventListener {
-	static CommPortIdentifier portId;
-	static Enumeration portList;
-	InputStream inputStream;
-	SerialPort serialPort;
-	Thread readThread;
 
-	/**
-	 * Method declaration
-	 * 
-	 * 
-	 * @param args
-	 * 
-	 * @see
-	 */
+	private static CommPortIdentifier portId;
+	private static Enumeration portList;
+
+	private InputStream inputStream;
+	private SerialPort serialPort;
+	private Thread readThread;
+
 	public static void main(String[] args) {
 		boolean portFound = false;
 		String defaultPort = "COM4:";
@@ -55,12 +42,6 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 
 	}
 
-	/**
-	 * Constructor declaration
-	 * 
-	 * 
-	 * @see
-	 */
 	public SimpleRead() {
 		try {
 			serialPort = (SerialPort) portId.open("SimpleReadApp", 2000);
@@ -95,12 +76,6 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 		System.out.println("Started thread");
 	}
 
-	/**
-	 * Method declaration
-	 * 
-	 * 
-	 * @see
-	 */
 	public void run() {
 		System.out.println("Thread running");
 		try {
@@ -112,14 +87,6 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 		System.out.println("Thread stopped");
 	}
 
-	/**
-	 * Method declaration
-	 * 
-	 * 
-	 * @param event
-	 * 
-	 * @see
-	 */
 	public void serialEvent(SerialPortEvent event) {
 		System.out.println("Got SerialPortEvent");
 		switch (event.getEventType()) {
