@@ -19,9 +19,6 @@ public class XYint {
 
 	/**
 	 * Sets new x and y
-	 * 
-	 * @param x
-	 * @param y
 	 */
 	public void setLocation(int x, int y) {
 		this.x = x;
@@ -54,9 +51,6 @@ public class XYint {
 
 	/**
 	 * Return the difference in coordinates, this-other
-	 * 
-	 * @param other
-	 * @return
 	 */
 	public XYint getDifference(XYint other) {
 		return new XYint(this.x - other.x, this.y - other.y);

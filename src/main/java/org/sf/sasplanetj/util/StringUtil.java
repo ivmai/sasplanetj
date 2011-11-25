@@ -7,7 +7,7 @@ public class StringUtil {
 	public static final char fileSepChar = fileSep.charAt(0);
 
 	/**
-	 * Much fater String.split using StringTokenizer
+	 * Much faster than String.split using StringTokenizer
 	 */
 	public static String[] split(String s, String delimiter) {
 		StringTokenizer st1 = new StringTokenizer(s, delimiter);
@@ -19,12 +19,9 @@ public class StringUtil {
 	}
 
 	/**
-	 * 1.3 compat
+	 * Replace every substring in a string.
 	 * 
-	 * @param source
-	 * @param pattern
-	 * @param replace
-	 * @return
+	 * JRE-1.3 compatible method
 	 */
 	public static String replace(String source, String pattern, String replace) {
 		if (source == null)
@@ -48,11 +45,8 @@ public class StringUtil {
 	}
 
 	/**
-	 * Normalizes path to with system's file.separator. Out internal paths use
-	 * Unix slash /
-	 * 
-	 * @param path
-	 * @return
+	 * Normalizes path to with system's file.separator. Our internal paths use
+	 * Unix slash '/'
 	 */
 	public static String normPath(String path) {
 		if (fileSepChar == '/')

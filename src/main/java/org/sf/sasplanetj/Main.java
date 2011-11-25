@@ -229,21 +229,13 @@ public class Main extends Panel implements GPSListener, MouseListener,
 				offscreen.getHeight(null), centerTileTopLeft, tileXY,
 				tileWikiXY, dbf);
 
-		/*
-		 * Draw
-		 * coordinates======================================================
-		 * ======================================
-		 */
+		// Draw coordinates
 		if (Config.drawLatLng) {
 			dbf.setColor(ColorsAndFonts.clLatLng);
 			dbf.drawString(latlng.toString(), 3, 15);
 		}
 
-		/*
-		 * Draw
-		 * track============================================================
-		 * ================================
-		 */
+		// Draw track
 		if (Config.drawTail) {
 			trackTail.draw(dbf, matrix);
 		}
@@ -253,18 +245,10 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		if (Waypoints.points != null)
 			Waypoints.draw(dbf, matrix);
 
-		/*
-		 * Draw
-		 * position==========================================================
-		 * ==================================
-		 */
+		// Draw position
 		drawPosition(dbf, center);
 
-		/*
-		 * Draw double buffer image to our
-		 * view==================================
-		 * ===================================
-		 */
+		// Draw double buffer image to our view
 		g.drawImage(offscreen, 0, 0, this);
 	}
 

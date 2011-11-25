@@ -143,7 +143,7 @@ public class SerialReader extends Thread {
 	public void run() {
 		System.out.println("SerialReader: thread is running");
 
-		if (port == null) {// silmulation
+		if (port == null) { // simulation
 			try {
 				simulate();
 			} catch (InterruptedException e) {

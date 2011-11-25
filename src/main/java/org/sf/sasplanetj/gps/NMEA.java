@@ -46,7 +46,7 @@ public class NMEA {
 	}
 
 	/*
-	 * Used in GPS reciever confiration
+	 * Used in GPS receiver confirmation
 	 */
 	static String addCheckSum(String msg) {
 		return msg + "," + checkSum(msg + ",") + "*" + ((char) 13)
@@ -54,7 +54,7 @@ public class NMEA {
 	}
 
 	public static boolean parse(String msg, LatLng latlng) throws Exception {
-		// Speed optimization, use GPRMC as ozi does by default
+		// Speed optimization, use GPRMC as Ozi does by default
 		if (msg.startsWith("$GPRMC")) {
 			// "$GPRMC,1utc,2status,3lat,4northHemi,5longitude,6eastHemi,7speedOverGroundKnots,8courseOverGround,9utcdate,magnVariation,magnVarDirection,",
 			int coma2 = msg.indexOf(',', 8);

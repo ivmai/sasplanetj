@@ -71,12 +71,6 @@ public class Wikimapia {
 				+ y + ".kml";
 	}
 
-	/**
-	 * 
-	 * @param tileXY
-	 * @param zoom
-	 * @return ArrayList<KML>
-	 */
 	public static ArrayList getTileKML(int x, int y, int zoom, boolean isYandex) {
 		String filename = getCachePath(x, y, zoom);
 		String entryName = isYandex ? filename + "?Y" : filename;
@@ -90,13 +84,6 @@ public class Wikimapia {
 		return kmls;
 	}
 
-	/**
-	 * 
-	 * @param kmlstr
-	 * @param zoom
-	 * @return ArrayList<KML>
-	 * @throws NumberFormatException
-	 */
 	private static ArrayList parse(String kmlstr, int zoom, boolean isYandex)
 			throws NumberFormatException {
 		if (kmlstr == null)

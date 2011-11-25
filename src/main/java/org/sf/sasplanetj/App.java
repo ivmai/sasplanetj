@@ -118,12 +118,10 @@ public class App extends Frame implements ActionListener, ItemListener {
 			serialReader.stopReading();
 		Config.save();
 
-		if (getToolkit().getClass().getName().endsWith(".BBToolkit")) // workaround
-																		// for
-																		// "BB"
-																		// AWT
-																		// implementation
+		if (getToolkit().getClass().getName().endsWith(".BBToolkit")) {
+			// workaround for "BB" AWT implementation
 			Runtime.getRuntime().halt(0);
+		}
 		System.exit(0);
 	}
 
@@ -282,10 +280,8 @@ public class App extends Frame implements ActionListener, ItemListener {
 		Zip.zipsCache = new Cache(
 				Config.useSoftRefs ? Config.zipCacheSize * 2 + 1
 						: Config.zipCacheSize);
-		TilesUtil.tilesCache = new Cache(Config.imageCacheSize); // Cache<String,
-																	// Image>
-		Wikimapia.kmlCache = new Cache(Config.wikikmlCacheSize); // Cache<String,
-																	// ArrayList<KML>>
+		TilesUtil.tilesCache = new Cache(Config.imageCacheSize); // <String,Image>
+		Wikimapia.kmlCache = new Cache(Config.wikikmlCacheSize); // <String,ArrayList<KML>>
 
 		if (Config.connectGPS) {
 			createSerialReader();
@@ -563,10 +559,8 @@ public class App extends Frame implements ActionListener, ItemListener {
 		main.repaint();
 	}
 
-	/*
-	 * Such a trick because of Mysaifu bug with menuitem.setLabel
-	 */
 	public void zoomMenu() {
+		// Such a trick because of Mysaifu bug with menuitem.setLabel.
 		if (menuBar.getMenuCount() >= 4)
 			menuBar.remove(3);
 
@@ -610,8 +604,6 @@ public class App extends Frame implements ActionListener, ItemListener {
 
 	/**
 	 * Moves map position to given coordinates
-	 * 
-	 * @param latlng
 	 */
 	public static void goTo(LatLng latlng) {
 		Config.connectGPS = false;
@@ -624,8 +616,6 @@ public class App extends Frame implements ActionListener, ItemListener {
 
 	/**
 	 * Moves map position to given coordinates
-	 * 
-	 * @param latlng
 	 */
 	public static void createWaypoint(LatLng latlng, String name) {
 		Waypoints.points.add(new Waypoint(latlng, name));
@@ -668,9 +658,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 	/*
 	 * public void fullscreen(){ GraphicsDevice gd =
 	 * GraphicsEnvironment.getLocalGraphicsEnvironment
-	 * ().getDefaultScreenDevice(); gd.setFullScreenWindow(this);
-	 * 
-	 * }
+	 * ().getDefaultScreenDevice(); gd.setFullScreenWindow(this); }
 	 */
 
 	public static App getSelf() {

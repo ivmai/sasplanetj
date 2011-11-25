@@ -106,16 +106,14 @@ public class Waypoints {
 	}
 
 	public static void draw(Graphics dbf, XYint[] matrix) {
-		/*
-		 * TODO: skip WPs which are out of screen
-		 */
+		// TODO: skip WPs which are out of screen.
 		for (Iterator it = points.iterator(); it.hasNext();) {
 			final Waypoint wp = (Waypoint) it.next();
 			final XYint inmatrix = TilesUtil.coordinateToDisplay(wp.latlng.lat,
 					wp.latlng.lng, Config.zoom, Config.isMapYandex);
 			inmatrix.subtract(matrix[0]); // find point in tile matrix
-			inmatrix.add(matrix[1]); // point with matrix position drawing
-										// offset
+			inmatrix.add(matrix[1]);
+			// point with matrix position drawing offset
 
 			Rectangle r = new Rectangle(inmatrix.x - 3, inmatrix.y - 3, 7, 7);
 			dbf.setColor(ColorsAndFonts.clWaypointBrush);
