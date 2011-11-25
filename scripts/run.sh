@@ -1,1 +1,1 @@
-java -cp sasplanetj.jar:comm.jar sasplanetj.App $1
+java -cp sasplanetj.jar:comm.jar org.sf.sasplanetj.App $1
