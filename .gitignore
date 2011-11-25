@@ -1,48 +1,36 @@
 # Files and folders to be ignored (including subfolders).
 
-# Binary files
+# Binary auto-generated files
 *.class
 *.jar
-/.build
+/.build/
+/bin-*/
 /bin/
-/cache
-/sasplanetj/bin/
-/sasplanetj/cache
+/jcgo_Out/
+/lib/
 
 # Eclipse misc config and auto-generated files
 /.checkstyle
 /.codepro/
 
-# Auto-generated files
-/config.txt
-
 # Distributive files
 *.tar.gz
 *.zip
 
-# Geo track files
-*.plt
-*.wpt
+# Native binary auto-generated files
+*.stackdump
+/*.dll
+/*.exe
+/*.o
+/*.obj
+/*.so
+core
 
-# 3rd-party VMs
-/creme*props.txt
-/mysiafuprops.txt
+# 3rd-party JVMs
 /phoneme/
 
-# Snapshots and misc test logs
-/captures/
-/zip*test/
-
-# Native binary files
-*.dll
-*.exe
-*.o
-*.obj
-*.so
-/bin-*/
-/lib/
-
-# Auto-generated files and 3rd-party library sources
-/jcgo_Out/
-/jclPPro10/
-/swt*_src/
+# Geo cache, config and track files
+*.plt
+*.wpt
+/cache
+/config.txt
