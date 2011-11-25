@@ -5,12 +5,7 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
-import javax.comm.CommPortIdentifier;
-import javax.comm.PortInUseException;
-import javax.comm.SerialPort;
-import javax.comm.SerialPortEvent;
-import javax.comm.SerialPortEventListener;
-import javax.comm.UnsupportedCommOperationException;
+import javax.comm.*;
 
 /**
  * Class declaration
