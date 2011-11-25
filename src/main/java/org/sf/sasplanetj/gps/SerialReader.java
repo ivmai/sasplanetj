@@ -173,9 +173,8 @@ public class SerialReader extends Thread {
 				}
 				if (NMEA.check(msg)) {
 					if (NMEA.parse(msg, latlng)) {
-						if (!prevlatlng.equalXY(latlng)) {// prevent duplicate
-															// coordinates
-															// process
+						if (!prevlatlng.equalXY(latlng)) {
+							// prevent duplicate coordinates process
 							latlng.copyTo(prevlatlng);
 							processGPSListeners();
 						}

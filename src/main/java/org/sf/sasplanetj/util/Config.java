@@ -31,8 +31,7 @@ public class Config {
 	public static boolean connectGPS;
 
 	public static int zoom;
-	public static ArrayList zoomsAvail = new ArrayList(TilesUtil.ZOOM_MAX
-			- TilesUtil.ZOOM_MIN + 1);
+	public static ArrayList zoomsAvail = new ArrayList(TilesUtil.ZOOM_MAX);
 	public static boolean drawGrid;
 	public static boolean drawLatLng;
 	public static boolean drawTail;

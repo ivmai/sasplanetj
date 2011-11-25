@@ -31,8 +31,6 @@ public class TilesUtil {
 		}
 	}
 
-	public static final int ZOOM_MIN = 1; // FIXME: Remove
-
 	public static final int ZOOM_MAX = 23;
 
 	public static final int LOG2_TILESIZE = 8;

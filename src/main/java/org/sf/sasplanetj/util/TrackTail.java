@@ -52,8 +52,8 @@ public class TrackTail extends LinkedList {
 			final XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.x,
 					latlng.y, Config.zoom, Config.isMapYandex);
 			inmatrix.subtract(matrix[0]); // find point in tile matrix
-			inmatrix.add(matrix[1]); // point with matrix position drawing
-										// offset
+			inmatrix.add(matrix[1]);
+			// point with matrix position drawing offset
 
 			x[i] = inmatrix.x;
 			y[i] = inmatrix.y;

@@ -269,7 +269,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 		menuZoomToLow.addActionListener(this);
 		miCenter = new MenuItem("Center");
 		miCenter.setActionCommand("CENTER_COMMAND");
-		for (int i = TilesUtil.ZOOM_MAX; i >= TilesUtil.ZOOM_MIN; i--) {
+		for (int i = TilesUtil.ZOOM_MAX; i >= 1; i--) {
 			chkMenuZoomOnlyTo[i - 1] = menuAddNewCheckbox("level " + i,
 					"ZOOMONLYTO_COMMAND" + i, menuZoomOnlyTo);
 			chkMenuZoomTo[i - 1] = menuAddNewCheckbox("level " + i,
@@ -534,19 +534,19 @@ public class App extends Frame implements ActionListener, ItemListener {
 	}
 
 	public static void zoomOut() {
-		if (Config.zoom - 1 < TilesUtil.ZOOM_MIN) {
+		if (Config.zoom <= 1) {
 			Toolkit.getDefaultToolkit().beep();
 			return;
 		}
 
 		int zoom = Config.zoom - 1;
-		for (int i = zoom; i >= TilesUtil.ZOOM_MIN; i--) {
+		for (int i = zoom; i >= 1; i--) {
 			if (Config.zoomsAvail.contains(new Integer(zoom)))
 				break;
 			else
 				zoom--;
 		}
-		if (zoom == TilesUtil.ZOOM_MIN - 1) {
+		if (zoom == 0) {
 			Toolkit.getDefaultToolkit().beep();
 			System.out.println("This is the minimum zoom allowed");
 			return;
@@ -583,14 +583,13 @@ public class App extends Frame implements ActionListener, ItemListener {
 
 		menuBar.add(menuZoom);
 
-		for (int i = TilesUtil.ZOOM_MAX; i >= TilesUtil.ZOOM_MIN; i--) {
-			menuCheckboxSetState(chkMenuZoomTo[i - TilesUtil.ZOOM_MIN], false);
-			menuCheckboxSetState(chkMenuZoomOnlyTo[i - TilesUtil.ZOOM_MIN],
+		for (int i = TilesUtil.ZOOM_MAX; i >= 1; i--) {
+			menuCheckboxSetState(chkMenuZoomTo[i - 1], false);
+			menuCheckboxSetState(chkMenuZoomOnlyTo[i - 1],
 					Config.zoomsAvail.contains(new Integer(i)));
 		}
 
-		menuCheckboxSetState(chkMenuZoomTo[Config.zoom - TilesUtil.ZOOM_MIN],
-				true);
+		menuCheckboxSetState(chkMenuZoomTo[Config.zoom - 1], true);
 	}
 
 	public void createSerialReader() {
