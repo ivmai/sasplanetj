@@ -62,7 +62,7 @@ public class NewWaypointDialog extends Dialog {
 		if (((e.target instanceof Button) && ((String) o).equals("OK"))
 				|| e.target instanceof TextField) {
 			LatLng latlng = new LatLng(decodeAsDouble(lat), decodeAsDouble(lng));
-			App.CreateWaypoint(latlng, name.getText());
+			App.createWaypoint(latlng, name.getText());
 		}
 		dispose();
 		return true;

@@ -29,11 +29,12 @@ public class TrackTail extends LinkedList {
 	}
 
 	public String getPointsString() {
-		String result = "";
+		StringBuffer sb = new StringBuffer();
 		for (Iterator it = this.iterator(); it.hasNext();) {
-			result += ((XY) it.next()).toString() + " ";
+			sb.append(((XY) it.next()).toString());
+			sb.append(' ');
 		}
-		return result;
+		return sb.toString();
 	}
 
 	public void draw(Graphics dbf, XYint[] matrix) {

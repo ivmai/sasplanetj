@@ -49,6 +49,7 @@ public class CenterOffsetBtn extends Button {
 				return img;
 			}
 		} catch (Exception e) {
+			// Ignore.
 		}
 		System.out.println("Cannot open image: " + fname);
 		return null;

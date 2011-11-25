@@ -26,7 +26,6 @@ public class SerialReader extends Thread {
 
 	private LatLng prevlatlng = new LatLng();
 	private final LatLng latlng = new LatLng();
-	int gpsParsedMessages;
 
 	/* LatLng listeners */
 	ArrayList listeners = new ArrayList(); // <GPSListener>
@@ -221,10 +220,8 @@ public class SerialReader extends Thread {
 					if (msg != null && NMEA.check(msg)) {
 
 						if (NMEA.parse(msg, latlng)) {
-							if (!prevlatlng.equalXY(latlng)) {// prevent
-																// duplicate
-																// coordinates
-																// process
+							if (!prevlatlng.equalXY(latlng)) {
+								// prevent duplicate coordinates process
 								latlng.copyTo(prevlatlng);
 								processGPSListeners();
 								sleep(500);

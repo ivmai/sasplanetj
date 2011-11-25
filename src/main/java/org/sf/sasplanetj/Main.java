@@ -413,17 +413,15 @@ public class Main extends Panel implements GPSListener, MouseListener,
 
 	private final XYint mouseDragPrevXY = new XYint();
 
+	private static final int BUTTON1_DOWN_MASK = 1 << 10;
+
 	public void mousePressed(MouseEvent e) {
 		if (debugMouseEvents) {
 			System.out.println("mousePressed: " + e);
 		}
 		isMousePressed = false;
 		if (!doPopup(e)
-				&& (e.getModifiers() & (InputEvent.BUTTON1_MASK | (1 << 10)/*
-																			 * InputEvent
-																			 * .
-																			 * BUTTON1_DOWN_MASK
-																			 */)) != 0) {
+				&& (e.getModifiers() & (InputEvent.BUTTON1_MASK | BUTTON1_DOWN_MASK)) != 0) {
 			isMousePressed = true;
 		}
 		mouseDragPrevXY.setLocation(e.getX(), e.getY());

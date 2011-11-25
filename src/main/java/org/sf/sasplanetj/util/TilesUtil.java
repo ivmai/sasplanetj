@@ -241,20 +241,22 @@ public class TilesUtil {
 		String[] splits = StringUtil.split(
 				filename.substring(Config.curDir.length()), StringUtil.fileSep);
 		String prepath = Config.curDir + StringUtil.fileSep;
-		for (int i = 0; i < splits.length - 1; i++) { // skip last which is
-														// filename itself
+		for (int i = 0; i < splits.length - 1; i++) {
+			// skip last which is filename itself
 			if (new File(prepath + splits[i]).exists()) {
 				prepath += splits[i] + StringUtil.fileSep;
 				continue;
-			} else {// check for zip
+			} else { // check for zip
 				if (new File(prepath + splits[i] + ".zip").exists()) {
 					String zipname = prepath + splits[i] + ".zip";
-					String fileinzip = "";
+					StringBuffer sb = new StringBuffer();
 					for (int j = i; j < splits.length; j++) {
-						fileinzip += splits[j]
-								+ (j < splits.length - 1 ? "/" : "");
+						sb.append(splits[j]);
+						if (j < splits.length - 1) {
+							sb.append('/');
+						}
 					}
-
+					String fileinzip = sb.toString();
 					zipnames = new String[] { zipname, fileinzip };
 					zipExistanceCache.put(filename, zipnames, false);
 					return zipnames;

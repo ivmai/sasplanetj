@@ -54,7 +54,7 @@ public class GoTo extends Dialog {
 		if ((e.target instanceof Button && ((String) o).equals("OK"))
 				|| e.target instanceof TextField) {
 			LatLng latlng = new LatLng(decodeAsDouble(lat), decodeAsDouble(lng));
-			App.Goto(latlng);
+			App.goTo(latlng);
 		}
 		dispose();
 		return true;

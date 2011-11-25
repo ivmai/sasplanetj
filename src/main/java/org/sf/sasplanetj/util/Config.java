@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -89,8 +90,11 @@ public class Config {
 
 	public static void load() {
 		try {
-			if (new File(configFilename).exists())
-				ini.load(new FileInputStream(configFilename));
+			if (new File(configFilename).exists()) {
+				InputStream inF = new FileInputStream(configFilename);
+				ini.load(inF);
+				inF.close();
+			}
 		} catch (Exception e) {
 			System.err.println("Error loading config: " + e.getMessage());
 		}

@@ -93,7 +93,7 @@ public class Waypoints {
 				points.add(wp);
 			}
 			// Close the input stream
-			in.close();
+			br.close();
 			System.out.println("Waypoints: now we have " + points.size()
 					+ " waypoints loaded");
 			if (points.size() == 0)

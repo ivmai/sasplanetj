@@ -36,7 +36,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 	private static final long serialVersionUID = -5248004842918375714L;
 
 	private static App self;
-	public static String args[];
+	private String args[];
 
 	public static SerialReader serialReader = null;
 	private static final TrackLogger trackLogger = new TrackLogger();
@@ -469,7 +469,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 			if (Config.drawTail)
 				Main.trackTail.clear(); // clear to prevent jump in tail
 			main.repaint();
-		} else if (command == "CONNECT_GPS") {
+		} else if (command.equals("CONNECT_GPS")) {
 			Config.connectGPS = !Config.connectGPS;
 			if (!Config.connectGPS) {
 				Config.trackLog = false;
@@ -498,7 +498,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 					}
 				}
 			}
-		} else if (command == "TRACKLOG") {
+		} else if (command.equals("TRACKLOG")) {
 			Config.trackLog = !Config.trackLog;
 			if (!Config.connectGPS)
 				Config.trackLog = false;
@@ -593,7 +593,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 				true);
 	}
 
-	public static void createSerialReader() {
+	public void createSerialReader() {
 		if (args.length > 0) {
 			String port = args[0];
 			try {
@@ -614,7 +614,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 	 * 
 	 * @param latlng
 	 */
-	public static void Goto(LatLng latlng) {
+	public static void goTo(LatLng latlng) {
 		Config.connectGPS = false;
 		menuCheckboxSetState(cmiConnectGPS, false);
 		App.main.removeListener();
@@ -628,7 +628,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 	 * 
 	 * @param latlng
 	 */
-	public static void CreateWaypoint(LatLng latlng, String name) {
+	public static void createWaypoint(LatLng latlng, String name) {
 		Waypoints.points.add(new Waypoint(latlng, name));
 		App.main.repaint();
 	}

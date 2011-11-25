@@ -148,11 +148,14 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 
 			try {
 				while (inputStream.available() > 0) {
-					inputStream.read(readBuffer);
+					int res = inputStream.read(readBuffer);
+					if (res < 1)
+						break;
 				}
 
 				System.out.print(new String(readBuffer));
 			} catch (IOException e) {
+				// Ignore.
 			}
 
 			break;

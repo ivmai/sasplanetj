@@ -1,10 +1,8 @@
-// Ukradeno u Borlanda
-
 package org.sf.sasplanetj.ui;
 
 import java.awt.Rectangle;
 
-public class XYConstraints implements Cloneable, java.io.Serializable {
+public class XYConstraints implements java.io.Serializable {
 
 	private static final long serialVersionUID = -8941172169659525490L;
 
@@ -77,10 +75,6 @@ public class XYConstraints implements Cloneable, java.io.Serializable {
 					&& other.height == height;
 		}
 		return false;
-	}
-
-	public Object clone() {
-		return new XYConstraints(x, y, width, height);
 	}
 
 	public String toString() {
