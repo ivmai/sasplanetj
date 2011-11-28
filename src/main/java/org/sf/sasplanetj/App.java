@@ -80,8 +80,8 @@ public class App extends Frame implements ActionListener, ItemListener {
 
 	public Component currentView = null;
 
-	private static Class miCheckboxClass;
-	private static Method cmiSetStateMethod;
+	private static Class miCheckboxClass; // null if missing
+	private static Method cmiSetStateMethod; // null if missing
 
 	static {
 		try {
@@ -90,6 +90,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 			if (!MenuItem.class.isAssignableFrom(miCheckboxClass)) {
 				miCheckboxClass = null;
 			} else {
+				// Check whether JRE CheckboxMenuItem has setState()
 				cmiSetStateMethod = miCheckboxClass.getMethod("setState",
 						new Class[] { boolean.class });
 			}
@@ -656,8 +657,8 @@ public class App extends Frame implements ActionListener, ItemListener {
 	}
 
 	/*
-	 * public void fullscreen(){ GraphicsDevice gd =
-	 * GraphicsEnvironment.getLocalGraphicsEnvironment
+	 * FIXME: Add/use this method (use reflection). public void fullscreen(){
+	 * GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment
 	 * ().getDefaultScreenDevice(); gd.setFullScreenWindow(this); }
 	 */
 

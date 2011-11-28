@@ -168,7 +168,7 @@ public class SerialReader extends Thread {
 			try {
 				msg = in.readLine();
 				if (msg == null || msg.length() == 0) {
-					sleep(100);
+					sleep(100); // prevent busy waiting
 					continue;
 				}
 				if (NMEA.check(msg)) {
@@ -239,7 +239,7 @@ public class SerialReader extends Thread {
 					}
 				}
 				br.close();
-				sleep(3000);
+				sleep(3000); // simulation delay (3 seconds)
 			}
 		} catch (FileNotFoundException e) {
 			System.err.println("SerialReader: FileNotFoundException "

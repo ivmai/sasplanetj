@@ -56,7 +56,8 @@ public class TilesUtil {
 	private TilesUtil() {
 	}
 
-	/*
+	/**
+	 * Math atanh() emulation.
 	 * http://sasgis.ru/2009/05/27/yandekskarty-na-google-api/#more-248 Yandex
 	 * maps have ellipse projection
 	 */
@@ -103,11 +104,17 @@ public class TilesUtil {
 		return res >= 0 ? res - max : res + max;
 	}
 
+	/**
+	 * Math.expm1() emulation.
+	 */
 	private static double emulate_expm1(double a) {
 		double v = Math.exp(a) - 1;
 		return v != 0 ? v : a;
 	}
 
+	/**
+	 * Math.sinh() emulation.
+	 */
 	private static double emulate_sinh(double a) {
 		boolean isneg = false;
 		if (a < 0.0) {

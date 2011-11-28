@@ -16,11 +16,14 @@ public class CenterOffsetBtn extends Button {
 	private static final long serialVersionUID = 6102610282976917560L;
 
 	private static final Dimension size = new Dimension(25, 25);
+
 	private final Image img = loadImageFromFile("offset.png");
 
 	public CenterOffsetBtn() {
-		if (img == null)
+		if (img == null) {
+			// Do nothing if the resource is missing
 			return;
+		}
 
 		size.setSize(img.getWidth(null), img.getHeight(null));
 

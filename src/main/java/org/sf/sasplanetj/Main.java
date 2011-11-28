@@ -67,10 +67,11 @@ public class Main extends Panel implements GPSListener, MouseListener,
 	public static final ArrayList popupWiki = new ArrayList(); // ArrayList<MenuItem>
 
 	private static boolean ignoreDblClick;
-	private static final Method mouseGetButtonMethod;
+	private static final Method mouseGetButtonMethod; // null if no method
 
 	static {
 		Method m = null;
+		// Check whether JRE MouseEvent class has getButton()
 		try {
 			m = MouseEvent.class.getMethod("getButton", new Class[0]);
 		} catch (Exception e) {
@@ -397,6 +398,10 @@ public class Main extends Panel implements GPSListener, MouseListener,
 
 	private final XYint mouseDragPrevXY = new XYint();
 
+	/*
+	 * BUTTON1_DOWN_MASK is declared here as it may be missing in JRE InputEvent
+	 * class.
+	 */
 	private static final int BUTTON1_DOWN_MASK = 1 << 10;
 
 	public void mousePressed(MouseEvent e) {
@@ -494,7 +499,7 @@ public class Main extends Panel implements GPSListener, MouseListener,
 			break;
 		case KeyEvent.VK_ENTER:
 			viewOffset0();
-			System.gc();
+			System.gc(); // Free unused objects before showing heap usage
 			printHeapStat();
 			break;
 		case KeyEvent.VK_1:
