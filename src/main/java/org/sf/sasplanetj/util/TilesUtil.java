@@ -38,19 +38,22 @@ public class TilesUtil {
 
 	public static Cache tilesCache; // <String, Image>
 
-	public static int lastWikiEndX;
-	private static boolean noMathSinH;
-
 	public static final Cache zipExistanceCache = new Cache(200);
 
+	private static final boolean useMathSinH;
+
+	public static int lastWikiEndX;
+
 	static {
+		boolean hasSinH = false;
 		// Check whether Math class has sinh()
 		try {
 			Math.sinh(0);
+			hasSinH = true;
 		} catch (NoSuchMethodError e) {
 			System.out.println("No Math.sinh()");
-			noMathSinH = true;
 		}
+		useMathSinH = hasSinH;
 	}
 
 	private TilesUtil() {
@@ -62,7 +65,7 @@ public class TilesUtil {
 	 * maps have ellipse projection
 	 */
 	private static double atanh(double x) {
-		return 0.5 * Math.log((1 + x) / (1 - x));
+		return Math.log((1 + x) / (1 - x)) / 2;
 	}
 
 	private static final double exct = 0.081819699999999995;
@@ -126,7 +129,7 @@ public class TilesUtil {
 		if (v < Double.POSITIVE_INFINITY) {
 			v = (v / (v + 1) + v) / 2;
 		} else {
-			v = Math.exp(a * 0.5);
+			v = Math.exp(a / 2);
 			v = (v / 2) * v;
 		}
 
@@ -170,9 +173,8 @@ public class TilesUtil {
 		}
 
 		double projection = (1 - point.y / quarterPixelsAtZoom) * Math.PI;
-		return new LatLng(Math.toDegrees(Math
-				.atan(noMathSinH ? emulate_sinh(projection) : Math
-						.sinh(projection))), lng);
+		return new LatLng(Math.toDegrees(Math.atan(useMathSinH ? Math
+				.sinh(projection) : emulate_sinh(projection))), lng);
 	}
 
 	private static String getCachePath(int x, int y, int zoom) {
