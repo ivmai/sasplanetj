@@ -15,36 +15,6 @@ import org.sf.sasplanetj.ui.ColorsAndFonts;
 
 public class Wikimapia {
 
-	public static class StopWatch {
-
-		private static boolean useNanoTime;
-		private long startValue;
-		private boolean isValid;
-
-		static {
-			try {
-				System.nanoTime();
-				useNanoTime = true;
-			} catch (NoSuchMethodError e) {
-				System.out
-						.println("No System.nanoTime available, using currentTimeMillis...");
-			}
-		}
-
-		public void start() {
-			startValue = useNanoTime ? System.nanoTime() : System
-					.currentTimeMillis();
-			isValid = true;
-		}
-
-		public int currentMillis() {
-			return isValid ? (int) (useNanoTime ? (System.nanoTime() - startValue)
-					/ (1000L * 1000L)
-					: System.currentTimeMillis() - startValue)
-					: -1;
-		}
-	}
-
 	public static Cache kmlCache; // Cache<String, ArrayList<KML>>
 
 	public static final String mapDir = "Wiki";

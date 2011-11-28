@@ -22,7 +22,7 @@ public class Tracks {
 			tracks = new ArrayList();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(filename));
-			Wikimapia.StopWatch watch = new Wikimapia.StopWatch();
+			StopWatch watch = new StopWatch();
 			watch.start();
 			String s;
 			// Read File Line By Line

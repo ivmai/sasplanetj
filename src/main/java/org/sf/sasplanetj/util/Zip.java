@@ -14,7 +14,7 @@ public class Zip {
 		try {
 			ZipFile zf = (ZipFile) zipsCache.get(zipname);
 			if (zf == null) {
-				Wikimapia.StopWatch watch = new Wikimapia.StopWatch();
+				StopWatch watch = new StopWatch();
 				watch.start();
 				Runtime runtime = Runtime.getRuntime();
 				long memSizeInUse = runtime.totalMemory()
