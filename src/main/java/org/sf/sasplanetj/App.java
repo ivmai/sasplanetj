@@ -49,6 +49,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 	private static final String ZOOMIN_COMMAND = "ZOOMIN_COMMAND";
 	private static final String ZOOMTO_COMMAND = "ZOOMTO_COMMAND";
 	private static final String ZOOMONLYTO_COMMAND = "ZOOMONLYTO_COMMAND";
+	private static final String CENTER_COMMAND = "CENTER_COMMAND";
 	private static final String DRAWGRID_COMMAND = "DRAWGRID_COMMAND";
 	private static final String DRAWLATLNG_COMMAND = "DRAWLATLNG_COMMAND";
 	private static final String DRAWTAIL_COMMAND = "DRAWTAIL_COMMAND";
@@ -189,11 +190,10 @@ public class App extends Frame implements ActionListener, ItemListener {
 		menu.add(mi);
 		menu.addSeparator();
 
-		cmiMapView = menuAddNewCheckbox("Map view", "MAIN_COMMAND", menu);
+		cmiMapView = menuAddNewCheckbox("Map view", MAIN_COMMAND, menu);
 		menuCheckboxSetState(cmiMapView, true);
-		cmiCoords = menuAddNewCheckbox("GPS coordinates", "GPSLOG_COMMAND",
-				menu);
-		cmiNmea = menuAddNewCheckbox("NMEA", "NMEALOG_COMMAND", menu);
+		cmiCoords = menuAddNewCheckbox("GPS coordinates", GPSLOG_COMMAND, menu);
+		cmiNmea = menuAddNewCheckbox("NMEA", NMEALOG_COMMAND, menu);
 		menu.addSeparator();
 
 		Menu menuWaypoints = new Menu("Waypoints");
@@ -235,10 +235,10 @@ public class App extends Frame implements ActionListener, ItemListener {
 		menuBar.add(menu);
 
 		menu = new Menu("Opts");
-		cmiDrawGrid = menuAddNewCheckbox("Draw grid", "DRAWGRID_COMMAND", menu);
-		cmiDrawLatLng = menuAddNewCheckbox("Draw LatLng", "DRAWLATLNG_COMMAND",
+		cmiDrawGrid = menuAddNewCheckbox("Draw grid", DRAWGRID_COMMAND, menu);
+		cmiDrawLatLng = menuAddNewCheckbox("Draw LatLng", DRAWLATLNG_COMMAND,
 				menu);
-		cmiDrawTail = menuAddNewCheckbox("Draw track tail", "DRAWTAIL_COMMAND",
+		cmiDrawTail = menuAddNewCheckbox("Draw track tail", DRAWTAIL_COMMAND,
 				menu);
 		menuBar.add(menu);
 
@@ -267,12 +267,12 @@ public class App extends Frame implements ActionListener, ItemListener {
 		menuZoomToLow = new Menu("Zoom to (low)...");
 		menuZoomToLow.addActionListener(this);
 		miCenter = new MenuItem("Center");
-		miCenter.setActionCommand("CENTER_COMMAND");
+		miCenter.setActionCommand(CENTER_COMMAND);
 		for (int i = TilesUtil.ZOOM_MAX; i >= 1; i--) {
 			chkMenuZoomOnlyTo[i - 1] = menuAddNewCheckbox("level " + i,
-					"ZOOMONLYTO_COMMAND" + i, menuZoomOnlyTo);
+					ZOOMONLYTO_COMMAND + i, menuZoomOnlyTo);
 			chkMenuZoomTo[i - 1] = menuAddNewCheckbox("level " + i,
-					"ZOOMTO_COMMAND" + i,
+					ZOOMTO_COMMAND + i,
 					i > TilesUtil.ZOOM_MAX / 2 ? menuZoomToHigh : menuZoomToLow);
 		}
 
@@ -357,7 +357,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 			zoomIn();
 		} else if (command == ZOOMOUT_COMMAND) {
 			zoomOut();
-		} else if (command == "CENTER_COMMAND") {
+		} else if (command == CENTER_COMMAND) {
 			main.viewOffset0();
 			return;
 		} else if (command == GOTO_COMMAND) {
