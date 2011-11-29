@@ -18,9 +18,9 @@ public class NewWaypointDialog extends Dialog {
 
 	private static final long serialVersionUID = 823995977304341944L;
 
-	TextField lat = new TextField();
-	TextField lng = new TextField();
-	TextField name = new TextField();
+	private final TextField lat = new TextField();
+	private final TextField lng = new TextField();
+	private final TextField name = new TextField();
 
 	public NewWaypointDialog(Frame owner, LatLng latlng) {
 		super(owner);
@@ -36,11 +36,11 @@ public class NewWaypointDialog extends Dialog {
 		setLayout(new GridLayout(4, 2, 8, 8));
 
 		add(new Label("Latitude:"));
-		lat.setText(LatLng.latlngFormat7.format(latlng.lat));
+		lat.setText(LatLng.formatP7d(latlng.getLat()));
 		add(lat);
 
 		add(new Label("Longitude:"));
-		lng.setText(LatLng.latlngFormat7.format(latlng.lng));
+		lng.setText(LatLng.formatP7d(latlng.getLng()));
 		add(lng);
 
 		add(new Label("Waypoint name:"));

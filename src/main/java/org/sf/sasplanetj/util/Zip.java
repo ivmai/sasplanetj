@@ -8,6 +8,10 @@ import java.util.zip.ZipFile;
 
 public class Zip {
 
+	private Zip() {
+		// Prohibit instantiation.
+	}
+
 	public static Cache zipsCache;
 
 	public static byte[] getZipFile(String zipname, String fileinzip) {

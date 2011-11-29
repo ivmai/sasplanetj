@@ -16,10 +16,10 @@ public class GoTo extends Dialog {
 
 	private static final long serialVersionUID = -6442614629327052440L;
 
-	TextField lat = new TextField(LatLng.latlngFormat7.format(Main.latlng.lat),
-			4);
-	TextField lng = new TextField(LatLng.latlngFormat7.format(Main.latlng.lng),
-			4);
+	private final TextField lat = new TextField(LatLng.formatP7d(Main.latlng
+			.getLat()), 4);
+	private final TextField lng = new TextField(LatLng.formatP7d(Main.latlng
+			.getLng()), 4);
 
 	public GoTo(Frame owner) {
 		super(owner);

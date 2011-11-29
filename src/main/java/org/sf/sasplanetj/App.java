@@ -38,7 +38,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 	private static App self;
 	private String args[];
 
-	public static SerialReader serialReader = null;
+	public static SerialReader serialReader;
 	private static final TrackLogger trackLogger = new TrackLogger();
 
 	private static final String EXIT_COMMAND = "EXIT_COMMAND";
@@ -55,7 +55,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 	private static final String DRAWTAIL_COMMAND = "DRAWTAIL_COMMAND";
 	private static final String GOTO_COMMAND = "GOTO_COMMAND";
 
-	public static Main main = null;
+	public static Main main;
 	private static MenuBar menuBar;
 	private static Menu mapsMenu;
 	private static MenuItem cmiMapView;
@@ -71,15 +71,15 @@ public class App extends Frame implements ActionListener, ItemListener {
 	private static final MenuItem chkMenuZoomTo[] = new MenuItem[TilesUtil.ZOOM_MAX];
 	private static final MenuItem cmiMaps[] = new MenuItem[Config.maps.length];
 
-	public static MenuItem miZoomOut;
-	public static MenuItem miZoomIn;
-	public static Menu menuZoomOnlyTo;
+	private static MenuItem miZoomOut;
+	private static MenuItem miZoomIn;
+	private static Menu menuZoomOnlyTo;
 
 	private static Menu menuZoomToHigh;
 	private static Menu menuZoomToLow;
 	private static MenuItem miCenter;
 
-	public Component currentView = null;
+	private Component currentView;
 
 	private static Class miCheckboxClass; // null if missing
 	private static Method cmiSetStateMethod; // null if missing

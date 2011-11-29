@@ -53,18 +53,16 @@ public class Main extends Panel implements GPSListener, MouseListener,
 
 	private static final boolean debugMouseEvents = false;
 
-	public static LatLng latlng = new LatLng();
 	private static LatLng clickLatlng; // hold last click coordinates
+	private static int viewOffsetStep = 50; // view offset on key press
+	private static final CenterOffsetBtn offsetBtn = new CenterOffsetBtn();
+
+	private static final PopupMenu popup = new PopupMenu();
+	private static final ArrayList popupWiki = new ArrayList(); // ArrayList<MenuItem>
 
 	public static TrackTail trackTail;
-
+	public static LatLng latlng = new LatLng();
 	public static final XYint viewOffset = new XYint(0, 0);
-	public static int viewOffsetStep = 50; // change view offset when pressing
-											// keys
-	public static final CenterOffsetBtn offsetBtn = new CenterOffsetBtn();
-
-	public static final PopupMenu popup = new PopupMenu();
-	public static final ArrayList popupWiki = new ArrayList(); // ArrayList<MenuItem>
 
 	private static boolean ignoreDblClick;
 	private static final Method mouseGetButtonMethod; // null if no method
@@ -208,10 +206,10 @@ public class Main extends Panel implements GPSListener, MouseListener,
 				offscreen.getHeight(null) / 2);
 
 		/* Tile calculation */
-		final XYint displayXY = TilesUtil.coordinateToDisplay(latlng.lat,
-				latlng.lng, Config.zoom, Config.isMapYandex);
-		if (Config.drawTail && latlng.lat != 0 && latlng.lng != 0) {
-			trackTail.addPoint(new XY(latlng.lat, latlng.lng));
+		final XYint displayXY = TilesUtil.coordinateToDisplay(latlng.getLat(),
+				latlng.getLng(), Config.zoom, Config.isMapYandex);
+		if (Config.drawTail && latlng.getLat() != 0 && latlng.getLng() != 0) {
+			trackTail.addPoint(new XY(latlng.getLat(), latlng.getLng()));
 		}
 		displayXY.subtract(viewOffset);
 
@@ -221,8 +219,8 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		final XYint tileXY = TilesUtil.getTileByDisplayCoord(displayXY);
 		XYint tileWikiXY = tileXY;
 		if (Config.isMapYandex) {
-			XYint displayWikiXY = TilesUtil.coordinateToDisplay(latlng.lat,
-					latlng.lng, Config.zoom, false);
+			XYint displayWikiXY = TilesUtil.coordinateToDisplay(
+					latlng.getLat(), latlng.getLng(), Config.zoom, false);
 			displayWikiXY.subtract(viewOffset);
 			tileWikiXY = TilesUtil.getTileByDisplayCoord(displayWikiXY);
 		}
@@ -360,7 +358,7 @@ public class Main extends Panel implements GPSListener, MouseListener,
 					.hasNext();) {
 				KML kml = (KML) iterator.next();
 				if (kml.drawnPoly.contains(point)) {
-					String name = kml.strip();
+					String name = kml.getDescription();
 					if (wikiStrSet.put(name, "") == null) {
 						mi = new MenuItem(name);
 						mi.setActionCommand("POPUP_WIKI" + i);
@@ -380,8 +378,8 @@ public class Main extends Panel implements GPSListener, MouseListener,
 	}
 
 	private void setClickLatlng(MouseEvent e) {
-		XYint displayXY = TilesUtil.coordinateToDisplay(latlng.lat, latlng.lng,
-				Config.zoom, Config.isMapYandex);
+		XYint displayXY = TilesUtil.coordinateToDisplay(latlng.getLat(),
+				latlng.getLng(), Config.zoom, Config.isMapYandex);
 		displayXY.subtract(viewOffset);
 		XYint clickOffset = new XYint(e.getPoint().x - getSize().width / 2,
 				e.getPoint().y - getSize().height / 2);
@@ -396,7 +394,7 @@ public class Main extends Panel implements GPSListener, MouseListener,
 	public void mouseExited(MouseEvent e) {
 	}
 
-	private final XYint mouseDragPrevXY = new XYint();
+	private final XYint mouseDragPrevXY = new XYint(0, 0);
 
 	/*
 	 * BUTTON1_DOWN_MASK is declared here as it may be missing in JRE InputEvent
@@ -531,7 +529,9 @@ public class Main extends Panel implements GPSListener, MouseListener,
 	}
 
 	public void viewOffsetChanged() {
-		viewOffset.x = TilesUtil.adjustViewOfsX(viewOffset.x, Config.zoom);
+		viewOffset.setLocation(
+				TilesUtil.adjustViewOfsX(viewOffset.getX(), Config.zoom),
+				viewOffset.getY());
 		if (offsetBtn.isImageLoaded()) {
 			boolean found = false;
 			for (int i = 0; i < this.getComponentCount(); i++) {

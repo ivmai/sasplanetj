@@ -104,8 +104,8 @@ public class XYLayout implements LayoutManager2 {
 		if (constraints == null) {
 			constraints = defaultConstraints;
 		}
-		Rectangle r = new Rectangle(constraints.x, constraints.y,
-				constraints.width, constraints.height);
+		Rectangle r = new Rectangle(constraints.getX(), constraints.getY(),
+				constraints.getWidth(), constraints.getHeight());
 
 		if (r.width <= 0 || r.height <= 0) {
 			Dimension d = component.getPreferredSize();

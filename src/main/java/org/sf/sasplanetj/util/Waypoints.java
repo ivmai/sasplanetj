@@ -85,11 +85,9 @@ public class Waypoints {
 							+ lineCount + ": " + s);
 					continue;
 				}
-				Waypoint wp = new Waypoint();
-				wp.name = splits[1].trim();
-				wp.latlng = new LatLng(Double.valueOf(splits[2].trim())
-						.doubleValue(), Double.valueOf(splits[3].trim())
-						.doubleValue());
+				Waypoint wp = new Waypoint(new LatLng(Double.valueOf(
+						splits[2].trim()).doubleValue(), Double.valueOf(
+						splits[3].trim()).doubleValue()), splits[1].trim());
 				points.add(wp);
 			}
 			// Close the input stream
@@ -109,8 +107,9 @@ public class Waypoints {
 		// TODO: skip WPs which are out of screen.
 		for (Iterator it = points.iterator(); it.hasNext();) {
 			final Waypoint wp = (Waypoint) it.next();
-			final XYint inmatrix = TilesUtil.coordinateToDisplay(wp.latlng.lat,
-					wp.latlng.lng, Config.zoom, Config.isMapYandex);
+			final XYint inmatrix = TilesUtil.coordinateToDisplay(wp.getLatLng()
+					.getLat(), wp.getLatLng().getLng(), Config.zoom,
+					Config.isMapYandex);
 			inmatrix.subtract(matrix[0]); // find point in tile matrix
 			inmatrix.add(matrix[1]);
 			// point with matrix position drawing offset
@@ -119,7 +118,7 @@ public class Waypoints {
 			dbf.setColor(ColorsAndFonts.clWaypointBrush);
 			dbf.fillOval(r.x, r.y, r.width, r.height);
 
-			dbf.drawString(wp.name, inmatrix.x + 5, inmatrix.y + 5);
+			dbf.drawString(wp.getName(), inmatrix.x + 5, inmatrix.y + 5);
 
 			dbf.setColor(ColorsAndFonts.clWaypointPen);
 			dbf.drawOval(r.x, r.y, r.width, r.height);
@@ -140,8 +139,8 @@ public class Waypoints {
 
 			for (Iterator it = points.iterator(); it.hasNext();) {
 				Waypoint wp = (Waypoint) it.next();
-				out.write("-1," + wp.name + "," + wp.latlng.lat + ","
-						+ wp.latlng.lng);
+				out.write("-1," + wp.getName() + "," + wp.getLatLng().getLat()
+						+ "," + wp.getLatLng().getLng());
 				out.write("\r\n");
 			}
 			out.close();

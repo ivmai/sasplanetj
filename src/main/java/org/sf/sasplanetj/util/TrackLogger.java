@@ -75,9 +75,9 @@ public class TrackLogger implements GPSListener {
 			return;
 		}
 		try {
-			out.write(LatLng.latlngFormat7.format(latlng.lat) + ", "
-					+ LatLng.latlngFormat7.format(latlng.lng) + ", "
-					+ breakTrack + "\r\n");
+			out.write(LatLng.formatP7d(latlng.getLat()) + ", "
+					+ LatLng.formatP7d(latlng.getLng()) + ", " + breakTrack
+					+ "\r\n");
 			breakTrack = 0;
 			out.flush();
 		} catch (IOException e) {

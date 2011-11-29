@@ -15,7 +15,7 @@ public class ShowMessage extends Dialog {
 
 	private static final long serialVersionUID = 4896260607587042949L;
 
-	private Frame owner = App.getSelf();
+	private final Frame owner = App.getSelf();
 
 	public ShowMessage(String msg) {
 		super(App.getSelf());

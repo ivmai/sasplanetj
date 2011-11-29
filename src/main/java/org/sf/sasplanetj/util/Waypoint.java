@@ -3,15 +3,21 @@ package org.sf.sasplanetj.util;
 import org.sf.sasplanetj.gps.LatLng;
 
 public class Waypoint {
-	public String name;
-	public LatLng latlng;
 
-	public Waypoint() {
-	}
+	private final LatLng latLng;
 
-	public Waypoint(LatLng latlng, String name) {
-		this.latlng = latlng;
+	private final String name;
+
+	public Waypoint(LatLng latLng, String name) {
+		this.latLng = latLng;
 		this.name = name;
 	}
 
+	public LatLng getLatLng() {
+		return latLng;
+	}
+
+	public String getName() {
+		return name;
+	}
 }

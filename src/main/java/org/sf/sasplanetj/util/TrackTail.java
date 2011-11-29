@@ -8,21 +8,21 @@ import org.sf.sasplanetj.gps.XY;
 import org.sf.sasplanetj.ui.ColorsAndFonts;
 
 /**
- * Stores lat lng points
+ * Stores latLng points
  */
 public class TrackTail extends LinkedList {
 
 	private static final long serialVersionUID = -5736366814412155585L;
 
-	int MAX_ENTRIES;
+	private final int maxSize;
 
 	public TrackTail(int maxsize) {
 		super();
-		this.MAX_ENTRIES = maxsize;
+		this.maxSize = maxsize;
 	}
 
 	public void addPoint(XY point) {
-		if (this.size() >= MAX_ENTRIES) {
+		if (this.size() >= maxSize) {
 			this.removeFirst();
 		}
 		this.addLast(point);
@@ -49,8 +49,8 @@ public class TrackTail extends LinkedList {
 		int i = 0;
 		for (Iterator it = this.iterator(); it.hasNext();) {
 			final XY latlng = (XY) it.next(); // map pixel coordinates
-			final XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.x,
-					latlng.y, Config.zoom, Config.isMapYandex);
+			final XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.getX(),
+					latlng.getY(), Config.zoom, Config.isMapYandex);
 			inmatrix.subtract(matrix[0]); // find point in tile matrix
 			inmatrix.add(matrix[1]);
 			// point with matrix position drawing offset

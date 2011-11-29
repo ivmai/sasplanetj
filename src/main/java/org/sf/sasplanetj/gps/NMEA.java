@@ -2,6 +2,10 @@ package org.sf.sasplanetj.gps;
 
 public class NMEA {
 
+	private NMEA() {
+		// Prohibit instantiation.
+	}
+
 	/*
 	 * $GPGGA Sentence (Fix data) $GPGLL Sentence (Position) $GPGSV Sentence
 	 * (Satellites in view) $GPGSA Sentence (Active satellites) $GPRMC Sentence
@@ -70,8 +74,8 @@ public class NMEA {
 			String lngStr = msg.substring(coma5 + 1, coma6);
 			if (latStr.length() == 0 || lngStr.length() == 0)
 				return false;
-			latlng.lat = normLatLong(Double.valueOf(latStr).doubleValue());
-			latlng.lng = normLatLong(Double.valueOf(lngStr).doubleValue());
+			latlng.set(normLatLong(Double.valueOf(latStr).doubleValue()),
+					normLatLong(Double.valueOf(lngStr).doubleValue()));
 			return true;
 		}
 

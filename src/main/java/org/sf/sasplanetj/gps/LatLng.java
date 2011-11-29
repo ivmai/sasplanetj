@@ -9,21 +9,25 @@ public class LatLng {
 	private static final DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(
 			Locale.US);
 
-	public static final DecimalFormat latlngFormat7 = new DecimalFormat(
+	private static final DecimalFormat latlngFormat7 = new DecimalFormat(
 			"0.0000000", decimalSymbols);
-	public static final DecimalFormat latlngFormat4 = new DecimalFormat(
+	private static final DecimalFormat latlngFormat4 = new DecimalFormat(
 			"0.0000", decimalSymbols);
 
 	// position
-	public double lat; // latitude
-	public double lng; // longitude
+	private double lat; // latitude
+	private double lng; // longitude
 
 	public LatLng() {
 	}
 
 	public LatLng(double latitude, double longitude) {
-		this.lat = normCoord(latitude, 90);
-		this.lng = normCoord(longitude, 180);
+		set(latitude, longitude);
+	}
+
+	public void set(double latitude, double longitude) {
+		lat = normCoord(latitude, 90);
+		lng = normCoord(longitude, 180);
 	}
 
 	private static double normCoord(double v, double max) {
@@ -32,22 +36,33 @@ public class LatLng {
 	}
 
 	public void copyTo(LatLng other) {
-		other.lat = this.lat;
-		other.lng = this.lng;
+		other.lat = lat;
+		other.lng = lng;
+	}
+
+	public double getLat() {
+		return lat;
+	}
+
+	public double getLng() {
+		return lng;
+	}
+
+	public static String formatP7d(double v) {
+		return latlngFormat7.format(v);
 	}
 
 	public String toString() {
-		return "Lat " + latlngFormat7.format(this.lat) + " Lng "
-				+ latlngFormat7.format(this.lng);
+		return "Lat " + formatP7d(getLat()) + " Lng " + formatP7d(getLng());
 	}
 
 	public String toShortString() {
-		return latlngFormat4.format(this.lat) + ", "
-				+ latlngFormat4.format(this.lng);
+		return latlngFormat4.format(getLat()) + ", "
+				+ latlngFormat4.format(getLng());
 	}
 
 	public boolean equalXY(LatLng other) {
-		return this.lat == other.lat && this.lng == other.lng;
+		return lat == other.lat && lng == other.lng;
 	}
 
 }

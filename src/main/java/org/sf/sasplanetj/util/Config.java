@@ -18,20 +18,22 @@ public class Config {
 	 * Current working directory. Some JVMs cannot set working dir from command
 	 * line, so we have to deal with absolute paths
 	 */
-	public static String curDir = getProgBaseFolder();
+	public static final String curDir = getProgBaseFolder();
 
-	public static String configFilename = StringUtil.normPath(curDir
+	private static final String configFilename = StringUtil.normPath(curDir
 			+ File.separator + "config.txt");
 	/**
 	 * Directory with cache
 	 */
-	public static final String cachePath = StringUtil.normPath(curDir
-			+ File.separator + "cache");
+	static final String cachePath = StringUtil.normPath(curDir + File.separator
+			+ "cache");
+
+	private static final Properties ini = new Properties();
+
+	public static final ArrayList zoomsAvail = new ArrayList(TilesUtil.ZOOM_MAX);
 
 	public static boolean connectGPS;
-
 	public static int zoom;
-	public static ArrayList zoomsAvail = new ArrayList(TilesUtil.ZOOM_MAX);
 	public static boolean drawGrid;
 	public static boolean drawLatLng;
 	public static boolean drawTail;
@@ -56,7 +58,7 @@ public class Config {
 	public static String curMapDir;
 	public static String curMapExt;
 	/**
-	 * Selected map is yandex
+	 * Selected map is Yandex
 	 */
 	public static boolean isMapYandex;
 
@@ -81,8 +83,6 @@ public class Config {
 		curMapExt = maps[curMapIndex].extension;
 	}
 
-	public static final Properties ini = new Properties();
-
 	public static int curMapMinZoom() {
 		return maps[curMapIndex].name.startsWith("Gurtam") ? 4 : 1;
 	}
@@ -98,10 +98,10 @@ public class Config {
 			System.err.println("Error loading config: " + e.getMessage());
 		}
 
-		Main.latlng.lat = Double.valueOf(ini.getProperty("lat", "50.407781"))
-				.doubleValue();
-		Main.latlng.lng = Double.valueOf(
-				ini.getProperty("longitude", "30.662485")).doubleValue();
+		Main.latlng.set(Double.valueOf(ini.getProperty("lat", "50.407781"))
+				.doubleValue(),
+				Double.valueOf(ini.getProperty("longitude", "30.662485"))
+						.doubleValue());
 		curMapIndex = Integer.valueOf(ini.getProperty("curMap", "0"))
 				.intValue();
 		zoom = Integer.valueOf(ini.getProperty("zoom", "17")).intValue();
@@ -148,8 +148,8 @@ public class Config {
 			PrintWriter out = new PrintWriter(new FileWriter(configFilename));
 			out.println("# SAS.Planet.J (org.sf.sasplanetj) configuration file");
 			out.println();
-			out.println("lat=" + Main.latlng.lat);
-			out.println("longitude=" + Main.latlng.lng);
+			out.println("lat=" + Main.latlng.getLat());
+			out.println("longitude=" + Main.latlng.getLng());
 			out.println("zoom=" + zoom);
 			out.println("curMap=" + curMapIndex);
 			out.println();

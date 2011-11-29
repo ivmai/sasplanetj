@@ -32,17 +32,11 @@ public class XY {
 	/**
 	 * GaussKrueger x or lat.
 	 */
-	public double x;
+	private final double x;
 	/**
 	 * GaussKrueger y or longitude.
 	 */
-	public double y;
-
-	/**
-	 * Create uninitialized coordinate.
-	 */
-	public XY() {
-	}
+	private final double y;
 
 	/**
 	 * Create a coordinate.
@@ -57,8 +51,15 @@ public class XY {
 		y = _y;
 	}
 
+	public double getX() {
+		return x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
 	public String toString() {
 		return "[" + x + "," + y + "]";
 	}
-
 }

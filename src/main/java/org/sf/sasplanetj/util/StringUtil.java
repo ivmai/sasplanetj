@@ -3,8 +3,14 @@ package org.sf.sasplanetj.util;
 import java.util.StringTokenizer;
 
 public class StringUtil {
+
 	public static final String fileSep = System.getProperty("file.separator");
+
 	public static final char fileSepChar = fileSep.charAt(0);
+
+	private StringUtil() {
+		// Prohibit instantiation.
+	}
 
 	/**
 	 * Much faster than String.split using StringTokenizer

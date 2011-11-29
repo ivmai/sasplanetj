@@ -4,8 +4,8 @@ import java.lang.ref.SoftReference;
 
 public class Cache {
 
-	private Object[] keys;
-	private Object[] values;
+	private final Object[] keys;
+	private final Object[] values;
 
 	private int pos;
 

@@ -11,9 +11,8 @@ import org.sf.sasplanetj.gps.XY;
 import org.sf.sasplanetj.ui.ColorsAndFonts;
 
 public class Tracks {
-	public static final Tracks self = new Tracks();
 
-	public static ArrayList tracks = null; // ArrayList<XY[]>
+	public static ArrayList tracks; // ArrayList<XY[]>
 
 	public static void load(String filename) {
 		System.out.println("Tracks: loading " + filename);
@@ -105,8 +104,9 @@ public class Tracks {
 
 			for (int i = 0; i < track.length; i++) {
 				final XY latlng = track[i]; // map pixel coordinates
-				final XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.x,
-						latlng.y, Config.zoom, Config.isMapYandex);
+				final XYint inmatrix = TilesUtil.coordinateToDisplay(
+						latlng.getX(), latlng.getY(), Config.zoom,
+						Config.isMapYandex);
 				inmatrix.subtract(matrix[0]); // find point in tile matrix
 				inmatrix.add(matrix[1]);
 				// point with matrix position drawing offset

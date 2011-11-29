@@ -18,23 +18,23 @@ import org.sf.sasplanetj.util.Config;
 import org.sf.sasplanetj.util.StringUtil;
 
 public class SerialReader extends Thread {
-	String port = null;
-	int baudRate;
 
-	SerialPort serialPort = null;
-	InputStream inputStream = null;
+	private String port;
+	private int baudRate;
+	private SerialPort serialPort;
+	private InputStream inputStream;
 
 	private LatLng prevlatlng = new LatLng();
 	private final LatLng latlng = new LatLng();
 
 	/* LatLng listeners */
-	ArrayList listeners = new ArrayList(); // <GPSListener>
+	final private ArrayList listeners = new ArrayList(); // <GPSListener>
 	/* raw NMEA string listeners */
-	ArrayList listenersNMEA = new ArrayList(); // <GPSListenerNMEA>
+	final private ArrayList listenersNMEA = new ArrayList(); // <GPSListenerNMEA>
 
-	public String simulateFname;
+	private String simulateFname;
 
-	public boolean stopFlag = false;
+	private boolean stopFlag;
 	private boolean suspendFlag;
 
 	/*
@@ -250,7 +250,7 @@ public class SerialReader extends Thread {
 		}
 	}
 
-	void processGPSListeners() {
+	private void processGPSListeners() {
 		for (int i = 0; i < listeners.size(); i++) {
 			((GPSListener) listeners.get(i)).gpsEvent(latlng);
 		}
@@ -276,7 +276,7 @@ public class SerialReader extends Thread {
 		}
 	}
 
-	void processNMEAListeners(String msg) {
+	private void processNMEAListeners(String msg) {
 		for (int i = 0; i < listenersNMEA.size(); i++) {
 			((GPSListenerNMEA) listenersNMEA.get(i)).gpsEventNMEA(msg);
 		}

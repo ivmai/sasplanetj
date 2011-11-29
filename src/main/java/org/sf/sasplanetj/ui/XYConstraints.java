@@ -4,10 +4,10 @@ import java.awt.Rectangle;
 
 public class XYConstraints {
 
-	int x;
-	int y;
-	int width; // <= 0 means use the components' preferred size
-	int height; // <= 0 means use the components' preferred size
+	private final int x;
+	private final int y;
+	private final int width; // <= 0 means use the components preferred size
+	private final int height; // <= 0 means use the components preferred size
 
 	public XYConstraints() {
 		this(0, 0, 0, 0);
@@ -28,36 +28,20 @@ public class XYConstraints {
 		return x;
 	}
 
-	public void setX(int x) {
-		this.x = x;
-	}
-
 	public int getY() {
 		return y;
-	}
-
-	public void setY(int y) {
-		this.y = y;
 	}
 
 	public int getWidth() {
 		return width;
 	}
 
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
 	public int getHeight() {
 		return height;
 	}
 
-	public void setHeight(int height) {
-		this.height = height;
-	}
-
 	/**
-	 * Returns the hashcode for this XYConstraints.
+	 * Returns hash code for this XYConstraints.
 	 */
 	public int hashCode() {
 		return x ^ (y * 37) ^ (width * 43) ^ (height * 47);

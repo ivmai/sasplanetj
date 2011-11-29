@@ -15,14 +15,14 @@ import org.sf.sasplanetj.ui.ColorsAndFonts;
 
 public class Wikimapia {
 
-	public static Cache kmlCache; // Cache<String, ArrayList<KML>>
+	public static Cache kmlCache; // <String, ArrayList<KML>>
 
-	public static final String mapDir = "Wiki";
+	private static final String mapDir = "Wiki";
 
 	/**
 	 * last drawn KMLs
 	 */
-	private static final ArrayList drawnKmls = new ArrayList(); // ArrayList<KML>
+	private static final ArrayList drawnKmls = new ArrayList(); // <KML>
 
 	public static void clearDrawnKmls() {
 		drawnKmls.clear();
@@ -119,14 +119,17 @@ public class Wikimapia {
 	}
 
 	public static class KML {
-		public String description;
-		/* Intile coordinates */
+
+		String description;
+
+		/* In-tile coordinates */
 		public int x[];
 		public int y[];
+
 		// previously calculated polygon on screen
 		public Polygon drawnPoly;
 
-		public String strip() {
+		public String getDescription() {
 			return StringUtil.replace(description, "&amp;quot;", "\"");
 		}
 	}
