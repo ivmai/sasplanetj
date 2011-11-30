@@ -58,26 +58,26 @@ public class App extends Frame implements ActionListener, ItemListener {
 
 	private static MenuBar menuBar;
 	private static Menu mapsMenu;
-	private static MenuItem cmiMapView;
-	private static MenuItem cmiCoords;
-	private static MenuItem cmiNmea;
+	private MenuItem cmiMapView;
+	private MenuItem cmiCoords;
+	private MenuItem cmiNmea;
 	private static MenuItem cmiConnectGPS;
 	private static MenuItem cmiTrackLog;
-	private static MenuItem cmiWikimapia;
-	private static MenuItem cmiDrawGrid;
-	private static MenuItem cmiDrawLatLng;
-	private static MenuItem cmiDrawTail;
-	private static final MenuItem chkMenuZoomOnlyTo[] = new MenuItem[TilesUtil.ZOOM_MAX];
-	private static final MenuItem chkMenuZoomTo[] = new MenuItem[TilesUtil.ZOOM_MAX];
+	private MenuItem cmiWikimapia;
+	private MenuItem cmiDrawGrid;
+	private MenuItem cmiDrawLatLng;
+	private MenuItem cmiDrawTail;
+	private final MenuItem chkMenuZoomOnlyTo[] = new MenuItem[TilesUtil.ZOOM_MAX];
+	private final MenuItem chkMenuZoomTo[] = new MenuItem[TilesUtil.ZOOM_MAX];
 	private static final MenuItem cmiMaps[] = new MenuItem[Config.maps.length];
 
-	private static MenuItem miZoomOut;
-	private static MenuItem miZoomIn;
-	private static Menu menuZoomOnlyTo;
+	private MenuItem miZoomOut;
+	private MenuItem miZoomIn;
+	private Menu menuZoomOnlyTo;
 
-	private static Menu menuZoomToHigh;
-	private static Menu menuZoomToLow;
-	private static MenuItem miCenter;
+	private Menu menuZoomToHigh;
+	private Menu menuZoomToLow;
+	private MenuItem miCenter;
 
 	private Component currentView;
 

@@ -19,6 +19,12 @@ import org.sf.sasplanetj.util.StringUtil;
 
 public class SerialReader extends Thread {
 
+	private static final byte[] PGRMO_BYTES = toAsciiBytes(NMEA
+			.appendCheckSum("$PGRMO,,3"));
+	private static final byte[] PGRMCE_BYTES = toAsciiBytes(NMEA
+			.appendCheckSum("$PGRMCE,"));
+	private static final byte[] PGRMC_CMD_BYTES = toAsciiBytes("$PGRMC,A,,27,,,,,,A,3,1,1,4,30\r\n");
+
 	private String port;
 	private int baudRate;
 	private SerialPort serialPort;
@@ -36,6 +42,15 @@ public class SerialReader extends Thread {
 
 	private boolean stopFlag;
 	private boolean suspendFlag;
+
+	private static byte[] toAsciiBytes(String str) {
+		try {
+			return str.getBytes("US-ASCII");
+		} catch (UnsupportedEncodingException e) {
+			// Cannot happen.
+			throw (Error) new InternalError().initCause(e);
+		}
+	}
 
 	/*
 	 * Simulation creator
@@ -85,18 +100,15 @@ public class SerialReader extends Thread {
 
 		try {
 			// GARMIN GPS25: enable all output messages
-			outputStream.write(NMEA.addCheckSum("$PGRMO,,3").getBytes(
-					"US-ASCII"));
+			outputStream.write(PGRMO_BYTES);
 
 			// trigger GPS to send current configuration
-			outputStream.write(NMEA.addCheckSum("$PGRMCE,")
-					.getBytes("US-ASCII"));
+			outputStream.write(PGRMCE_BYTES);
 			// default configuration string is:
 			// $PGRMC,A,218.8,100,6378137.000,298.257223563,0.0,0.0,0.0,A,3,1,1,4,30
 
 			// GARMIN GPS25: set to German earth datum (parameter 3=27)
-			outputStream.write(new String("$PGRMC,A,,27,,,,,,A,3,1,1,4,30"
-					+ ((char) 13) + ((char) 10)).getBytes("US-ASCII"));
+			outputStream.write(PGRMC_CMD_BYTES);
 
 			outputStream.close();
 		} catch (IOException e) {
@@ -232,6 +244,7 @@ public class SerialReader extends Thread {
 					if (stopFlag) {
 						System.out
 								.println("SerialReader: simulating thread stopped");
+						br.close();
 						return;
 					}
 					if (suspendFlag) {

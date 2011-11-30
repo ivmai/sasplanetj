@@ -52,9 +52,8 @@ public class NMEA {
 	/*
 	 * Used in GPS receiver confirmation
 	 */
-	static String addCheckSum(String msg) {
-		return msg + "," + checkSum(msg + ",") + "*" + ((char) 13)
-				+ ((char) 10);
+	static String appendCheckSum(String msg) {
+		return msg + "," + checkSum(msg + ",") + "*\r\n";
 	}
 
 	public static boolean parse(String msg, LatLng latlng) throws Exception {

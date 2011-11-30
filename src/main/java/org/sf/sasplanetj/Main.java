@@ -53,18 +53,19 @@ public class Main extends Panel implements GPSListener, MouseListener,
 
 	private static final boolean debugMouseEvents = false;
 
-	private static LatLng clickLatlng; // hold last click coordinates
-	private static int viewOffsetStep = 50; // view offset on key press
+	private LatLng clickLatlng; // hold last click coordinates
+	private int viewOffsetStep = 50; // view offset on key press
 	private static final CenterOffsetBtn offsetBtn = new CenterOffsetBtn();
 
-	private static final PopupMenu popup = new PopupMenu();
-	private static final ArrayList popupWiki = new ArrayList(); // ArrayList<MenuItem>
+	private final PopupMenu popup = new PopupMenu();
+	private final ArrayList popupWiki = new ArrayList(); // ArrayList<MenuItem>
 
 	private static TrackTail trackTail;
 	private static LatLng latLng = new LatLng();
-	private static final XYint viewOffset = new XYint(0, 0);
+	private final XYint viewOffset = new XYint(0, 0);
 
-	private static boolean ignoreDblClick;
+	private boolean ignoreDblClick;
+	
 	private static final Method mouseGetButtonMethod; // null if no method
 
 	static {
@@ -267,7 +268,7 @@ public class Main extends Panel implements GPSListener, MouseListener,
 			skipCounter++;
 			return;
 		}
-		Main.latLng = gi;
+		latLng = gi;
 		repaint();
 	}
 
