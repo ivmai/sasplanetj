@@ -37,8 +37,8 @@ import org.sf.sasplanetj.util.TilesUtil;
 import org.sf.sasplanetj.util.TrackTail;
 import org.sf.sasplanetj.util.Tracks;
 import org.sf.sasplanetj.util.Waypoints;
+import org.sf.sasplanetj.util.WikiMapKML;
 import org.sf.sasplanetj.util.Wikimapia;
-import org.sf.sasplanetj.util.Wikimapia.KML;
 import org.sf.sasplanetj.util.XYint;
 import org.sf.sasplanetj.util.Zip;
 
@@ -356,8 +356,8 @@ public class Main extends Panel implements GPSListener, MouseListener,
 			int i = 0;
 			for (Iterator iterator = Wikimapia.drawnKmlsIterator(); iterator
 					.hasNext();) {
-				KML kml = (KML) iterator.next();
-				if (kml.drawnPoly.contains(point)) {
+				WikiMapKML kml = (WikiMapKML) iterator.next();
+				if (kml.containsPoint(point)) {
 					String name = kml.getDescription();
 					if (wikiStrSet.put(name, "") == null) {
 						mi = new MenuItem(name);

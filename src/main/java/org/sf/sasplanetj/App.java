@@ -282,7 +282,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 				Config.useSoftRefs ? Config.zipCacheSize * 2 + 1
 						: Config.zipCacheSize);
 		TilesUtil.tilesCache = new Cache(Config.imageCacheSize); // <String,Image>
-		Wikimapia.kmlCache = new Cache(Config.wikikmlCacheSize); // <String,ArrayList<KML>>
+		Wikimapia.kmlCache = new Cache(Config.wikikmlCacheSize); // <String,ArrayList<WikiMapKML>>
 
 		if (Config.connectGPS) {
 			createSerialReader();

@@ -1,7 +1,6 @@
 package org.sf.sasplanetj.util;
 
 import java.awt.Graphics;
-import java.awt.Polygon;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,14 +14,14 @@ import org.sf.sasplanetj.ui.ColorsAndFonts;
 
 public class Wikimapia {
 
-	public static Cache kmlCache; // <String, ArrayList<KML>>
+	public static Cache kmlCache; // <String, ArrayList<WikiMapKML>>
 
 	private static final String mapDir = "Wiki";
 
 	/**
 	 * last drawn KMLs
 	 */
-	private static final ArrayList drawnKmls = new ArrayList(); // <KML>
+	private static final ArrayList drawnKmls = new ArrayList(); // <WikiMapKML>
 
 	public static void clearDrawnKmls() {
 		drawnKmls.clear();
@@ -66,12 +65,12 @@ public class Wikimapia {
 
 		int descrPos = 0;
 		while ((descrPos = kmlstr.indexOf("<description>", descrPos + 1)) != -1) {
-			KML kml = new KML();
 			int descrTextStart = kmlstr.indexOf("<![CDATA[", descrPos + 1)
 					+ "<![CDATA[".length();
 			int descrTextEnd = kmlstr.indexOf("<br>", descrTextStart + 1); // ]]>
-			kml.description = kmlstr.substring(descrTextStart, descrTextEnd)
-					.trim();
+			String description = StringUtil.replace(
+					kmlstr.substring(descrTextStart, descrTextEnd).trim(),
+					"&amp;quot;", "\"");
 
 			int coordinatesStart = kmlstr
 					.indexOf("<coordinates>", descrTextEnd)
@@ -84,15 +83,15 @@ public class Wikimapia {
 			StringTokenizer st1 = new StringTokenizer(coordsStr, "\n");
 			int coordsCnt = st1.countTokens();
 			totalCoordCnt += coordsCnt;
-			kml.x = new int[coordsCnt];
-			kml.y = new int[coordsCnt];
+			int[] kmlX = new int[coordsCnt];
+			int[] kmlY = new int[coordsCnt];
 			double prevLng = 0.0;
 
 			for (int i = 0; i < coordsCnt; i++) {
 				String coord = st1.nextToken();
 				int comma1 = coord.indexOf(',', 1);
 				int comma2 = coord.indexOf(',', comma1 + 1);
-				// lat lng order is twisted
+				// lat/lng order is twisted
 				double lng = Double.valueOf(coord.substring(0, comma1))
 						.doubleValue();
 				if (Math.abs(prevLng - lng) > 180.0) {
@@ -104,10 +103,11 @@ public class Wikimapia {
 				prevLng = lng;
 				XYint intile = TilesUtil.coordinateToDisplay(lat, lng, zoom,
 						isYandex);
-				kml.x[i] = intile.x;
-				kml.y[i] = intile.y;
+				kmlX[i] = intile.x;
+				kmlY[i] = intile.y;
 			}
 			descrPos = coordinatesEnd;
+			WikiMapKML kml = new WikiMapKML(description, kmlX, kmlY);
 			kmls.add(kml);
 		}
 
@@ -116,22 +116,6 @@ public class Wikimapia {
 		System.out.println("Wikimapia: Parsed " + totalCoordCnt
 				+ " coordinates in " + watch.currentMillis() + "ms");
 		return kmls;
-	}
-
-	public static class KML {
-
-		String description;
-
-		/* In-tile coordinates */
-		public int x[];
-		public int y[];
-
-		// previously calculated polygon on screen
-		public Polygon drawnPoly;
-
-		public String getDescription() {
-			return StringUtil.replace(description, "&amp;quot;", "\"");
-		}
 	}
 
 	public static String loadKML(String filename) {
@@ -183,11 +167,9 @@ public class Wikimapia {
 			int shiftX = (x & ~((1 << (zoom - 1)) - 1)) << TilesUtil.LOG2_TILESIZE;
 			dbf.setColor(ColorsAndFonts.clWikimapia);
 			for (Iterator iterator = kmlsForTile.iterator(); iterator.hasNext();) {
-				KML kml = (KML) iterator.next();
-				kml.drawnPoly = new Polygon(kml.x, kml.y, kml.x.length);
-				kml.drawnPoly.translate(shiftX - matrix[0].x + matrix[1].x,
+				WikiMapKML kml = (WikiMapKML) iterator.next();
+				kml.drawPolygon(dbf, shiftX - matrix[0].x + matrix[1].x,
 						-matrix[0].y + matrix[1].y);
-				dbf.drawPolygon(kml.drawnPoly);
 			}
 			drawnKmls.addAll(kmlsForTile);
 		}
