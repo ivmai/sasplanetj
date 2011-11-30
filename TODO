@@ -14,6 +14,4 @@ Add scripts to build native binary distributives.
 
 Add script to replace 'javax.io.*' with 'gnu.io.*' import.
 
-Handle 'Usermapdir' feature.
-
 Implement/call fullscreen().
