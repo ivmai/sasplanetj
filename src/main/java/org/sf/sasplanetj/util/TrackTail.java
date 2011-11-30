@@ -50,7 +50,7 @@ public class TrackTail extends LinkedList {
 		for (Iterator it = this.iterator(); it.hasNext();) {
 			final XY latlng = (XY) it.next(); // map pixel coordinates
 			final XYint inmatrix = TilesUtil.coordinateToDisplay(latlng.getX(),
-					latlng.getY(), Config.zoom, Config.isMapYandex);
+					latlng.getY(), Config.zoom, Config.isCurMapYandex());
 			inmatrix.subtract(matrix[0]); // find point in tile matrix
 			inmatrix.add(matrix[1]);
 			// point with matrix position drawing offset

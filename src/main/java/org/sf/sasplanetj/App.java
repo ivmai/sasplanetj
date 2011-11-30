@@ -136,10 +136,10 @@ public class App extends Frame implements ActionListener, ItemListener {
 	}
 
 	public static void cmiCurMapSetState(boolean state) {
-		menuCheckboxSetState(cmiMaps[Config.curMapIndex], state);
+		menuCheckboxSetState(cmiMaps[Config.getCurMapIndex()], state);
 		if (state) {
 			self.mapsMenu.setLabel("Map ("
-					+ Config.maps[Config.curMapIndex].key + ")");
+					+ Config.maps[Config.getCurMapIndex()].key + ")");
 		}
 	}
 

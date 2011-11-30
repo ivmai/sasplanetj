@@ -49,39 +49,49 @@ public class Config {
 	public static int drawMapSkip;
 	public static int trackLogSkip;
 
-	public static String usermapdir;
+	private static String usermapdir;
 
 	/**
 	 * Currently selected map
 	 */
-	public static int curMapIndex;
-	public static String curMapDir;
-	public static String curMapExt;
-	/**
-	 * Selected map is Yandex
-	 */
-	public static boolean isMapYandex;
+	private static int curMapIndex;
 
 	public static final MapInfo[] maps = {
 			new MapInfo("Google satellite", 'G', "sat", "jpg"),
 			new MapInfo("Google map", 'M', "map", "png"),
 			new MapInfo("Google landscape", 'L', "land", "jpg"),
-			new MapInfo("Yandex satellite", 'Y', "yasat", "jpg"),
-			new MapInfo("Yandex map", 'Q', "yamapng", "png"),
+			new MapInfo("Yandex satellite", 'Y', "yasat", "jpg", 1, true),
+			new MapInfo("Yandex map", 'Q', "yamapng", "png", 1, true),
 			new MapInfo("OpenStreetMap", 'O', "osmmap", "png"),
 			new MapInfo("Virtual Earth satellite", 'V', "vesat", "jpg"),
 			new MapInfo("WikiMap", 'W', "WikiMap", "png"),
 			new MapInfo("Usermapdir", 'R', null, "jpg") };
 
-	public static void switchMapTo(int mapIndex) {
-		curMapIndex = mapIndex;
-		isMapYandex = maps[curMapIndex].name.startsWith("Yandex");
-		String dir = maps[curMapIndex].dir;
-		curMapDir = dir != null ? dir : usermapdir;
-		curMapExt = maps[curMapIndex].extension;
+	public static int getCurMapIndex() {
+		return curMapIndex;
 	}
 
-	public static int curMapMinZoom() {
+	public static void switchMapTo(int mapIndex) {
+		curMapIndex = mapIndex;
+	}
+
+	/**
+	 * Selected map is Yandex
+	 */
+	public static boolean isCurMapYandex() {
+		return maps[curMapIndex].isYandexProjection;
+	}
+
+	public static String getCurMapDir() {
+		String dir = maps[curMapIndex].dir;
+		return dir != null ? dir : usermapdir;
+	}
+
+	public static String getCurMapExt() {
+		return maps[curMapIndex].extension;
+	}
+
+	public static int getCurMinZoom() {
 		return maps[curMapIndex].minZoom;
 	}
 
@@ -150,7 +160,7 @@ public class Config {
 			out.println("lat=" + Main.getLatLng().getLat());
 			out.println("longitude=" + Main.getLatLng().getLng());
 			out.println("zoom=" + zoom);
-			out.println("curMap=" + curMapIndex);
+			out.println("curMap=" + getCurMapIndex());
 			out.println();
 			out.println("# Connect to GPS at start-up");
 			out.println("connectGPS=" + connectGPS);
@@ -245,21 +255,24 @@ public class Config {
 		/**
 		 * tile file extension, jpg, png
 		 */
-		public final String extension;
+		final String extension;
 
 		final int minZoom; // use 4 for "Gurtam" map, 1 typically for others
 
+		final boolean isYandexProjection;
+
 		public MapInfo(String name, char key, String dir, String extension) {
-			this(name, key, dir, extension, 1);
+			this(name, key, dir, extension, 1, false);
 		}
 
 		public MapInfo(String name, char key, String dir, String extension,
-				int minZoom) {
+				int minZoom, boolean isYandexProjection) {
 			this.name = name;
 			this.key = key;
 			this.dir = dir;
 			this.extension = extension;
 			this.minZoom = minZoom;
+			this.isYandexProjection = isYandexProjection;
 		}
 	}
 }

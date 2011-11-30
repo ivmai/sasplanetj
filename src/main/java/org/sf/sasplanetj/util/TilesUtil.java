@@ -181,15 +181,15 @@ public class TilesUtil {
 		// sasplanet\cache\sat\z17\37\x38349\21\y22110.jpg
 		// result:=path+'\z'+zoom+'\'+(x div 1024)+'\x'+x+'\'+(y div
 		// 1024)+'\y'+y+ext;
-		return Config.cachePath + StringUtil.fileSep + Config.curMapDir
+		return Config.cachePath + StringUtil.fileSep + Config.getCurMapDir()
 				+ StringUtil.fileSep + "z" + Config.zoom + StringUtil.fileSep
 				+ (x / 1024) + StringUtil.fileSep + "x" + x
 				+ StringUtil.fileSep + (y / 1024) + StringUtil.fileSep + "y"
-				+ y + "." + Config.curMapExt;
+				+ y + "." + Config.getCurMapExt();
 	}
 
 	private static ImageContainer getTileImage(int x, int y, int zoom) {
-		if (zoom < Config.curMapMinZoom())
+		if (zoom < Config.getCurMinZoom())
 			return null;
 
 		String filename = getCachePath(x, y, zoom);
@@ -312,7 +312,7 @@ public class TilesUtil {
 
 		Wikimapia.clearDrawnKmls();
 		int zoom = Config.zoom;
-		int maxY = maxTileY(zoom, Config.isMapYandex);
+		int maxY = maxTileY(zoom, Config.isCurMapYandex());
 		int startY = tileXY.y - tilesToTop;
 
 		for (int i = tileXY.x - tilesToLeft; i < tileXY.x - tilesToLeft
@@ -344,7 +344,7 @@ public class TilesUtil {
 		if (Config.drawWikimapia) {
 			startY = tileWikiXY.y - tilesToTop;
 			int endY = Math.min(startY + totalMatrixH,
-					Config.isMapYandex ? maxTileY(zoom, false) : maxY);
+					Config.isCurMapYandex() ? maxTileY(zoom, false) : maxY);
 			if (startY < 0) {
 				startY = 0;
 			}

@@ -107,18 +107,18 @@ public class Waypoints {
 		// TODO: skip WPs which are out of screen.
 		for (Iterator it = points.iterator(); it.hasNext();) {
 			final Waypoint wp = (Waypoint) it.next();
-			final XYint inmatrix = TilesUtil.coordinateToDisplay(wp.getLatLng()
-					.getLat(), wp.getLatLng().getLng(), Config.zoom,
-					Config.isMapYandex);
-			inmatrix.subtract(matrix[0]); // find point in tile matrix
-			inmatrix.add(matrix[1]);
+			final XYint inMatrix = TilesUtil.coordinateToDisplay(wp.getLatLng()
+					.getLat(), wp.getLatLng().getLng(), Config.zoom, Config
+					.isCurMapYandex());
+			inMatrix.subtract(matrix[0]); // find point in tile matrix
+			inMatrix.add(matrix[1]);
 			// point with matrix position drawing offset
 
-			Rectangle r = new Rectangle(inmatrix.x - 3, inmatrix.y - 3, 7, 7);
+			Rectangle r = new Rectangle(inMatrix.x - 3, inMatrix.y - 3, 7, 7);
 			dbf.setColor(ColorsAndFonts.clWaypointBrush);
 			dbf.fillOval(r.x, r.y, r.width, r.height);
 
-			dbf.drawString(wp.getName(), inmatrix.x + 5, inmatrix.y + 5);
+			dbf.drawString(wp.getName(), inMatrix.x + 5, inMatrix.y + 5);
 
 			dbf.setColor(ColorsAndFonts.clWaypointPen);
 			dbf.drawOval(r.x, r.y, r.width, r.height);

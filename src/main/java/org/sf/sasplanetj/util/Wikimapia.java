@@ -162,7 +162,8 @@ public class Wikimapia {
 	public static void drawTile(int x, int y, int zoom, Graphics dbf,
 			XYint[] matrix) {
 		ArrayList kmlsForTile = Wikimapia.getTileKML(
-				TilesUtil.adjustTileX(x, zoom), y, zoom, Config.isMapYandex);
+				TilesUtil.adjustTileX(x, zoom), y, zoom,
+				Config.isCurMapYandex());
 		if (kmlsForTile != null) {
 			int shiftX = (x & ~((1 << (zoom - 1)) - 1)) << TilesUtil.LOG2_TILESIZE;
 			dbf.setColor(ColorsAndFonts.clWikimapia);

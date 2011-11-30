@@ -208,7 +208,7 @@ public class Main extends Panel implements GPSListener, MouseListener,
 
 		/* Tile calculation */
 		final XYint displayXY = TilesUtil.coordinateToDisplay(latLng.getLat(),
-				latLng.getLng(), Config.zoom, Config.isMapYandex);
+				latLng.getLng(), Config.zoom, Config.isCurMapYandex());
 		if (Config.drawTail && latLng.getLat() != 0 && latLng.getLng() != 0) {
 			trackTail.addPoint(new XY(latLng.getLat(), latLng.getLng()));
 		}
@@ -219,7 +219,7 @@ public class Main extends Panel implements GPSListener, MouseListener,
 				center.y - (displayXY.y & ((1 << TilesUtil.LOG2_TILESIZE) - 1)));
 		final XYint tileXY = TilesUtil.getTileByDisplayCoord(displayXY);
 		XYint tileWikiXY = tileXY;
-		if (Config.isMapYandex) {
+		if (Config.isCurMapYandex()) {
 			XYint displayWikiXY = TilesUtil.coordinateToDisplay(
 					latLng.getLat(), latLng.getLng(), Config.zoom, false);
 			displayWikiXY.subtract(viewOffset);
@@ -384,13 +384,13 @@ public class Main extends Panel implements GPSListener, MouseListener,
 
 	private void setClickLatlng(MouseEvent e) {
 		XYint displayXY = TilesUtil.coordinateToDisplay(latLng.getLat(),
-				latLng.getLng(), Config.zoom, Config.isMapYandex);
+				latLng.getLng(), Config.zoom, Config.isCurMapYandex());
 		displayXY.subtract(viewOffset);
 		XYint clickOffset = new XYint(e.getPoint().x - getSize().width / 2,
 				e.getPoint().y - getSize().height / 2);
 		displayXY.add(clickOffset);
 		clickLatlng = TilesUtil.displayToCoordinate(displayXY, Config.zoom,
-				Config.isMapYandex);
+				Config.isCurMapYandex());
 	}
 
 	public void mouseEntered(MouseEvent e) {
@@ -506,10 +506,10 @@ public class Main extends Panel implements GPSListener, MouseListener,
 			printHeapStat();
 			break;
 		case KeyEvent.VK_1:
-			switchMapToAndRepaint(Config.curMapIndex + 1);
+			switchMapToAndRepaint(Config.getCurMapIndex() + 1);
 			break;
 		case KeyEvent.VK_2:
-			switchMapToAndRepaint(Config.curMapIndex - 1);
+			switchMapToAndRepaint(Config.getCurMapIndex() - 1);
 			break;
 		default:
 			break;

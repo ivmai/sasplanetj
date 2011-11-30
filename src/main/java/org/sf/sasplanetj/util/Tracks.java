@@ -106,7 +106,7 @@ public class Tracks {
 				final XY latlng = track[i]; // map pixel coordinates
 				final XYint inmatrix = TilesUtil.coordinateToDisplay(
 						latlng.getX(), latlng.getY(), Config.zoom,
-						Config.isMapYandex);
+						Config.isCurMapYandex());
 				inmatrix.subtract(matrix[0]); // find point in tile matrix
 				inmatrix.add(matrix[1]);
 				// point with matrix position drawing offset
