@@ -619,7 +619,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 			"Windows CE");
 
 	public static void main(String args[]) throws Exception {
-		System.out.println("SAS.Planet.J v0.0.6");
+		System.out.println("SAS.Planet.J v0.0.7");
 
 		System.out.println("Working directory: " + Config.curDir);
 		if (args.length > 0 && args[0].equals("list")) {
