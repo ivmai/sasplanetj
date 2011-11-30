@@ -14,8 +14,7 @@ Add scripts to build native binary distributives.
 
 Add script to replace 'javax.io.*' with 'gnu.io.*' import.
 
-Start app with maximized window.
-Implement full-screen mode on demand (call gd.setFullScreenWindow).
+Get window size from config file (recognize 'max', 'full' values).
 
 Handle mouse scroll events (zoom in/out).
 
