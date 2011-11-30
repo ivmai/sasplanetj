@@ -57,12 +57,12 @@ public class App extends Frame implements ActionListener, ItemListener {
 	private static final String GOTO_COMMAND = "GOTO_COMMAND";
 
 	private static MenuBar menuBar;
-	private static Menu mapsMenu;
+	private Menu mapsMenu;
 	private MenuItem cmiMapView;
 	private MenuItem cmiCoords;
 	private MenuItem cmiNmea;
-	private static MenuItem cmiConnectGPS;
-	private static MenuItem cmiTrackLog;
+	private MenuItem cmiConnectGPS;
+	private MenuItem cmiTrackLog;
 	private MenuItem cmiWikimapia;
 	private MenuItem cmiDrawGrid;
 	private MenuItem cmiDrawLatLng;
@@ -132,14 +132,14 @@ public class App extends Frame implements ActionListener, ItemListener {
 	}
 
 	public static void cmiTrackLogSetState() {
-		menuCheckboxSetState(cmiTrackLog, Config.trackLog);
+		menuCheckboxSetState(self.cmiTrackLog, Config.trackLog);
 	}
 
 	public static void cmiCurMapSetState(boolean state) {
 		menuCheckboxSetState(cmiMaps[Config.curMapIndex], state);
 		if (state) {
-			mapsMenu.setLabel("Map (" + Config.maps[Config.curMapIndex].key
-					+ ")");
+			self.mapsMenu.setLabel("Map ("
+					+ Config.maps[Config.curMapIndex].key + ")");
 		}
 	}
 
@@ -390,10 +390,10 @@ public class App extends Frame implements ActionListener, ItemListener {
 			}
 		} else if (command.equals("WAYPOINTS_CLEAR")) {
 			Waypoints.points = null;
-			App.main.repaint();
+			main.repaint();
 		} else if (command.equals("TRACK_CLEAR")) {
 			Tracks.tracks = null;
-			App.main.repaint();
+			main.repaint();
 		} else if (command.equals("TRACKLOG_DELETE")) {
 			trackLogger.deleteFile();
 		} else if (command.equals("WAYPOINTS_SAVE")) {
@@ -600,11 +600,11 @@ public class App extends Frame implements ActionListener, ItemListener {
 	 */
 	public static void goTo(LatLng latlng) {
 		Config.connectGPS = false;
-		menuCheckboxSetState(cmiConnectGPS, false);
-		App.main.removeListener();
+		menuCheckboxSetState(self.cmiConnectGPS, false);
+		main.removeListener();
 		Main.clearTrackTail();
 		latlng.copyTo(Main.getLatLng());
-		App.main.viewOffset0(); // it will repaint also
+		main.viewOffset0(); // it will repaint also
 	}
 
 	/**
@@ -612,7 +612,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 	 */
 	public static void createWaypoint(LatLng latlng, String name) {
 		Waypoints.points.add(new Waypoint(latlng, name));
-		App.main.repaint();
+		main.repaint();
 	}
 
 	private static final boolean isCE = System.getProperty("os.name").equals(
