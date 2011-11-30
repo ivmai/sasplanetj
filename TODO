@@ -19,3 +19,5 @@ Get window size from config file (recognize 'max', 'full' values).
 Handle mouse scroll events (zoom in/out).
 
 Handle double click (to popup menu).
+
+Copy valuable comments from Sasplanetj forum.
