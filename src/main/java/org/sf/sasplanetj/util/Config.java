@@ -70,7 +70,6 @@ public class Config {
 			new MapInfo("Yandex map", 'Q', "yamapng", "png"),
 			new MapInfo("OpenStreetMap", 'O', "osmmap", "png"),
 			new MapInfo("Virtual Earth satellite", 'V', "vesat", "jpg"),
-			new MapInfo("Gurtam", 'U', "gumap", "png", 4),
 			new MapInfo("WikiMap", 'W', "WikiMap", "png"),
 			new MapInfo("Usermapdir", 'R', null, "jpg") };
 
@@ -194,7 +193,7 @@ public class Config {
 			out.println("useSoftRefs=" + useSoftRefs);
 			out.println();
 
-			out.println("# User-defined map folder (e.g. for 'GenShtab')");
+			out.println("# User-defined map folder (e.g. for 'Gurtam' or 'GenShtab')");
 			out.println("usermapdir=" + usermapdir);
 			out.println();
 
