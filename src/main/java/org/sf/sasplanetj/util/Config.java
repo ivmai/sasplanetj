@@ -98,8 +98,9 @@ public class Config {
 			System.err.println("Error loading config: " + e.getMessage());
 		}
 
-		Main.latlng.set(Double.valueOf(ini.getProperty("lat", "50.407781"))
-				.doubleValue(),
+		Main.getLatLng().set(
+				Double.valueOf(ini.getProperty("lat", "50.407781"))
+						.doubleValue(),
 				Double.valueOf(ini.getProperty("longitude", "30.662485"))
 						.doubleValue());
 		curMapIndex = Integer.valueOf(ini.getProperty("curMap", "0"))
@@ -148,8 +149,8 @@ public class Config {
 			PrintWriter out = new PrintWriter(new FileWriter(configFilename));
 			out.println("# SAS.Planet.J (org.sf.sasplanetj) configuration file");
 			out.println();
-			out.println("lat=" + Main.latlng.getLat());
-			out.println("longitude=" + Main.latlng.getLng());
+			out.println("lat=" + Main.getLatLng().getLat());
+			out.println("longitude=" + Main.getLatLng().getLng());
 			out.println("zoom=" + zoom);
 			out.println("curMap=" + curMapIndex);
 			out.println();

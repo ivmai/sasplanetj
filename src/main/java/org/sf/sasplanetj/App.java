@@ -35,6 +35,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 
 	private static final long serialVersionUID = -5248004842918375714L;
 
+	public static Main main;
 	private static App self;
 	private String args[];
 
@@ -55,7 +56,6 @@ public class App extends Frame implements ActionListener, ItemListener {
 	private static final String DRAWTAIL_COMMAND = "DRAWTAIL_COMMAND";
 	private static final String GOTO_COMMAND = "GOTO_COMMAND";
 
-	public static Main main;
 	private static MenuBar menuBar;
 	private static Menu mapsMenu;
 	private static MenuItem cmiMapView;
@@ -250,7 +250,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 		menu.addSeparator();
 		Menu menuLayers = new Menu("Layers");
 		cmiWikimapia = menuAddNewCheckbox("Wikimapa KML", "WIKIMAPIA",
-				menuLayers);
+				menuLayers); // FIXME: fix title
 		menu.add(menuLayers);
 		mapsMenu = menu;
 		menuBar.add(menu);
@@ -416,7 +416,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 		}
 
 		if (miCheckboxClass != null) {
-			currentView.requestFocus(); // for creme
+			currentView.requestFocus(); // for CreME
 		} else {
 			processCheckboxToggled(command);
 			redrawMenuCheckboxes();
@@ -451,7 +451,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 			cmiCurMapSetState(true);
 			main.repaint();
 		} else if (command.startsWith(ZOOMTO_COMMAND)) {
-			zoom(new Integer(command.substring(ZOOMTO_COMMAND.length()))
+			main.zoomTo(new Integer(command.substring(ZOOMTO_COMMAND.length()))
 					.intValue());
 		} else if (command.startsWith(ZOOMONLYTO_COMMAND)) {
 			Integer z = Integer.valueOf(command.substring(ZOOMONLYTO_COMMAND
@@ -464,7 +464,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 		} else if (command == DRAWTAIL_COMMAND) {
 			Config.drawTail = !Config.drawTail;
 			if (Config.drawTail)
-				Main.trackTail.clear(); // clear to prevent jump in tail
+				Main.clearTrackTail(); // clear to prevent jump in tail
 			main.repaint();
 		} else if (command.equals("CONNECT_GPS")) {
 			Config.connectGPS = !Config.connectGPS;
@@ -477,7 +477,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 				}
 			} else {
 				if (Config.drawTail) {
-					Main.trackTail.clear();
+					Main.clearTrackTail();
 				}
 
 				if (serialReader != null && serialReader.isAlive()) {
@@ -505,7 +505,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 				trackLogger.loggerStop();
 		}
 
-		currentView.requestFocus(); // for creme
+		currentView.requestFocus(); // for CreME
 	}
 
 	public static void zoomIn() {
@@ -527,7 +527,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 			return;
 		}
 
-		zoom(zoom);
+		main.zoomTo(zoom);
 	}
 
 	public static void zoomOut() {
@@ -549,15 +549,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 			return;
 		}
 
-		zoom(zoom);
-	}
-
-	public static void zoom(int zoom) {
-		double deltaview = Math.pow(2, zoom - Config.zoom);
-		Main.viewOffset.multiply(deltaview);
-		Config.zoom = zoom;
-		App.getSelf().zoomMenu();
-		main.repaint();
+		main.zoomTo(zoom);
 	}
 
 	public void zoomMenu() {
@@ -610,8 +602,8 @@ public class App extends Frame implements ActionListener, ItemListener {
 		Config.connectGPS = false;
 		menuCheckboxSetState(cmiConnectGPS, false);
 		App.main.removeListener();
-		Main.trackTail.clear();
-		latlng.copyTo(Main.latlng);
+		Main.clearTrackTail();
+		latlng.copyTo(Main.getLatLng());
 		App.main.viewOffset0(); // it will repaint also
 	}
 

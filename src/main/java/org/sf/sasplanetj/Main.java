@@ -43,8 +43,8 @@ import org.sf.sasplanetj.util.XYint;
 import org.sf.sasplanetj.util.Zip;
 
 /**
- * Panel. In Creme panel does not gain focus. But Container or Component flash
- * during repaint
+ * Panel. In CreME panel does not gain focus. But Container or Component flash
+ * during repaint.
  */
 public class Main extends Panel implements GPSListener, MouseListener,
 		MouseMotionListener, KeyListener, ActionListener {
@@ -60,9 +60,9 @@ public class Main extends Panel implements GPSListener, MouseListener,
 	private static final PopupMenu popup = new PopupMenu();
 	private static final ArrayList popupWiki = new ArrayList(); // ArrayList<MenuItem>
 
-	public static TrackTail trackTail;
-	public static LatLng latlng = new LatLng();
-	public static final XYint viewOffset = new XYint(0, 0);
+	private static TrackTail trackTail;
+	private static LatLng latLng = new LatLng();
+	private static final XYint viewOffset = new XYint(0, 0);
 
 	private static boolean ignoreDblClick;
 	private static final Method mouseGetButtonMethod; // null if no method
@@ -206,10 +206,10 @@ public class Main extends Panel implements GPSListener, MouseListener,
 				offscreen.getHeight(null) / 2);
 
 		/* Tile calculation */
-		final XYint displayXY = TilesUtil.coordinateToDisplay(latlng.getLat(),
-				latlng.getLng(), Config.zoom, Config.isMapYandex);
-		if (Config.drawTail && latlng.getLat() != 0 && latlng.getLng() != 0) {
-			trackTail.addPoint(new XY(latlng.getLat(), latlng.getLng()));
+		final XYint displayXY = TilesUtil.coordinateToDisplay(latLng.getLat(),
+				latLng.getLng(), Config.zoom, Config.isMapYandex);
+		if (Config.drawTail && latLng.getLat() != 0 && latLng.getLng() != 0) {
+			trackTail.addPoint(new XY(latLng.getLat(), latLng.getLng()));
 		}
 		displayXY.subtract(viewOffset);
 
@@ -220,7 +220,7 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		XYint tileWikiXY = tileXY;
 		if (Config.isMapYandex) {
 			XYint displayWikiXY = TilesUtil.coordinateToDisplay(
-					latlng.getLat(), latlng.getLng(), Config.zoom, false);
+					latLng.getLat(), latLng.getLng(), Config.zoom, false);
 			displayWikiXY.subtract(viewOffset);
 			tileWikiXY = TilesUtil.getTileByDisplayCoord(displayWikiXY);
 		}
@@ -231,7 +231,7 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		// Draw coordinates
 		if (Config.drawLatLng) {
 			dbf.setColor(ColorsAndFonts.clLatLng);
-			dbf.drawString(latlng.toString(), 3, 15);
+			dbf.drawString(latLng.toString(), 3, 15);
 		}
 
 		// Draw track
@@ -267,8 +267,12 @@ public class Main extends Panel implements GPSListener, MouseListener,
 			skipCounter++;
 			return;
 		}
-		Main.latlng = gi;
+		Main.latLng = gi;
 		repaint();
+	}
+
+	public static LatLng getLatLng() {
+		return latLng;
 	}
 
 	public void registerListener() {
@@ -378,8 +382,8 @@ public class Main extends Panel implements GPSListener, MouseListener,
 	}
 
 	private void setClickLatlng(MouseEvent e) {
-		XYint displayXY = TilesUtil.coordinateToDisplay(latlng.getLat(),
-				latlng.getLng(), Config.zoom, Config.isMapYandex);
+		XYint displayXY = TilesUtil.coordinateToDisplay(latLng.getLat(),
+				latLng.getLng(), Config.zoom, Config.isMapYandex);
 		displayXY.subtract(viewOffset);
 		XYint clickOffset = new XYint(e.getPoint().x - getSize().width / 2,
 				e.getPoint().y - getSize().height / 2);
@@ -566,6 +570,14 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		viewOffsetChanged();
 	}
 
+	public void zoomTo(int zoom) {
+		double deltaview = Math.pow(2, zoom - Config.zoom);
+		viewOffset.multiply(deltaview);
+		Config.zoom = zoom;
+		App.getSelf().zoomMenu();
+		repaint();
+	}
+
 	public void keyTyped(KeyEvent e) {
 		char ch = e.getKeyChar();
 		if (ch != '\n' && ch != '1' && ch != '2')
@@ -573,10 +585,14 @@ public class Main extends Panel implements GPSListener, MouseListener,
 	}
 
 	private void processGoHere() {
-		clickLatlng.copyTo(latlng);
-		trackTail.clear();
+		clickLatlng.copyTo(latLng);
+		clearTrackTail();
 		viewOffset0(); // it will repaint also
 		repaint();
+	}
+
+	public static void clearTrackTail() {
+		trackTail.clear();
 	}
 
 	public void actionPerformed(ActionEvent e) {
