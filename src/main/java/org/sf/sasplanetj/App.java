@@ -249,8 +249,8 @@ public class App extends Frame implements ActionListener, ItemListener {
 		}
 		menu.addSeparator();
 		Menu menuLayers = new Menu("Layers");
-		cmiWikimapia = menuAddNewCheckbox("Wikimapa KML", "WIKIMAPIA",
-				menuLayers); // FIXME: fix title
+		cmiWikimapia = menuAddNewCheckbox("Wikimapia KML", "WIKIMAPIA",
+				menuLayers);
 		menu.add(menuLayers);
 		mapsMenu = menu;
 		menuBar.add(menu);
