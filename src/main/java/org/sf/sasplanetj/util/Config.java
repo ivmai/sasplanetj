@@ -146,7 +146,7 @@ public class Config {
 	public static void save() {
 		try {
 			PrintWriter out = new PrintWriter(new FileWriter(configFilename));
-			out.println("# SAS.Planet.J (org.sf.sasplanetj) configuration file");
+			out.println("# SAS.Planet.J (sasplanetj) configuration file");
 			out.println();
 			out.println("lat=" + Main.getLatLng().getLat());
 			out.println("longitude=" + Main.getLatLng().getLng());

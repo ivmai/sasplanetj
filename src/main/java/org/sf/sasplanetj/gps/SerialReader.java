@@ -69,7 +69,7 @@ public class SerialReader extends Thread {
 
 		try {
 			serialPort = (SerialPort) CommPortIdentifier
-					.getPortIdentifier(port).open("org.sf.sasplanetj", 1000);
+					.getPortIdentifier(port).open("sasplanetj", 1000);
 		} catch (PortInUseException e) {
 			System.err.println("SerialReader: PortInUseException");
 			throw e;
