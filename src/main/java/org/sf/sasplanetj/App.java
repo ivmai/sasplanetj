@@ -648,12 +648,6 @@ public class App extends Frame implements ActionListener, ItemListener {
 		app.currentView.requestFocus();
 	}
 
-	/*
-	 * FIXME: Add/use this method (use reflection). public void fullscreen(){
-	 * GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment
-	 * ().getDefaultScreenDevice(); gd.setFullScreenWindow(this); }
-	 */
-
 	public static App getSelf() {
 		return self;
 	}
