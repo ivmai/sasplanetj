@@ -70,7 +70,7 @@ public class Config {
 			new MapInfo("Yandex map", 'Q', "yamapng", "png"),
 			new MapInfo("OpenStreetMap", 'O', "osmmap", "png"),
 			new MapInfo("Virtual Earth satellite", 'V', "vesat", "jpg"),
-			new MapInfo("Gurtam", 'U', "gumap", "png"),
+			new MapInfo("Gurtam", 'U', "gumap", "png", 4),
 			new MapInfo("WikiMap", 'W', "WikiMap", "png"),
 			new MapInfo("Usermapdir", 'R', null, "jpg") };
 
@@ -83,7 +83,7 @@ public class Config {
 	}
 
 	public static int curMapMinZoom() {
-		return maps[curMapIndex].name.startsWith("Gurtam") ? 4 : 1;
+		return maps[curMapIndex].minZoom;
 	}
 
 	public static void load() {
@@ -248,12 +248,19 @@ public class Config {
 		 */
 		public final String extension;
 
+		final int minZoom; // use 4 for "Gurtam" map, 1 typically for others
+
 		public MapInfo(String name, char key, String dir, String extension) {
+			this(name, key, dir, extension, 1);
+		}
+
+		public MapInfo(String name, char key, String dir, String extension,
+				int minZoom) {
 			this.name = name;
 			this.key = key;
 			this.dir = dir;
 			this.extension = extension;
+			this.minZoom = minZoom;
 		}
-
 	}
 }
