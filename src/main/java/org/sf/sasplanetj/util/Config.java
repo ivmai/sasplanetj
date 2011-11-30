@@ -63,9 +63,9 @@ public class Config {
 	public static boolean isMapYandex;
 
 	public static final MapInfo[] maps = {
-			new MapInfo("Google satellite", 'G', "SAT", "jpg"),
-			new MapInfo("Google map", 'M', "MAP", "png"),
-			new MapInfo("Google landscape", 'L', "LAND", "jpg"),
+			new MapInfo("Google satellite", 'G', "sat", "jpg"),
+			new MapInfo("Google map", 'M', "map", "png"),
+			new MapInfo("Google landscape", 'L', "land", "jpg"),
 			new MapInfo("Yandex satellite", 'Y', "yasat", "jpg"),
 			new MapInfo("Yandex map", 'Q', "yamapng", "png"),
 			new MapInfo("OpenStreetMap", 'O', "osmmap", "png"),
@@ -240,7 +240,7 @@ public class Config {
 		public final char key;
 
 		/**
-		 * directory name (e.g., "yamap"). If null then use usermapdir value.
+		 * directory name (e.g., "yamapng"). If null then use usermapdir value.
 		 */
 		final String dir;
 		/**
