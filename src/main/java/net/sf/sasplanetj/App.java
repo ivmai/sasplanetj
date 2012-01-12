@@ -115,6 +115,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 	}
 
 	private void quit() {
+		updateConfigWinSize();
 		trackLogger.loggerStop();
 		if (serialReader != null)
 			serialReader.stopReading();
@@ -313,7 +314,6 @@ public class App extends Frame implements ActionListener, ItemListener {
 	private void afterSetVisible() {
 		redrawMenuCheckboxes();
 		cmiCurMapSetState(true);
-
 		zoomMenu();
 	}
 
@@ -615,9 +615,6 @@ public class App extends Frame implements ActionListener, ItemListener {
 		main.repaint();
 	}
 
-	private static final boolean isCE = System.getProperty("os.name").equals(
-			"Windows CE");
-
 	public static void main(String args[]) throws Exception {
 		System.out.println("SAS.Planet.J v0.0.7");
 
@@ -634,18 +631,32 @@ public class App extends Frame implements ActionListener, ItemListener {
 		App app = new App(args);
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		if (isCE) {
-			System.out.println("Screen size=" + screenSize);
-			app.setSize(screenSize);
-		} else {
-			app.setLocation(screenSize.width / 2, screenSize.height / 10);
-			app.setSize(new Dimension(245, 320));
-		}
-
+		System.out.println("Screen size=" + screenSize);
+		int width = Config.windowWidth != 0 ? Config.windowWidth
+				: screenSize.width;
+		int height = Config.windowHeight != 0 ? Config.windowHeight
+				: screenSize.height;
+		int x = screenSize.width / 2;
+		if (x + width > screenSize.width)
+			x = 0;
+		int y = screenSize.height / 10;
+		if (y + height > screenSize.height)
+			y = 0;
+		app.setLocation(x, y);
+		app.setSize(new Dimension(width, height));
 		app.addComponents();
 		app.setVisible(true);
 		app.afterSetVisible();
 		app.currentView.requestFocus();
+	}
+
+	private void updateConfigWinSize() {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension winSize = getSize();
+		Config.windowWidth = winSize.width != screenSize.width ? winSize.width
+				: 0;
+		Config.windowHeight = winSize.height != screenSize.height ? winSize.height
+				: 0;
 	}
 
 	public static App getSelf() {

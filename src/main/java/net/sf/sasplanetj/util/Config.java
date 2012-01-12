@@ -32,6 +32,12 @@ public class Config {
 
 	public static final ArrayList zoomsAvail = new ArrayList(TilesUtil.ZOOM_MAX);
 
+	/**
+	 * Window width and height (0 means max - screen width/height).
+	 */
+	public static int windowWidth;
+	public static int windowHeight;
+
 	public static boolean connectGPS;
 	public static int zoom;
 	public static boolean drawGrid;
@@ -114,6 +120,8 @@ public class Config {
 		curMapIndex = Integer.valueOf(ini.getProperty("curMap", "0"))
 				.intValue();
 		zoom = Integer.valueOf(ini.getProperty("zoom", "17")).intValue();
+		windowWidth = decodeWinSizeValue(ini.getProperty("windowWidth"));
+		windowHeight = decodeWinSizeValue(ini.getProperty("windowHeight"));
 		connectGPS = Boolean.valueOf(ini.getProperty("connectGPS", "true"))
 				.booleanValue();
 		drawGrid = Boolean.valueOf(ini.getProperty("drawGrid", "true"))
@@ -152,6 +160,11 @@ public class Config {
 		}
 	}
 
+	private static int decodeWinSizeValue(String str) {
+		return str == null || str.equals("max") ? 0 : Integer.valueOf(str)
+				.intValue();
+	}
+
 	public static void save() {
 		try {
 			PrintWriter out = new PrintWriter(new FileWriter(configFilename));
@@ -161,6 +174,12 @@ public class Config {
 			out.println("longitude=" + Main.getLatLng().getLng());
 			out.println("zoom=" + zoom);
 			out.println("curMap=" + getCurMapIndex());
+			out.println();
+			out.println("# Application window width and height (decimal value or 'max')");
+			out.println("windowWidth="
+					+ (windowWidth != 0 ? "" + windowWidth : "max"));
+			out.println("windowHeight="
+					+ (windowHeight != 0 ? "" + windowHeight : "max"));
 			out.println();
 			out.println("# Connect to GPS at start-up");
 			out.println("connectGPS=" + connectGPS);
