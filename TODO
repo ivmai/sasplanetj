@@ -1,20 +1,16 @@
 
-FIXME items
-===========
+== FIXME items ==
 
 See in the source code.
 
 
-TODO items
-==========
+== TODO items ==
 
 Add/review building scripts.
 Add Maven script (remove Eclipse project files).
 Add scripts to build native binary distributives.
 
 Add script to replace 'javax.io.*' with 'gnu.io.*' import.
-
-Get window size from config file (recognize 'max', 'full' values).
 
 Handle mouse scroll events (zoom in/out).
 
