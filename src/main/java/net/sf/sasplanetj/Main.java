@@ -133,7 +133,7 @@ public class Main extends Panel implements GPSListener, MouseListener,
 	/**
 	 * Initializes double buffer with new size
 	 */
-	public void initDbf() {
+	private void initDbf() {
 		System.out.println("Main size " + getSize().width + "x"
 				+ getSize().height);
 		if (this.getSize().width <= 0 || this.getSize().height <= 0)
@@ -292,9 +292,14 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		}
 	}
 
+	private long prevClickTime = -1; // -1 means unset
+
+	private static final int DBL_CLICK_MAX_DELAY_MS = 300;
+
 	private boolean doPopup(MouseEvent e) {
 		boolean isPopup;
-		if (System.getProperty("java.vm.name").startsWith("CrE-ME")) {
+		if (!ignoreDblClick
+				&& System.getProperty("java.vm.name").startsWith("CrE-ME")) {
 			isPopup = true;
 		} else if (e.isPopupTrigger()
 				|| e.getModifiers() == InputEvent.META_MASK) {
@@ -314,9 +319,22 @@ public class Main extends Panel implements GPSListener, MouseListener,
 					// Ignore.
 				}
 			}
-			if (!ignoreDblClick && e.getModifiers() == InputEvent.BUTTON1_MASK
-					&& e.getClickCount() == 2) {
-				isPopup = true;
+			if (!ignoreDblClick && e.getModifiers() == InputEvent.BUTTON1_MASK) {
+				switch (e.getClickCount()) {
+				case 1:
+					long time = System.currentTimeMillis();
+					if (prevClickTime != -1 && time != prevClickTime
+							&& time - prevClickTime <= DBL_CLICK_MAX_DELAY_MS) {
+						isPopup = true;
+						prevClickTime = -1;
+					} else {
+						prevClickTime = time;
+					}
+					break;
+				case 2:
+					isPopup = true;
+					break;
+				}
 			}
 		}
 
