@@ -6,14 +6,9 @@ See in the source code.
 
 == TODO items ==
 
-Add/review building scripts.
+Add/review building scripts (e.g., to build native binaries).
 Add Maven script (remove Eclipse project files).
-Add scripts to build native binary distributives.
 
 Add script to replace 'javax.io.*' with 'gnu.io.*' import.
 
 Handle mouse scroll events (zoom in/out).
-
-Handle double click (to popup menu).
-
-Copy valuable comments from Sasplanetj forum.
