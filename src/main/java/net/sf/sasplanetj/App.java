@@ -195,8 +195,8 @@ public class App extends Frame implements ActionListener, ItemListener {
 
 		cmiMapView = menuAddNewCheckbox("Map view", MAIN_COMMAND, menu);
 		menuCheckboxSetState(cmiMapView, true);
-		cmiCoords = menuAddNewCheckbox("GPS coordinates", GPSLOG_COMMAND, menu);
-		cmiNmea = menuAddNewCheckbox("NMEA", NMEALOG_COMMAND, menu);
+		cmiNmea = menuAddNewCheckbox("NMEA output", NMEALOG_COMMAND, menu);
+		cmiCoords = menuAddNewCheckbox("GPS coord log", GPSLOG_COMMAND, menu);
 		menu.addSeparator();
 
 		Menu menuWaypoints = new Menu("Waypoints");
