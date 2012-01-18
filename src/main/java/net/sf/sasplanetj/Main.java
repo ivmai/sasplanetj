@@ -356,18 +356,9 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		popup.removeAll();
 		setClickLatlng(e);
 
-		MenuItem mi;
-
-		mi = new MenuItem(clickLatlng.toShortString());
-		popup.add(mi);
-
-		mi = new MenuItem("Go here");
-		mi.setActionCommand("GO_HERE");
-		popup.add(mi);
-
-		mi = new MenuItem("Create waypoint");
-		mi.setActionCommand("CREATE_WAYPOINT");
-		popup.add(mi);
+		popup.add(new MenuItem(clickLatlng.toShortString()));
+		App.menuAddItem("Go here", "GO_HERE", popup);
+		App.menuAddItem("Create waypoint", "CREATE_WAYPOINT", popup);
 
 		int px = e.getX();
 		if (Config.drawWikimapia) {
@@ -383,7 +374,7 @@ public class Main extends Panel implements GPSListener, MouseListener,
 				if (kml.containsPoint(point)) {
 					String name = kml.getDescription();
 					if (wikiStrSet.put(name, "") == null) {
-						mi = new MenuItem(name);
+						MenuItem mi = new MenuItem(name);
 						mi.setActionCommand("POPUP_WIKI" + i);
 						popupWiki.add(mi);
 					}

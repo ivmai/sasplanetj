@@ -182,17 +182,17 @@ public class App extends Frame implements ActionListener, ItemListener {
 		return cmi;
 	}
 
+	static void menuAddItem(String name, String cmd, Menu menu) {
+		MenuItem mi = new MenuItem(name);
+		mi.setActionCommand(cmd);
+		menu.add(mi);
+	}
+
 	public void addComponents() {
-
-		MenuItem mi;
-
 		Menu menu = new Menu("Menu");
 		menu.addActionListener(this);
-		mi = new MenuItem("Go to...");
-		mi.setActionCommand(GOTO_COMMAND);
-		menu.add(mi);
+		menuAddItem("Go to...", GOTO_COMMAND, menu);
 		menu.addSeparator();
-
 		cmiMapView = menuAddNewCheckbox("Map view", MAIN_COMMAND, menu);
 		menuCheckboxSetState(cmiMapView, true);
 		cmiNmea = menuAddNewCheckbox("NMEA output", NMEALOG_COMMAND, menu);
@@ -201,40 +201,25 @@ public class App extends Frame implements ActionListener, ItemListener {
 
 		Menu menuWaypoints = new Menu("Waypoints");
 		menuWaypoints.addActionListener(this);
-		mi = new MenuItem("Open waypoints...");
-		mi.setActionCommand("WAYPOINTS_OPEN");
-		menuWaypoints.add(mi);
-		mi = new MenuItem("Clear waypoints");
-		mi.setActionCommand("WAYPOINTS_CLEAR");
-		menuWaypoints.add(mi);
-		mi = new MenuItem("Save waypoints");
-		mi.setActionCommand("WAYPOINTS_SAVE");
-		menuWaypoints.add(mi);
+		menuAddItem("Open waypoints...", "WAYPOINTS_OPEN", menuWaypoints);
+		menuAddItem("Clear waypoints", "WAYPOINTS_CLEAR", menuWaypoints);
+		menuAddItem("Save waypoints", "WAYPOINTS_SAVE", menuWaypoints);
 		menu.add(menuWaypoints);
 
 		Menu menuTracks = new Menu("Tracks");
 		menuTracks.addActionListener(this);
-		mi = new MenuItem("Open track...");
-		mi.setActionCommand("TRACK_OPEN");
-		menuTracks.add(mi);
-		mi = new MenuItem("Clear tracks");
-		mi.setActionCommand("TRACK_CLEAR");
-		menuTracks.add(mi);
+		menuAddItem("Open track...", "TRACK_OPEN", menuTracks);
+		menuAddItem("Clear tracks", "TRACK_CLEAR", menuTracks);
 		cmiTrackLog = menuAddNewCheckbox("Log to \"" + TrackLogger.logFilename
 				+ "\"", "TRACKLOG", menuTracks);
-		mi = new MenuItem("Delete \"track.plt\"");
-		mi.setActionCommand("TRACKLOG_DELETE");
-		menuTracks.add(mi);
+		menuAddItem("Delete \"track.plt\"", "TRACKLOG_DELETE", menuTracks);
 		menu.add(menuTracks);
 
 		menu.addSeparator();
 		cmiConnectGPS = menuAddNewCheckbox("Connect to GPS", "CONNECT_GPS",
 				menu);
 		menu.addSeparator();
-		mi = new MenuItem("Exit");
-		mi.setActionCommand(EXIT_COMMAND);
-		menu.add(mi);
-
+		menuAddItem("Exit", EXIT_COMMAND, menu);
 		menuBar.add(menu);
 
 		menu = new Menu("Opts");
