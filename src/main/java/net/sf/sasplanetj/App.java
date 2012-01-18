@@ -170,6 +170,8 @@ public class App extends Frame implements ActionListener, ItemListener {
 				throw new RuntimeException(e.toString());
 			}
 			((ItemSelectable) cmi).addItemListener(this);
+			/* Workaround for some Linux Mobile devices: limit name length */
+			name = name.substring(0, Math.min(name.length(), 14));
 			cmi.setLabel(name);
 		} else {
 			cmi = new MenuItem(name);
