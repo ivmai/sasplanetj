@@ -42,19 +42,29 @@ public class App extends Frame implements ActionListener, ItemListener {
 	public static SerialReader serialReader;
 	private static final TrackLogger trackLogger = new TrackLogger();
 
-	private static final String EXIT_COMMAND = "EXIT_COMMAND";
+	private static final String GOTO_COMMAND = "GOTO_COMMAND";
+	private static final String MAIN_COMMAND = "MAIN_COMMAND";
 	private static final String NMEALOG_COMMAND = "NMEALOG_COMMAND";
 	private static final String GPSLOG_COMMAND = "GPSLOG_COMMAND";
-	private static final String MAIN_COMMAND = "MAIN_COMMAND";
+	private static final String WAYPOINTS_OPEN = "WAYPOINTS_OPEN";
+	private static final String WAYPOINTS_CLEAR = "WAYPOINTS_CLEAR";
+	private static final String WAYPOINTS_SAVE = "WAYPOINTS_SAVE";
+	private static final String TRACK_OPEN = "TRACK_OPEN";
+	private static final String TRACK_CLEAR = "TRACK_CLEAR";
+	private static final String TRACKLOG = "TRACKLOG";
+	private static final String TRACKLOG_DELETE = "TRACKLOG_DELETE";
+	private static final String CONNECT_GPS = "CONNECT_GPS";
+	private static final String EXIT_COMMAND = "EXIT_COMMAND";
+	private static final String DRAWGRID_COMMAND = "DRAWGRID_COMMAND";
+	private static final String DRAWLATLNG_COMMAND = "DRAWLATLNG_COMMAND";
+	private static final String DRAWTAIL_COMMAND = "DRAWTAIL_COMMAND";
+	private static final String MAPSWITCH = "MAPSWITCH";
+	private static final String WIKIMAPIA = "WIKIMAPIA";
 	private static final String ZOOMOUT_COMMAND = "ZOOMOUT_COMMAND";
 	private static final String ZOOMIN_COMMAND = "ZOOMIN_COMMAND";
 	private static final String ZOOMTO_COMMAND = "ZOOMTO_COMMAND";
 	private static final String ZOOMONLYTO_COMMAND = "ZOOMONLYTO_COMMAND";
 	private static final String CENTER_COMMAND = "CENTER_COMMAND";
-	private static final String DRAWGRID_COMMAND = "DRAWGRID_COMMAND";
-	private static final String DRAWLATLNG_COMMAND = "DRAWLATLNG_COMMAND";
-	private static final String DRAWTAIL_COMMAND = "DRAWTAIL_COMMAND";
-	private static final String GOTO_COMMAND = "GOTO_COMMAND";
 
 	private static MenuBar menuBar;
 	private Menu mapsMenu;
@@ -214,23 +224,23 @@ public class App extends Frame implements ActionListener, ItemListener {
 
 		Menu menuWaypoints = new Menu("Waypoints");
 		menuWaypoints.addActionListener(this);
-		menuAddItem("Open waypoints...", "WAYPOINTS_OPEN", menuWaypoints);
-		menuAddItem("Clear waypoints", "WAYPOINTS_CLEAR", menuWaypoints);
-		menuAddItem("Save waypoints", "WAYPOINTS_SAVE", menuWaypoints);
+		menuAddItem("Open waypoints...", WAYPOINTS_OPEN, menuWaypoints);
+		menuAddItem("Clear waypoints", WAYPOINTS_CLEAR, menuWaypoints);
+		menuAddItem("Save waypoints", WAYPOINTS_SAVE, menuWaypoints);
 		menu.add(menuWaypoints);
 
 		Menu menuTracks = new Menu("Tracks");
 		menuTracks.addActionListener(this);
-		menuAddItem("Open track...", "TRACK_OPEN", menuTracks);
-		menuAddItem("Clear tracks", "TRACK_CLEAR", menuTracks);
+		menuAddItem("Open track...", TRACK_OPEN, menuTracks);
+		menuAddItem("Clear tracks", TRACK_CLEAR, menuTracks);
 		cmiTrackLog = menuAddNewCheckbox("Log to \"" + TrackLogger.logFilename
-				+ "\"", "TRACKLOG", menuTracks);
-		menuAddItem("Delete \"track.plt\"", "TRACKLOG_DELETE", menuTracks);
+				+ "\"", TRACKLOG, menuTracks);
+		menuAddItem("Delete \"" + TrackLogger.logFilename + "\"",
+				TRACKLOG_DELETE, menuTracks);
 		menu.add(menuTracks);
 
 		menu.addSeparator();
-		cmiConnectGPS = menuAddNewCheckbox("Connect to GPS", "CONNECT_GPS",
-				menu);
+		cmiConnectGPS = menuAddNewCheckbox("Connect to GPS", CONNECT_GPS, menu);
 		menu.addSeparator();
 		menuAddItem("Exit", EXIT_COMMAND, menu);
 		menuBar.add(menu);
@@ -245,12 +255,12 @@ public class App extends Frame implements ActionListener, ItemListener {
 
 		menu = new Menu();
 		for (int i = 0; i < Config.maps.length; i++) {
-			cmiMaps[i] = menuAddNewCheckbox(Config.maps[i].name, "MAPSWITCH"
-					+ i, menu);
+			cmiMaps[i] = menuAddNewCheckbox(Config.maps[i].name, MAPSWITCH + i,
+					menu);
 		}
 		menu.addSeparator();
 		Menu menuLayers = new Menu("Layers");
-		cmiWikimapia = menuAddNewCheckbox("Wikimapia KML", "WIKIMAPIA",
+		cmiWikimapia = menuAddNewCheckbox("Wikimapia KML", WIKIMAPIA,
 				menuLayers);
 		menu.add(menuLayers);
 		mapsMenu = menu;
@@ -362,7 +372,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 			return;
 		} else if (command == GOTO_COMMAND) {
 			new GoTo(this).setVisible(true);
-		} else if (command.equals("WAYPOINTS_OPEN")) {
+		} else if (command == WAYPOINTS_OPEN) {
 			FileDialog d = new FileDialog(this, "Open waypoints file",
 					FileDialog.LOAD);
 			d.setFile("*.wpt");
@@ -375,7 +385,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 				filename += d.getFile();
 				Waypoints.load(filename);
 			}
-		} else if (command.equals("TRACK_OPEN")) {
+		} else if (command == TRACK_OPEN) {
 			FileDialog d = new FileDialog(this, "Open track file",
 					FileDialog.LOAD);
 			d.setFile("*.plt");
@@ -388,15 +398,15 @@ public class App extends Frame implements ActionListener, ItemListener {
 				filename += d.getFile();
 				Tracks.load(filename);
 			}
-		} else if (command.equals("WAYPOINTS_CLEAR")) {
+		} else if (command == WAYPOINTS_CLEAR) {
 			Waypoints.points = null;
 			main.repaint();
-		} else if (command.equals("TRACK_CLEAR")) {
+		} else if (command == TRACK_CLEAR) {
 			Tracks.tracks = null;
 			main.repaint();
-		} else if (command.equals("TRACKLOG_DELETE")) {
+		} else if (command == TRACKLOG_DELETE) {
 			trackLogger.deleteFile();
-		} else if (command.equals("WAYPOINTS_SAVE")) {
+		} else if (command == WAYPOINTS_SAVE) {
 			if (Waypoints.points == null || Waypoints.points.size() == 0) {
 				new ShowMessage("Waypoint list is empty");
 				return;
@@ -440,14 +450,13 @@ public class App extends Frame implements ActionListener, ItemListener {
 		} else if (command == DRAWLATLNG_COMMAND) {
 			Config.drawLatLng = !Config.drawLatLng;
 			main.repaint();
-		} else if (command == "WIKIMAPIA") {
+		} else if (command == WIKIMAPIA) {
 			Config.drawWikimapia = !Config.drawWikimapia;
 			main.repaint();
-		} else if (command.startsWith("MAPSWITCH")) {
+		} else if (command.startsWith(MAPSWITCH)) {
 			cmiCurMapSetState(false);
-
 			Config.switchMapTo(Integer.valueOf(
-					command.substring("MAPSWITCH".length())).intValue());
+					command.substring(MAPSWITCH.length())).intValue());
 			cmiCurMapSetState(true);
 			main.repaint();
 		} else if (command.startsWith(ZOOMTO_COMMAND)) {
@@ -466,7 +475,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 			if (Config.drawTail)
 				Main.clearTrackTail(); // clear to prevent jump in tail
 			main.repaint();
-		} else if (command.equals("CONNECT_GPS")) {
+		} else if (command == CONNECT_GPS) {
 			Config.connectGPS = !Config.connectGPS;
 			if (!Config.connectGPS) {
 				Config.trackLog = false;
@@ -495,7 +504,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 					}
 				}
 			}
-		} else if (command.equals("TRACKLOG")) {
+		} else if (command == TRACKLOG) {
 			Config.trackLog = !Config.trackLog;
 			if (!Config.connectGPS)
 				Config.trackLog = false;

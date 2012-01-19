@@ -53,6 +53,9 @@ public class Main extends Panel implements GPSListener, MouseListener,
 
 	private static final boolean debugMouseEvents = false;
 
+	private static final String CREATE_WAYPOINT = "CREATE_WAYPOINT";
+	private static final String GO_HERE = "GO_HERE";
+
 	private LatLng clickLatlng; // hold last click coordinates
 	private int viewOffsetStep = 50; // view offset on key press
 	private static final CenterOffsetBtn offsetBtn = new CenterOffsetBtn();
@@ -357,8 +360,8 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		setClickLatlng(e);
 
 		popup.add(new MenuItem(clickLatlng.toShortString()));
-		App.menuAddItem("Go here", "GO_HERE", popup);
-		App.menuAddItem("Create waypoint", "CREATE_WAYPOINT", popup);
+		App.menuAddItem("Go here", GO_HERE, popup);
+		App.menuAddItem("Create waypoint", CREATE_WAYPOINT, popup);
 
 		int px = e.getX();
 		if (Config.drawWikimapia) {
@@ -611,9 +614,9 @@ public class Main extends Panel implements GPSListener, MouseListener,
 			int i = Integer.valueOf(command.substring("POPUP_WIKI".length()))
 					.intValue();
 			new ShowMessage(((MenuItem) popupWiki.get(i)).getLabel());
-		} else if (command.equals("GO_HERE")) {
+		} else if (command == GO_HERE) {
 			processGoHere();
-		} else if (command.equals("CREATE_WAYPOINT")) {
+		} else if (command == CREATE_WAYPOINT) {
 			new NewWaypointDialog(App.getSelf(), clickLatlng).setVisible(true);
 		}
 	}
