@@ -53,6 +53,8 @@ public class Main extends Panel implements GPSListener, MouseListener,
 
 	private static final boolean debugMouseEvents = false;
 
+	private static final String ZOOMIN_COMMAND = "ZOOMIN_COMMAND";
+	private static final String ZOOMOUT_COMMAND = "ZOOMOUT_COMMAND";
 	private static final String CREATE_WAYPOINT = "CREATE_WAYPOINT";
 	private static final String GO_HERE = "GO_HERE";
 
@@ -360,6 +362,8 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		setClickLatlng(e);
 
 		popup.add(new MenuItem(clickLatlng.toShortString()));
+		App.menuAddItem("Zoom in", ZOOMIN_COMMAND, popup);
+		App.menuAddItem("Zoom out", ZOOMOUT_COMMAND, popup);
 		App.menuAddItem("Go here", GO_HERE, popup);
 		App.menuAddItem("Create waypoint", CREATE_WAYPOINT, popup);
 
@@ -583,7 +587,7 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		viewOffsetChanged();
 	}
 
-	public void zoomTo(int zoom) {
+	void zoomTo(int zoom) {
 		double deltaview = Math.pow(2, zoom - Config.zoom);
 		viewOffset.multiply(deltaview);
 		Config.zoom = zoom;
@@ -614,6 +618,10 @@ public class Main extends Panel implements GPSListener, MouseListener,
 			int i = Integer.valueOf(command.substring("POPUP_WIKI".length()))
 					.intValue();
 			new ShowMessage(((MenuItem) popupWiki.get(i)).getLabel());
+		} else if (command == ZOOMIN_COMMAND) {
+			App.zoomIn();
+		} else if (command == ZOOMOUT_COMMAND) {
+			App.zoomOut();
 		} else if (command == GO_HERE) {
 			processGoHere();
 		} else if (command == CREATE_WAYPOINT) {
