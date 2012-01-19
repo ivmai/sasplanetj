@@ -110,7 +110,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 		}
 	}
 
-	public App(String appArgs[]) {
+	App(String appArgs[]) {
 		args = appArgs;
 		self = this;
 		setTitle("SAS.Planet.J");
@@ -517,7 +517,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 		currentView.requestFocus(); // for CreME
 	}
 
-	public static void zoomIn() {
+	static void zoomIn() {
 		if (Config.zoom + 1 > TilesUtil.ZOOM_MAX) {
 			Toolkit.getDefaultToolkit().beep();
 			return;
@@ -539,7 +539,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 		main.zoomTo(zoom);
 	}
 
-	public static void zoomOut() {
+	static void zoomOut() {
 		if (Config.zoom <= 1) {
 			Toolkit.getDefaultToolkit().beep();
 			return;
@@ -561,7 +561,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 		main.zoomTo(zoom);
 	}
 
-	public void zoomMenu() {
+	void zoomMenu() {
 		// Such a trick because of Mysaifu bug with menuitem.setLabel.
 		if (menuBar.getMenuCount() >= 4)
 			menuBar.remove(3);
@@ -588,7 +588,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 		menuCheckboxSetState(chkMenuZoomTo[Config.zoom - 1], true);
 	}
 
-	public void createSerialReader() {
+	void createSerialReader() {
 		if (args.length > 0) {
 			String port = args[0];
 			try {
@@ -607,7 +607,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 	/**
 	 * Moves map position to given coordinates
 	 */
-	public static void goTo(LatLng latlng) {
+	static void goTo(LatLng latlng) {
 		Config.connectGPS = false;
 		menuCheckboxSetState(self.cmiConnectGPS, false);
 		main.removeListener();
