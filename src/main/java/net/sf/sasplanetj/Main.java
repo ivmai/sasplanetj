@@ -625,7 +625,6 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		clickLatlng.copyTo(latLng);
 		clearTrackTail();
 		viewOffset0(); // it will repaint also
-		repaint();
 	}
 
 	public static void clearTrackTail() {
