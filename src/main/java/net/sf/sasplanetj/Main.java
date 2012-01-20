@@ -591,12 +591,28 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		viewOffsetChanged();
 	}
 
+	private static XYint translateViewOfsOnZoom(XYint viewOffset,
+			LatLng latLng, int oldZoom, int zoom, LatLng clickLatlng) {
+		XYint displayXY = latLng.toDisplayCoord(zoom);
+		displayXY.subtract(clickLatlng.toDisplayCoord(zoom));
+		displayXY.add(clickLatlng.toDisplayCoord(oldZoom));
+		displayXY.subtract(latLng.toDisplayCoord(oldZoom));
+		displayXY.add(viewOffset);
+		return displayXY;
+	}
+
 	void zoomTo(int zoom) {
-		double deltaview = Math.pow(2, zoom - Config.zoom);
-		viewOffset.multiply(deltaview);
+		int oldZoom = Config.zoom;
 		Config.zoom = zoom;
 		App.getSelf().zoomMenu();
-		repaint();
+		if (clickLatlng != null) {
+			viewOffset.setLocation(translateViewOfsOnZoom(viewOffset, latLng,
+					oldZoom, zoom, clickLatlng));
+			viewOffsetChanged();
+		} else {
+			viewOffset.multiply(Math.pow(2, zoom - oldZoom));
+			repaint();
+		}
 	}
 
 	public void keyTyped(KeyEvent e) {
