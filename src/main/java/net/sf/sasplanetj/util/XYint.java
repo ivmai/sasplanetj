@@ -19,6 +19,11 @@ public class XYint {
 		this.y = y;
 	}
 
+	public void setLocation(XYint xy) {
+		x = xy.x;
+		y = xy.y;
+	}
+
 	public boolean equalXY(XYint xy) {
 		return x == xy.x && y == xy.y;
 	}
