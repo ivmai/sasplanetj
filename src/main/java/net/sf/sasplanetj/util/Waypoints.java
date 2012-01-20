@@ -107,9 +107,7 @@ public class Waypoints {
 		// TODO: skip WPs which are out of screen.
 		for (Iterator it = points.iterator(); it.hasNext();) {
 			final Waypoint wp = (Waypoint) it.next();
-			final XYint inMatrix = TilesUtil.coordinateToDisplay(wp.getLatLng()
-					.getLat(), wp.getLatLng().getLng(), Config.zoom, Config
-					.isCurMapYandex());
+			final XYint inMatrix = wp.getLatLng().toDisplayCoord(Config.zoom);
 			inMatrix.subtract(matrix[0]); // find point in tile matrix
 			inMatrix.add(matrix[1]);
 			// point with matrix position drawing offset

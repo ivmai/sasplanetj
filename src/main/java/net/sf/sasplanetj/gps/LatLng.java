@@ -4,6 +4,10 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
+import net.sf.sasplanetj.util.Config;
+import net.sf.sasplanetj.util.TilesUtil;
+import net.sf.sasplanetj.util.XYint;
+
 public class LatLng {
 
 	private static final DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(
@@ -40,6 +44,11 @@ public class LatLng {
 		other.lng = lng;
 	}
 
+	public XYint toDisplayCoord(int zoom) {
+		return TilesUtil.coordinateToDisplay(getLat(), getLng(), zoom,
+				Config.isCurMapYandex());
+	}
+
 	public double getLat() {
 		return lat;
 	}
@@ -64,5 +73,4 @@ public class LatLng {
 	public boolean equalXY(LatLng other) {
 		return lat == other.lat && lng == other.lng;
 	}
-
 }

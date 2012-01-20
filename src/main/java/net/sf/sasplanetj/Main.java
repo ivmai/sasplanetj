@@ -212,8 +212,7 @@ public class Main extends Panel implements GPSListener, MouseListener,
 				offscreen.getHeight(null) / 2);
 
 		/* Tile calculation */
-		final XYint displayXY = TilesUtil.coordinateToDisplay(latLng.getLat(),
-				latLng.getLng(), Config.zoom, Config.isCurMapYandex());
+		final XYint displayXY = latLng.toDisplayCoord(Config.zoom);
 		if (Config.drawTail && latLng.getLat() != 0 && latLng.getLng() != 0) {
 			trackTail.addPoint(new XY(latLng.getLat(), latLng.getLng()));
 		}
@@ -399,8 +398,7 @@ public class Main extends Panel implements GPSListener, MouseListener,
 	}
 
 	private void setClickLatlng(MouseEvent e) {
-		XYint displayXY = TilesUtil.coordinateToDisplay(latLng.getLat(),
-				latLng.getLng(), Config.zoom, Config.isCurMapYandex());
+		XYint displayXY = latLng.toDisplayCoord(Config.zoom);
 		displayXY.subtract(viewOffset);
 		XYint clickOffset = new XYint(e.getPoint().x - getSize().width / 2,
 				e.getPoint().y - getSize().height / 2);
