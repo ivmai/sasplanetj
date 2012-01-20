@@ -364,8 +364,10 @@ public class App extends Frame implements ActionListener, ItemListener {
 		if (command == EXIT_COMMAND) {
 			quit();
 		} else if (command == ZOOMIN_COMMAND) {
+			main.clearClickLatlng();
 			zoomIn();
 		} else if (command == ZOOMOUT_COMMAND) {
+			main.clearClickLatlng();
 			zoomOut();
 		} else if (command == CENTER_COMMAND) {
 			main.viewOffset0();
@@ -460,6 +462,7 @@ public class App extends Frame implements ActionListener, ItemListener {
 			cmiCurMapSetState(true);
 			main.repaint();
 		} else if (command.startsWith(ZOOMTO_COMMAND)) {
+			main.clearClickLatlng();
 			main.zoomTo(new Integer(command.substring(ZOOMTO_COMMAND.length()))
 					.intValue());
 		} else if (command.startsWith(ZOOMONLYTO_COMMAND)) {

@@ -397,6 +397,10 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		popup.show(this, px + 5, e.getY());
 	}
 
+	void clearClickLatlng() {
+		clickLatlng = null;
+	}
+
 	private void setClickLatlng(MouseEvent e) {
 		XYint displayXY = latLng.toDisplayCoord(Config.zoom);
 		displayXY.subtract(viewOffset);
@@ -492,10 +496,12 @@ public class Main extends Panel implements GPSListener, MouseListener,
 		switch (keyCode) {
 		case KeyEvent.VK_F2:
 		case KeyEvent.VK_PAGE_DOWN:
+			clearClickLatlng();
 			App.zoomOut();
 			break;
 		case KeyEvent.VK_F1:
 		case KeyEvent.VK_PAGE_UP:
+			clearClickLatlng();
 			App.zoomIn();
 			break;
 		case KeyEvent.VK_UP:
